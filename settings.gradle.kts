@@ -24,3 +24,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "Mipyme"
 include(":app")
+include(":core:contract")
