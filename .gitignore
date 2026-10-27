@@ -1,0 +1,17 @@
+*.iml
+.gradle
+/local.properties
+.DS_Store
+/build
+/core/*/build/
+/captures
+/docs/
+/plans/
+/.kotlin/
+.externalNativeBuild
+.cxx
+local.properties
+.idea
+/app/src/development/res/values/keys.xml
+/app/src/staging/res/values/keys.xml
+/app/src/production/res/values/keys.xml
