@@ -8,5 +8,5 @@ to override it. Read the foundations through `MoshiTheme.colors`,
 ## Moshi token source
 
 The Kotlin foundations use
-[Moshi UI v0.1 at `8694bfe989b251266b2c597c6f3731f787238d5f`](https://github.com/dylangrijalva/moshi-ui/commit/8694bfe989b251266b2c597c6f3731f787238d5f).
+[Moshi UI v0.1 at `d122be1bb435ba395ce6d36f2d97a644d3534bf7`](https://github.com/dylangrijalva/moshi-ui/commit/d122be1bb435ba395ce6d36f2d97a644d3534bf7).
 When adopting upstream changes, update the Kotlin values and this revision together.

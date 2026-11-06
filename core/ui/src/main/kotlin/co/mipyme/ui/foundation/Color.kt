@@ -1,7 +1,10 @@
 package co.mipyme.ui.foundation
 
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.ui.graphics.Color
+import co.mipyme.ui.MoshiTheme
 
 @Immutable
 data class MoshiColors(
@@ -9,6 +12,38 @@ data class MoshiColors(
     val foreground: Foreground,
     val border: Border,
 ) {
+    companion object {
+        val background: Background
+            @Composable
+            @ReadOnlyComposable
+            get() = MoshiTheme.colors.background
+
+        val foreground: Foreground
+            @Composable
+            @ReadOnlyComposable
+            get() = MoshiTheme.colors.foreground
+
+        val border: Border
+            @Composable
+            @ReadOnlyComposable
+            get() = MoshiTheme.colors.border
+
+        val TextPrimary: Color
+            @Composable
+            @ReadOnlyComposable
+            get() = foreground.primary
+
+        val TextSecondary: Color
+            @Composable
+            @ReadOnlyComposable
+            get() = foreground.secondary
+
+        val TextTertiary: Color
+            @Composable
+            @ReadOnlyComposable
+            get() = foreground.tertiary
+    }
+
     @Immutable
     data class Background(
         val canvas: Color,
@@ -59,6 +94,7 @@ data class MoshiColors(
     data class Foreground(
         val primary: Color,
         val secondary: Color,
+        val tertiary: Color,
         val disabled: Color,
         val inverse: Color,
         val link: Color,
@@ -122,6 +158,7 @@ internal val lightMoshiColors = MoshiColors(
     foreground = MoshiColors.Foreground(
         primary = Color(0xFF252525),
         secondary = Color(0xFF666666),
+        tertiary = Color(0xFF6B6B6B),
         disabled = Color(0xFF7A7A7A),
         inverse = Color(0xFFFFFFFF),
         link = Color(0xFF2B4FB9),
@@ -187,6 +224,7 @@ internal val darkMoshiColors = MoshiColors(
     foreground = MoshiColors.Foreground(
         primary = Color(0xFFFFFFFF),
         secondary = Color(0xCCFFFFFF),
+        tertiary = Color(0x99FFFFFF),
         disabled = Color(0x80FFFFFF),
         inverse = Color(0xFF252525),
         link = Color(0xFF9DA9CA),
