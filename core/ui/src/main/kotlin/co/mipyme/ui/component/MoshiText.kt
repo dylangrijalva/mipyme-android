@@ -22,7 +22,6 @@ enum class MoshiTextRole {
     Display,
 }
 
-/** Displays plain text using a typography role from the enclosing [MoshiTheme]. */
 @Composable
 fun MoshiText(
     text: String,
