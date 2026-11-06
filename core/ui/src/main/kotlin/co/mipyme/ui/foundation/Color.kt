@@ -131,7 +131,7 @@ internal val lightMoshiColors = MoshiColors(
         surface = Color(0xFFFFFFFF),
         elevated = Color(0xFFFFFFFF),
         selected = Color(0xFFF7F7F7),
-        disabled = Color(0xFFF0F0F0),
+        disabled = Color(0xFFE5E5E5),
         inverse = Color(0xFF252525),
         overlay = Color(0x66000000),
         brand = Color(0xFFFF4C00),
@@ -222,7 +222,7 @@ internal val darkMoshiColors = MoshiColors(
         ),
     ),
     foreground = MoshiColors.Foreground(
-        primary = Color(0xFFFFFFFF),
+        primary = Color(0xFFE5E5E5),
         secondary = Color(0xCCFFFFFF),
         tertiary = Color(0x99FFFFFF),
         disabled = Color(0x80FFFFFF),
