@@ -5,8 +5,10 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.takeOrElse
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import co.mipyme.ui.MoshiPreview
@@ -22,12 +24,15 @@ enum class MoshiTextRole {
     Display,
 }
 
+internal val LocalMoshiTextRole = staticCompositionLocalOf { MoshiTextRole.Body }
+internal val LocalMoshiTextColor = staticCompositionLocalOf { Color.Unspecified }
+
 @Composable
 fun MoshiText(
     text: String,
     modifier: Modifier = Modifier,
-    role: MoshiTextRole = MoshiTextRole.Body,
-    color: Color = MoshiColors.TextPrimary,
+    role: MoshiTextRole = LocalMoshiTextRole.current,
+    color: Color = LocalMoshiTextColor.current.takeOrElse { MoshiColors.TextPrimary },
     textAlign: TextAlign = TextAlign.Start,
     maxLines: Int = Int.MAX_VALUE,
     overflow: TextOverflow = TextOverflow.Clip,
