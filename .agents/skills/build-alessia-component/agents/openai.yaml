@@ -1,4 +1,0 @@
-interface:
-  display_name: "Build Alessia Component"
-  short_description: "Document and build Alessia UI components"
-  default_prompt: "Use $build-alessia-component to document, implement, preview, and test a new Alessia UI component."
