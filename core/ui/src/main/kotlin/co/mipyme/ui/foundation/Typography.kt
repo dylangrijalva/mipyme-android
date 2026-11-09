@@ -16,7 +16,6 @@ data class MoshiTypography(
         lineHeight = 40.sp,
         letterSpacing = (-0.02).em,
     ),
-
     val heading: TextStyle = TextStyle(
         fontFamily = FontFamily.SansSerif,
         fontSize = 24.sp,
@@ -24,7 +23,6 @@ data class MoshiTypography(
         lineHeight = 32.sp,
         letterSpacing = (-0.01).em,
     ),
-
     val subheading: TextStyle = TextStyle(
         fontFamily = FontFamily.SansSerif,
         fontSize = 20.sp,
@@ -32,7 +30,6 @@ data class MoshiTypography(
         lineHeight = 28.sp,
         letterSpacing = 0.em,
     ),
-
     val body: TextStyle = TextStyle(
         fontFamily = FontFamily.SansSerif,
         fontSize = 16.sp,
@@ -40,7 +37,6 @@ data class MoshiTypography(
         lineHeight = 24.sp,
         letterSpacing = 0.em,
     ),
-
     val small: TextStyle = TextStyle(
         fontFamily = FontFamily.SansSerif,
         fontSize = 14.sp,
@@ -48,7 +44,6 @@ data class MoshiTypography(
         lineHeight = 20.sp,
         letterSpacing = 0.em,
     ),
-
     val caption: TextStyle = TextStyle(
         fontFamily = FontFamily.SansSerif,
         fontSize = 12.sp,

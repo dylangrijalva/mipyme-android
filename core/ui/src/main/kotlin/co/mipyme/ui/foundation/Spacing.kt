@@ -17,7 +17,6 @@ data class MoshiSpacing(
     val space10: Dp = 40.dp,
     val space12: Dp = 48.dp,
     val space16: Dp = 64.dp,
-
     val pageGutterNarrow: Dp = space4,
     val pageGutterMedium: Dp = space6,
     val pageGutterWide: Dp = space8,
