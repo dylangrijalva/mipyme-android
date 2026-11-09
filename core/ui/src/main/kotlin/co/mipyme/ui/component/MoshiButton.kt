@@ -196,14 +196,14 @@ private fun MoshiButtonPreview() {
             }
             MoshiButton(
                 onClick = {},
-                trailingContent = { PreviewSaveIcon() },
+                trailingContent = { PreviewAddIcon() },
             ) {
                 MoshiText("Save and update the product information")
             }
-            MoshiButton(onClick = {}, leadingContent = { PreviewSaveIcon() }) {
+            MoshiButton(onClick = {}, leadingContent = { PreviewAddIcon() }) {
                 MoshiText("Save")
             }
-            MoshiButton(onClick = {}, isLoading = true, leadingContent = { PreviewSaveIcon() }) {
+            MoshiButton(onClick = {}, isLoading = true, leadingContent = { PreviewAddIcon() }) {
                 MoshiText("Save")
             }
         }
@@ -211,9 +211,9 @@ private fun MoshiButtonPreview() {
 }
 
 @Composable
-private fun PreviewSaveIcon() {
+private fun PreviewAddIcon() {
     Icon(
-        painter = painterResource(R.drawable.ic_fluent_shopping_bag_24_regular),
+        painter = painterResource(R.drawable.ic_fluent_add_24_regular),
         contentDescription = null,
         modifier = Modifier.size(Moshi.spacing.space5),
     )

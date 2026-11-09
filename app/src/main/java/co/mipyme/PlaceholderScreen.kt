@@ -7,8 +7,10 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawingPadding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -17,11 +19,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import co.mipyme.ui.Moshi
 import co.mipyme.ui.MoshiTheme
+import co.mipyme.ui.R as UiR
 import co.mipyme.ui.component.MoshiButton
 import co.mipyme.ui.component.MoshiButtonVariant
 import co.mipyme.ui.component.MoshiText
@@ -87,9 +91,19 @@ private fun PlaceholderButton(variant: MoshiButtonVariant, label: String) {
         onClick = { isLoading = true },
         variant = variant,
         isLoading = isLoading,
+        leadingContent = { PlaceholderAddIcon() },
     ) {
         MoshiText(label)
     }
+}
+
+@Composable
+private fun PlaceholderAddIcon() {
+    Icon(
+        painter = painterResource(UiR.drawable.ic_fluent_add_24_regular),
+        contentDescription = null,
+        modifier = Modifier.size(Moshi.spacing.space5),
+    )
 }
 
 @Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
