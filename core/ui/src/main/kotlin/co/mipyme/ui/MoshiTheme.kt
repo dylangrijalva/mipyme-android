@@ -28,7 +28,7 @@ fun MoshiTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     content: @Composable () -> Unit,
 ) {
-    val colors = if (darkTheme) darkMoshiColors else lightMoshiColors
+    val colors = if (darkTheme) darkMoshiColors() else lightMoshiColors()
 
     CompositionLocalProvider(
         LocalMoshiColors provides colors,
