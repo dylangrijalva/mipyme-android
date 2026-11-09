@@ -35,6 +35,7 @@ import androidx.compose.ui.semantics.progressBarRangeInfo
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.unit.dp
+import co.mipyme.ui.Moshi
 import co.mipyme.ui.MoshiPreview
 import co.mipyme.ui.MoshiTheme
 import co.mipyme.ui.R
@@ -61,8 +62,8 @@ fun MoshiButton(
     trailingContent: (@Composable () -> Unit)? = null,
     content: @Composable () -> Unit,
 ) {
-    val colors = MoshiTheme.colors
-    val spacing = MoshiTheme.spacing
+    val colors = Moshi.colors
+    val spacing = Moshi.spacing
     val canActivate = enabled && !isLoading
     val interactionSource = remember { MutableInteractionSource() }
     val hovered by interactionSource.collectIsHoveredAsState()
@@ -177,10 +178,10 @@ fun MoshiButton(
 @Composable
 private fun MoshiButtonPreview() {
     MoshiTheme {
-        val spacing = MoshiTheme.spacing
+        val spacing = Moshi.spacing
         Column(
             modifier = Modifier
-                .background(MoshiTheme.colors.background.canvas)
+                .background(Moshi.colors.background.canvas)
                 .padding(spacing.space4),
             verticalArrangement = Arrangement.spacedBy(spacing.space2),
         ) {
@@ -214,6 +215,6 @@ private fun PreviewSaveIcon() {
     Icon(
         painter = painterResource(R.drawable.ic_fluent_shopping_bag_24_regular),
         contentDescription = null,
-        modifier = Modifier.size(MoshiTheme.spacing.space5),
+        modifier = Modifier.size(Moshi.spacing.space5),
     )
 }

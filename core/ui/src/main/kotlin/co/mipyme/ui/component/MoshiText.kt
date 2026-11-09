@@ -11,6 +11,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.takeOrElse
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import co.mipyme.ui.Moshi
 import co.mipyme.ui.MoshiPreview
 import co.mipyme.ui.MoshiTheme
 import co.mipyme.ui.foundation.MoshiColors
@@ -37,7 +38,7 @@ fun MoshiText(
     maxLines: Int = Int.MAX_VALUE,
     overflow: TextOverflow = TextOverflow.Clip,
 ) {
-    val typography = MoshiTheme.typography
+    val typography = Moshi.typography
     val style = when (role) {
         MoshiTextRole.Caption -> typography.caption
         MoshiTextRole.Small -> typography.small
@@ -100,7 +101,7 @@ private fun MoshiTextRolePreview(role: MoshiTextRole) {
         Box(
             modifier = Modifier
                 .background(MoshiColors.background.canvas)
-                .padding(MoshiTheme.spacing.space4),
+                .padding(Moshi.spacing.space4),
         ) {
             MoshiText(text = role.name, role = role)
         }

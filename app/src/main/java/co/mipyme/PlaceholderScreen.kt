@@ -20,6 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import co.mipyme.ui.Moshi
 import co.mipyme.ui.MoshiTheme
 import co.mipyme.ui.component.MoshiButton
 import co.mipyme.ui.component.MoshiButtonVariant
@@ -33,13 +34,13 @@ internal fun PlaceholderScreen() {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .background(MoshiTheme.colors.background.canvas)
+                .background(Moshi.colors.background.canvas)
                 .safeDrawingPadding()
                 .verticalScroll(rememberScrollState())
-                .padding(MoshiTheme.spacing.space4),
+                .padding(Moshi.spacing.space4),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(
-                MoshiTheme.spacing.space4,
+                Moshi.spacing.space4,
                 Alignment.CenterVertically,
             ),
         ) {
@@ -60,7 +61,7 @@ internal fun PlaceholderScreen() {
             }
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(MoshiTheme.spacing.space2),
+                verticalArrangement = Arrangement.spacedBy(Moshi.spacing.space2),
             ) {
                 val loadingLabel = stringResource(R.string.placeholder_button_loading)
                 MoshiText(loadingLabel)

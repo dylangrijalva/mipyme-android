@@ -12,15 +12,15 @@ import co.mipyme.ui.foundation.darkMoshiColors
 import co.mipyme.ui.foundation.lightMoshiColors
 
 private val LocalMoshiColors = staticCompositionLocalOf<MoshiColors> {
-    error("MoshiTheme.colors must be read inside MoshiTheme")
+    error("Moshi.colors must be read inside MoshiTheme")
 }
 
 private val LocalMoshiTypography = staticCompositionLocalOf<MoshiTypography> {
-    error("MoshiTheme.typography must be read inside MoshiTheme")
+    error("Moshi.typography must be read inside MoshiTheme")
 }
 
 private val LocalMoshiSpacing = staticCompositionLocalOf<MoshiSpacing> {
-    error("MoshiTheme.spacing must be read inside MoshiTheme")
+    error("Moshi.spacing must be read inside MoshiTheme")
 }
 
 @Composable
@@ -38,7 +38,7 @@ fun MoshiTheme(
     )
 }
 
-object MoshiTheme {
+object Moshi {
     val colors: MoshiColors
         @Composable
         @ReadOnlyComposable

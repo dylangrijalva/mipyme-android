@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.ui.graphics.Color
+import co.mipyme.ui.Moshi
 import co.mipyme.ui.MoshiTheme
 
 @Immutable
@@ -16,17 +17,17 @@ data class MoshiColors(
         val background: Background
             @Composable
             @ReadOnlyComposable
-            get() = MoshiTheme.colors.background
+            get() = Moshi.colors.background
 
         val foreground: Foreground
             @Composable
             @ReadOnlyComposable
-            get() = MoshiTheme.colors.foreground
+            get() = Moshi.colors.foreground
 
         val border: Border
             @Composable
             @ReadOnlyComposable
-            get() = MoshiTheme.colors.border
+            get() = Moshi.colors.border
 
         val TextPrimary: Color
             @Composable
