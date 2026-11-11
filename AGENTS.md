@@ -22,6 +22,18 @@ This file provides guidance to Claude (claude.com/claude-code) and Codex (openai
 - Do not introduce additional sources of truth for data already managed elsewhere.
 - Follow existing dependency injection and navigation patterns.
 
+## Design System
+
+All user interfaces must be built with **Moshi**, Mipyme's design system. Moshi lives in the `:core:ui` module (`co.mipyme.ui`). See `@DESIGN.md` for component usage guidelines and `@core/ui/README.md` for the token source.
+
+- **Theme:** Render all UI inside `MoshiTheme { … }`. It provides the light and dark palettes and follows the system setting by default.
+- **Components:** Use Moshi components (e.g., `MoshiButton`, `MoshiText`) instead of their Material 3 or Foundation equivalents. Do not use Material 3 components directly when a Moshi component exists.
+- **Tokens:** Read colors, typography, and spacing from `Moshi.colors`, `Moshi.typography`, and `Moshi.spacing`. Do not hardcode colors, font sizes, or `dp` values that a Moshi token already covers.
+- **Semantic colors:** Prefer semantic tokens (e.g., `background.action.primary`, `foreground.disabled`, `border.interactive`) that match the element's purpose over raw palette values.
+- **Missing components:** If a required component or token does not exist in Moshi, ask before creating it. New components belong in `:core:ui` under `co.mipyme.ui.component`, use the `Moshi` prefix, consume only Moshi tokens, and must be documented in `DESIGN.md`.
+- **Previews:** Wrap previews in `MoshiTheme`. Inside `:core:ui`, annotate component previews with `@MoshiPreview` to render both light and dark themes.
+- **Accessibility:** Preserve Moshi's accessibility behavior, including the 48 × 48 dp minimum touch target, sentence-case labels, and text that wraps at larger font sizes.
+
 ## Coding Style
 
 - Prefer `val`; use `var` only when necessary.
