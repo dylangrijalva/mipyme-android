@@ -1,8 +1,3 @@
 <resources>
     <string name="app_name">Mipyme: Sistema Punto de Ventas para pequeños y medianos negocios de Centroamérica</string>
-    <string name="placeholder_button_primary">Botón principal</string>
-    <string name="placeholder_button_outline">Botón con borde</string>
-    <string name="placeholder_button_text">Botón de texto</string>
-    <string name="placeholder_button_disabled">Botón desactivado</string>
-    <string name="placeholder_button_loading">Botón en carga</string>
 </resources>
