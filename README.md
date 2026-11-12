@@ -33,13 +33,6 @@ Mipyme takes a different approach: **keep the experience simple, provide the fea
 
 ### 1. Easy to use
 
-<p align="center">
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="assets/readme/illustration-sell-dark.svg">
-    <img src="assets/readme/illustration-sell-light.svg" alt="A merchant walking with shopping bags, holding a phone showing a completed sale" width="360">
-  </picture>
-</p>
-
 As its name suggests, Mipyme is designed to be easy to use—even for non-technical users.
 
 You shouldn't need hours of tutorials or pages of documentation just to start selling. The application guides you through the essentials and makes common operations intuitive from the start.
@@ -47,13 +40,6 @@ You shouldn't need hours of tutorials or pages of documentation just to start se
 The goal is simple: spend less time learning software and more time running your business.
 
 ### 2. Offline-first
-
-<p align="center">
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="assets/readme/illustration-offline-dark.svg">
-    <img src="assets/readme/illustration-offline-light.svg" alt="A merchant completing a sale on their phone while receipts wait to sync to a disconnected cloud" width="360">
-  </picture>
-</p>
 
 Many POS systems depend heavily on a stable internet connection. Mipyme is built with an offline-first approach so that an unreliable connection doesn't have to stop your business.
 
@@ -63,13 +49,6 @@ Once connectivity is restored, changes made offline are automatically synchroniz
 
 ### 3. Start with little or no upfront cost
 
-<p align="center">
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="assets/readme/illustration-trial-dark.svg">
-    <img src="assets/readme/illustration-trial-light.svg" alt="A merchant next to a calendar showing 14 days and a crossed-out credit card" width="360">
-  </picture>
-</p>
-
 Getting started with Mipyme is simple: create an account and begin a **14-day free trial**. No credit card is required.
 
 Once you've decided that Mipyme fits your business, you can subscribe to one of three plans: `Plus`, `Pro`, or `Business`.
@@ -77,13 +56,6 @@ Once you've decided that Mipyme fits your business, you can subscribe to one of 
 Each plan is designed around different business needs, so you can pay for the features that are actually useful to you.
 
 ## Features
-
-<p align="center">
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="assets/readme/illustration-stock-dark.svg">
-    <img src="assets/readme/illustration-stock-light.svg" alt="A merchant restocking boxes into an empty slot flagged as low stock" width="360">
-  </picture>
-</p>
 
 - **Retail POS**: Manage your day-to-day sales from a single system. Mipyme brings together product management, sales processing, inventory tracking, and other essential retail operations.
 
