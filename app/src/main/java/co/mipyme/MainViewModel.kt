@@ -4,10 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import co.mipyme.auth.AuthService
 import co.mipyme.auth.AuthState
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
@@ -21,8 +19,6 @@ class MainViewModel(
 
     init {
         viewModelScope.launch {
-            // Temporary delay for testing startup auth resolution.
-            delay(5_000L)
             authService.authStateFlow.collect { authState ->
                 _stateFlow.update { it.copy(launchDestination = authState.toLaunchDestination()) }
             }
