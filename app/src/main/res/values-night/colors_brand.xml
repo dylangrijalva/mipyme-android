@@ -4,4 +4,8 @@
     <color name="splash_logo_left_arch">@color/logo_white</color>
     <color name="splash_logo_pillar">@color/logo_blue</color>
     <color name="splash_wordmark">@color/logo_white</color>
+
+    <color name="logo_mark_left_arch">@color/logo_white</color>
+    <color name="logo_mark_pillar">@color/logo_blue</color>
+    <color name="logo_wordmark">@color/logo_white</color>
 </resources>

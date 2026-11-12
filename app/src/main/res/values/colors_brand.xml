@@ -5,7 +5,11 @@
     <color name="logo_ink">#252525</color>
     <color name="logo_white">#FFFFFF</color>
 
-    <color name="launcher_background">#FFFFFF</color>
+    <color name="logo_mark_left_arch">@color/logo_blue</color>
+    <color name="logo_mark_pillar">@color/logo_ink</color>
+    <color name="logo_wordmark">@color/logo_ink</color>
+
+    <color name="launcher_background">@color/logo_ink</color>
 
     <color name="splash_background">#F0F0F2</color>
     <color name="splash_logo_left_arch">@color/logo_blue</color>
