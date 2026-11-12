@@ -67,6 +67,14 @@ All user interfaces must be built with **Moshi**, Mipyme's design system. Moshi 
 - Use `viewModelScope` or `lifecycleScope`.
 - Avoid throwing exceptions from coroutines; use `Result` or Arrow's `Either`.
 
+## Localization
+
+- Every user-facing string lives in a `strings.xml` resource; never hardcode user-facing text.
+- Whenever a `strings.xml` is added or a string is added or changed, provide both English (`values/strings.xml`) and
+  Spanish (`values-es/strings.xml`) in the same module, with the same resource names.
+- Strings that must not be translated (e.g., keys such as `clerk_publishable_key`) are marked `translatable="false"`
+  and are exempt from the Spanish requirement.
+
 ## Screen Constraints
 
 Every screen must be backed by a `ViewModel`, either screen-specific or shared within a workflow.
