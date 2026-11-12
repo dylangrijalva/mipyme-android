@@ -44,7 +44,14 @@ The Android token implementations and component code define the behavior shipped
 Use `Primary` for a prominent labeled action with the Moshi primary action fill.
 Use `Outline` for a secondary action that needs a visible boundary and `Text`
 for a quieter action. Both use a transparent resting background and secondary
-action colors, with a 1 dp border on `Outline`.
+action colors, with a 1 dp border on `Outline`. Use `Destructive` for the
+prominent, confirming action of an irreversible operation, such as deleting data;
+it uses the destructive action fill with the on-destructive label color and the
+same disabled and loading behavior as `Primary`. Use `DestructiveOutline` for a
+lower-emphasis action that signs the user out or removes data. It keeps the transparent resting
+background and secondary hover of `Outline` but uses the destructive action
+foreground and the error status border. Disabled and loading states fall back to
+the shared disabled colors and default border.
 
 `Default` has a minimum visible size
 and touch target of 48 × 48 dp. The button grows with the label as needed. Use

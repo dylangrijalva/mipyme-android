@@ -43,6 +43,8 @@ import co.mipyme.ui.R
 enum class MoshiButtonVariant {
     Primary,
     Outline,
+    Destructive,
+    DestructiveOutline,
     Text,
 }
 
@@ -71,12 +73,16 @@ fun MoshiButton(
         !canActivate -> colors.background.disabled
         variant == MoshiButtonVariant.Primary && hovered -> colors.background.action.primary.hover
         variant == MoshiButtonVariant.Primary -> colors.background.action.primary.default
+        variant == MoshiButtonVariant.Destructive && hovered -> colors.background.action.destructive.hover
+        variant == MoshiButtonVariant.Destructive -> colors.background.action.destructive.default
         hovered -> colors.background.action.secondary.hover
         else -> Color.Transparent
     }
     val foreground = when {
         !canActivate -> colors.foreground.disabled
         variant == MoshiButtonVariant.Primary -> colors.foreground.onAction.primary
+        variant == MoshiButtonVariant.Destructive -> colors.foreground.onAction.destructive
+        variant == MoshiButtonVariant.DestructiveOutline -> colors.foreground.action.destructive
         else -> colors.foreground.action.secondary
     }
     val minimumSize = when (size) {
@@ -84,14 +90,18 @@ fun MoshiButton(
     }
     val radius = 12.dp
     val shape = RoundedCornerShape(radius)
-    val border = if (variant == MoshiButtonVariant.Outline) {
-        Modifier.border(
+    val border = when (variant) {
+        MoshiButtonVariant.Outline -> Modifier.border(
             width = 1.dp,
             color = if (canActivate) colors.border.interactive else colors.border.default,
             shape = shape,
         )
-    } else {
-        Modifier
+        MoshiButtonVariant.DestructiveOutline -> Modifier.border(
+            width = 1.dp,
+            color = if (canActivate) colors.border.status.error else colors.border.default,
+            shape = shape,
+        )
+        else -> Modifier
     }
     val loadingSemantics = if (isLoading) {
         val loadingDescription = stringResource(R.string.moshi_button_loading)
@@ -190,6 +200,24 @@ private fun MoshiButtonPreview() {
             }
             MoshiButton(onClick = {}, enabled = false) {
                 MoshiText("Save")
+            }
+            MoshiButton(onClick = {}, variant = MoshiButtonVariant.Destructive) {
+                MoshiText("Delete")
+            }
+            MoshiButton(onClick = {}, variant = MoshiButtonVariant.Destructive, enabled = false) {
+                MoshiText("Delete")
+            }
+            MoshiButton(onClick = {}, variant = MoshiButtonVariant.Destructive, isLoading = true) {
+                MoshiText("Delete")
+            }
+            MoshiButton(onClick = {}, variant = MoshiButtonVariant.DestructiveOutline) {
+                MoshiText("Delete")
+            }
+            MoshiButton(onClick = {}, variant = MoshiButtonVariant.DestructiveOutline, enabled = false) {
+                MoshiText("Delete")
+            }
+            MoshiButton(onClick = {}, variant = MoshiButtonVariant.DestructiveOutline, isLoading = true) {
+                MoshiText("Delete")
             }
             MoshiButton(onClick = {}, isLoading = true) {
                 MoshiText("Save")
