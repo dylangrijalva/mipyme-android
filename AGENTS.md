@@ -29,6 +29,7 @@ All user interfaces must be built with **Moshi**, Mipyme's design system. Moshi 
 - **Theme:** Render all UI inside `MoshiTheme { … }`. It provides the light and dark palettes and follows the system setting by default.
 - **Components:** Use Moshi components (e.g., `MoshiButton`, `MoshiText`) instead of their Material 3 or Foundation equivalents. Do not use Material 3 components directly when a Moshi component exists.
 - **Tokens:** Read colors, typography, and spacing from `Moshi.colors`, `Moshi.typography`, and `Moshi.spacing`. Do not hardcode colors, font sizes, or `dp` values that a Moshi token already covers.
+- **Spacing between elements:** Use `Spacer` (e.g., `Spacer(Modifier.height(spacing.space4))`) to separate sibling composables instead of applying margins through `padding` modifiers on them. Reserve `padding` for a container's inner insets.
 - **Semantic colors:** Prefer semantic tokens (e.g., `background.action.primary`, `foreground.disabled`, `border.interactive`) that match the element's purpose over raw palette values.
 - **Missing components:** If a required component or token does not exist in Moshi, ask before creating it. New components belong in `:core:ui` under `co.mipyme.ui.component`, use the `Moshi` prefix, consume only Moshi tokens, and must be documented in `DESIGN.md`.
 - **Previews:** Wrap previews in `MoshiTheme`. Inside `:core:ui`, annotate component previews with `@MoshiPreview` to render both light and dark themes.
