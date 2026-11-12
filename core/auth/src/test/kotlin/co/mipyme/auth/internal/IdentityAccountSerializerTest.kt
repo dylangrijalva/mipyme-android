@@ -26,7 +26,7 @@ class IdentityAccountSerializerTest {
 
     @Test
     fun `written account is read back unchanged`() = runBlocking {
-        val bytes = write(account)
+        val bytes = write(StoredAccount(account))
 
         val restored = read(bytes)
 
@@ -35,7 +35,7 @@ class IdentityAccountSerializerTest {
 
     @Test
     fun `writing null produces empty file that reads as null`() = runBlocking {
-        val bytes = write(null)
+        val bytes = write(StoredAccount(null))
 
         assertEquals(0, bytes.size)
         assertNull(read(bytes))
@@ -82,13 +82,13 @@ class IdentityAccountSerializerTest {
         assertEquals("user_1", restored?.id)
     }
 
-    private suspend fun write(value: IdentityAccount?): ByteArray {
+    private suspend fun write(value: StoredAccount): ByteArray {
         val output = ByteArrayOutputStream()
         IdentityAccountSerializer.writeTo(value, output)
         return output.toByteArray()
     }
 
     private suspend fun read(bytes: ByteArray): IdentityAccount? {
-        return IdentityAccountSerializer.readFrom(ByteArrayInputStream(bytes))
+        return IdentityAccountSerializer.readFrom(ByteArrayInputStream(bytes)).account
     }
 }
