@@ -216,48 +216,50 @@ Prefer existing main-safe APIs when available, such as the suspending APIs provi
 
 # Planning
 
-When asked to plan a feature, architectural change, or complex implementation:
+For substantial features, architectural changes, complex implementations, or tasks explicitly requesting a plan:
 
 1. Explore the relevant design decisions and their dependencies.
 2. Ask one question at a time and wait for my response before continuing.
 3. Provide your recommended answer with each question.
 4. Resolve factual questions by inspecting the codebase rather than asking me.
-5. Leave architectural and product decisions to me. Present each decision and wait for my answer.
+5. Leave architectural and product decisions to me.
 6. Do not implement until I explicitly approve the plan.
 
-For straightforward implementation tasks, follow established repository conventions. Ask for clarification only when a
-decision cannot be resolved from the codebase or existing instructions.
+For straightforward tasks, bug fixes, refactoring, and small changes:
+
+- Proceed directly using established repository conventions.
+- Do not initiate a planning session or request approval unnecessarily.
+- Ask questions only when an important decision cannot be resolved from existing context.
 
 # Implementation Delegation
 
-Before starting any implementation, always ask me which model should handle it, even for straightforward tasks.
+For substantial implementations requiring an approved plan:
 
-- Detect the current AI vendor and the models available for delegation.
-- Recommend the least expensive model that can reliably implement the task, considering complexity, reasoning
-  requirements, and risk.
-- Prefer lower-cost models for straightforward, well-specified implementations.
-- Recommend a more capable model when complexity or architectural risk justifies it.
-- Briefly explain the recommendation, including any relevant cost/capability trade-offs.
-- Never select the implementation model on my behalf. Wait for my explicit choice.
-- Once selected, delegate implementation to a subagent using that model and provide it with the approved plan, relevant
-  repository context, constraints, and acceptance criteria.
-- If model-specific delegation is unavailable, explain the limitation rather than silently using a different model.
+1. Before implementation, ask which model I want to delegate the work to.
+2. Detect the current AI vendor and available models.
+3. Recommend the cheapest model capable of reliably completing the task based on its complexity and risk.
+4. Briefly explain the recommendation.
+5. Wait for my model selection, then delegate implementation to a subagent using the approved plan.
+
+For straightforward tasks, implement directly without asking me to select a model.
+
+Do not ask for model selection again when fixing issues discovered during review. Reuse the previously selected model.
 
 # Code Review
 
-After every implementation, always spawn a separate code-review subagent before considering the task complete.
+After every implementation, spawn an independent code-review subagent when supported.
 
-- The reviewer must be independent of the implementation subagent.
-- Review the actual changes against the approved plan, requirements, and repository conventions.
-- Check for correctness, bugs, regressions, security issues, edge cases, maintainability, and missing tests.
-- Prioritize actionable findings by severity and include file and line references.
-- Do not modify code during the review. The reviewer should report findings independently.
-- If issues are found, delegate fixes to the implementation agent and request another independent review of the fixes.
-- Repeat until no blocking findings remain, or report unresolved issues explicitly.
-- Summarize the implementation, validation results, review findings, and any remaining risks.
+- Review the actual changes for correctness, bugs, regressions, security vulnerabilities, edge cases, and missing tests.
+- Use a sufficiently capable review model appropriate to the complexity of the changes.
+- Report actionable findings with severity and file references.
+- If issues are found, fix them and run another independent review.
+- Do not interrupt me for routine fixes or review iterations.
+- Escalate only when resolving a finding requires a significant architectural or product decision.
+- Summarize the final changes, validation results, and any unresolved findings.
 
-Never skip the review, even for small changes. If subagent spawning is unavailable, explicitly disclose that the
-required independent review could not be performed.
+For small changes, keep the review lightweight. For substantial implementations, perform a thorough review.
+
+If subagent spawning or model-specific delegation is unavailable, disclose the limitation rather than claiming it occurred.
 
 ### Surgical Changes
 
