@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.size
@@ -30,7 +31,6 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.LinkAnnotation
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextLinkStyles
@@ -97,26 +97,34 @@ fun Module.welcomeScreenModule(): Module {
 internal fun WelcomeScreen(viewModel: WelcomeViewModel = koinViewModel()) {
     val state by viewModel.stateFlow.collectAsStateWithLifecycle()
     val context = LocalContext.current
-    val pendingAction = state.pendingAction
-    val toastText = pendingAction?.let { stringResource(it.labelRes()) }
+    val pendingToastRes = state.pendingToastRes
+    val toastText = pendingToastRes?.let { stringResource(it) }
 
-    LaunchedEffect(pendingAction) {
+    LaunchedEffect(pendingToastRes) {
         if (toastText != null) {
             Toast.makeText(context, toastText, Toast.LENGTH_SHORT).show()
-            viewModel.onIntent(WelcomeIntent.ActionHandled)
+            viewModel.onToastShown()
         }
     }
 
     WelcomeContent(
         state = state,
-        onIntent = viewModel::onIntent,
+        onTermsAcceptedChange = viewModel::onTermsAcceptedChange,
+        onGoogleSignIn = viewModel::onGoogleSignIn,
+        onEmailSignIn = viewModel::onEmailSignIn,
+        onTermsClick = viewModel::onTermsClick,
+        onPrivacyClick = viewModel::onPrivacyClick,
     )
 }
 
 @Composable
 private fun WelcomeContent(
     state: WelcomeScreenUiState,
-    onIntent: (WelcomeIntent) -> Unit,
+    onTermsAcceptedChange: (Boolean) -> Unit,
+    onGoogleSignIn: () -> Unit,
+    onEmailSignIn: () -> Unit,
+    onTermsClick: () -> Unit,
+    onPrivacyClick: () -> Unit,
 ) {
     val spacing = Moshi.spacing
     val pagerState = rememberPagerState(pageCount = { welcomeSlides.size })
@@ -128,6 +136,15 @@ private fun WelcomeContent(
             .safeDrawingPadding()
             .padding(horizontal = spacing.pageGutterNarrow),
     ) {
+        Image(
+            painter = painterResource(R.drawable.logo_lockup),
+            contentDescription = stringResource(R.string.app_name),
+            modifier = Modifier
+                .align(Alignment.CenterHorizontally)
+                .padding(top = spacing.space6)
+                .height(spacing.space8),
+        )
+
         HorizontalPager(
             state = pagerState,
             modifier = Modifier
@@ -147,8 +164,9 @@ private fun WelcomeContent(
 
         TermsRow(
             accepted = state.termsAccepted,
-            onAcceptedChange = { onIntent(WelcomeIntent.TermsToggled(it)) },
-            onLinkClick = { onIntent(WelcomeIntent.ActionSelected(it)) },
+            onAcceptedChange = onTermsAcceptedChange,
+            onTermsClick = onTermsClick,
+            onPrivacyClick = onPrivacyClick,
         )
 
         Column(
@@ -156,7 +174,7 @@ private fun WelcomeContent(
             verticalArrangement = Arrangement.spacedBy(spacing.space3),
         ) {
             MoshiButton(
-                onClick = { onIntent(WelcomeIntent.ActionSelected(WelcomeAction.ContinueWithEmail)) },
+                onClick = onEmailSignIn,
                 modifier = Modifier.fillMaxWidth(),
                 variant = MoshiButtonVariant.Primary,
                 enabled = state.termsAccepted,
@@ -171,7 +189,7 @@ private fun WelcomeContent(
                 MoshiText(text = stringResource(R.string.welcome_continue_with_email))
             }
             MoshiButton(
-                onClick = { onIntent(WelcomeIntent.ActionSelected(WelcomeAction.ContinueWithGoogle)) },
+                onClick = onGoogleSignIn,
                 modifier = Modifier.fillMaxWidth(),
                 variant = MoshiButtonVariant.Outline,
                 enabled = state.termsAccepted,
@@ -230,7 +248,8 @@ private fun WelcomeSlidePage(slide: WelcomeSlide) {
 private fun TermsRow(
     accepted: Boolean,
     onAcceptedChange: (Boolean) -> Unit,
-    onLinkClick: (WelcomeAction) -> Unit,
+    onTermsClick: () -> Unit,
+    onPrivacyClick: () -> Unit,
 ) {
     val linkStyle = TextLinkStyles(
         style = SpanStyle(
@@ -242,14 +261,18 @@ private fun TermsRow(
     val termsLabel = stringResource(R.string.welcome_terms_of_service)
     val privacyLabel = stringResource(R.string.welcome_privacy_policy)
     val template = stringResource(R.string.welcome_terms, "\u0000", "\u0001")
-    val text = remember(template, termsLabel, privacyLabel, linkStyle, onLinkClick) {
+    val text = remember(template, termsLabel, privacyLabel, linkStyle, onTermsClick, onPrivacyClick) {
         val termsIndex = template.indexOf('\u0000')
         val privacyIndex = template.indexOf('\u0001')
         buildAnnotatedString {
             append(template.substring(0, termsIndex))
-            appendLink(termsLabel, linkStyle) { onLinkClick(WelcomeAction.TermsOfService) }
+            withLink(LinkAnnotation.Clickable(tag = termsLabel, styles = linkStyle) { onTermsClick() }) {
+                append(termsLabel)
+            }
             append(template.substring(termsIndex + 1, privacyIndex))
-            appendLink(privacyLabel, linkStyle) { onLinkClick(WelcomeAction.PrivacyPolicy) }
+            withLink(LinkAnnotation.Clickable(tag = privacyLabel, styles = linkStyle) { onPrivacyClick() }) {
+                append(privacyLabel)
+            }
             append(template.substring(privacyIndex + 1))
         }
     }
@@ -268,31 +291,18 @@ private fun TermsRow(
     }
 }
 
-private fun AnnotatedString.Builder.appendLink(
-    label: String,
-    styles: TextLinkStyles,
-    onClick: () -> Unit,
-) {
-    withLink(LinkAnnotation.Clickable(tag = label, styles = styles) { onClick() }) {
-        append(label)
-    }
-}
-
-@StringRes
-private fun WelcomeAction.labelRes(): Int {
-    return when (this) {
-        WelcomeAction.ContinueWithGoogle -> R.string.welcome_continue_with_google
-        WelcomeAction.ContinueWithEmail -> R.string.welcome_continue_with_email
-        WelcomeAction.TermsOfService -> R.string.welcome_terms_of_service
-        WelcomeAction.PrivacyPolicy -> R.string.welcome_privacy_policy
-    }
-}
-
 @ScreenPreview
 @Composable
 fun WelcomeScreenPreview() {
     MoshiTheme {
-        WelcomeContent(state = WelcomeScreenUiState(), onIntent = {})
+        WelcomeContent(
+            state = WelcomeScreenUiState(),
+            onTermsAcceptedChange = {},
+            onGoogleSignIn = {},
+            onEmailSignIn = {},
+            onTermsClick = {},
+            onPrivacyClick = {},
+        )
     }
 }
 
@@ -300,6 +310,13 @@ fun WelcomeScreenPreview() {
 @Composable
 fun WelcomeScreenTermsAcceptedPreview() {
     MoshiTheme {
-        WelcomeContent(state = WelcomeScreenUiState(termsAccepted = true), onIntent = {})
+        WelcomeContent(
+            state = WelcomeScreenUiState(termsAccepted = true),
+            onTermsAcceptedChange = {},
+            onGoogleSignIn = {},
+            onEmailSignIn = {},
+            onTermsClick = {},
+            onPrivacyClick = {},
+        )
     }
 }
