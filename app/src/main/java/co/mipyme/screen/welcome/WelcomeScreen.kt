@@ -39,6 +39,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withLink
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import co.mipyme.R
 import co.mipyme.navigation.Route
@@ -142,7 +143,7 @@ private fun WelcomeContent(
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
                 .padding(top = spacing.space6)
-                .height(spacing.space10 + spacing.space8),
+                .height(56.dp),
         )
 
         HorizontalPager(
