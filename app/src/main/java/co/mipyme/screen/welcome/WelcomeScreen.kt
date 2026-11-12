@@ -142,7 +142,7 @@ private fun WelcomeContent(
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
                 .padding(top = spacing.space6)
-                .height(spacing.space8),
+                .height(spacing.space10 + spacing.space8),
         )
 
         HorizontalPager(
