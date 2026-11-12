@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="auth_error_unknown">Algo salió mal. Inténtalo de nuevo.</string>
+    <string name="auth_error_invalid_email">Ingresa un correo electrónico válido.</string>
+    <string name="auth_error_invalid_otp_code">El código es incorrecto. Revísalo e inténtalo de nuevo.</string>
+    <string name="auth_error_otp_code_expired">Este código venció. Solicita uno nuevo.</string>
+    <string name="auth_error_user_locked">Esta cuenta está bloqueada temporalmente. Inténtalo más tarde.</string>
+    <string name="auth_error_user_banned">Esta cuenta no se puede usar. Comunícate con soporte.</string>
+    <string name="auth_error_max_otp_attempts">Demasiados intentos incorrectos. Solicita un código nuevo.</string>
+    <string name="auth_error_otp_resend_rate_limited">Espera un momento antes de solicitar otro código.</string>
+    <string name="auth_error_missing_otp_challenge">Tu inicio de sesión terminó. Empieza de nuevo.</string>
+    <string name="auth_error_network">Sin conexión a internet. Revisa tu conexión e inténtalo de nuevo.</string>
+    <string name="auth_error_not_authenticated">Inicia sesión para continuar.</string>
+</resources>
