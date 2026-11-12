@@ -86,9 +86,7 @@ internal class ClerkAuthService(
             }
             Unit.right()
         }
-        if (reset.isLeft()) {
-            return reset.map { SignInAttempt.Completed }
-        }
+        reset.onLeft { error -> return error.left() }
         val result = when (strategy) {
             is SignInStrategy.EmailCode -> signInWithEmailCode(strategy.email)
             SignInStrategy.Google -> signInWithGoogle()
