@@ -64,6 +64,7 @@ kotlin {
 dependencies {
     implementation(project(":core:contract"))
     implementation(project(":core:ui"))
+    implementation(project(":core:auth"))
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.core.splashscreen)
