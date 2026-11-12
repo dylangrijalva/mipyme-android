@@ -25,7 +25,7 @@ class IdentityAccountSerializerTest {
     )
 
     @Test
-    fun written_account_is_read_back_unchanged() = runBlocking {
+    fun `written account is read back unchanged`() = runBlocking {
         val bytes = write(account)
 
         val restored = read(bytes)
@@ -34,7 +34,7 @@ class IdentityAccountSerializerTest {
     }
 
     @Test
-    fun writing_null_produces_empty_file_that_reads_as_null() = runBlocking {
+    fun `writing null produces empty file that reads as null`() = runBlocking {
         val bytes = write(null)
 
         assertEquals(0, bytes.size)
@@ -42,26 +42,26 @@ class IdentityAccountSerializerTest {
     }
 
     @Test
-    fun empty_input_reads_as_null() = runBlocking {
+    fun `empty input reads as null`() = runBlocking {
         assertNull(read(ByteArray(0)))
     }
 
     @Test
-    fun corrupted_input_reads_as_null() = runBlocking {
+    fun `corrupted input reads as null`() = runBlocking {
         val corrupted = "{ this is not json".encodeToByteArray()
 
         assertNull(read(corrupted))
     }
 
     @Test
-    fun json_missing_required_fields_reads_as_null() = runBlocking {
+    fun `json missing required fields reads as null`() = runBlocking {
         val incomplete = """{"id":"user_1"}""".encodeToByteArray()
 
         assertNull(read(incomplete))
     }
 
     @Test
-    fun unrecognised_account_type_reads_as_null_instead_of_crashing() = runBlocking {
+    fun `unrecognised account type reads as null instead of crashing`() = runBlocking {
         val invalidType = """
             {"id":"user_1","name":"Ana","email":null,"pictureUrl":"",
              "publicMetadata":{"type":"superadmin"}}
@@ -71,7 +71,7 @@ class IdentityAccountSerializerTest {
     }
 
     @Test
-    fun unknown_fields_are_ignored() = runBlocking {
+    fun `unknown fields are ignored`() = runBlocking {
         val withExtra = """
             {"id":"user_1","name":"Ana","email":null,"pictureUrl":"",
              "publicMetadata":{},"futureField":42}

@@ -31,7 +31,7 @@ class AccountCacheTest {
     )
 
     @Test
-    fun starts_initializing_then_reflects_the_stored_account() = runBlocking {
+    fun `starts initializing then reflects the stored account`() = runBlocking {
         val cache = AccountCache(InMemoryDataStore(account))
 
         val states = cache.authStateFlow.take(2).toList()
@@ -41,7 +41,7 @@ class AccountCacheTest {
     }
 
     @Test
-    fun stays_initializing_until_loaded_even_when_blocked() = runBlocking {
+    fun `stays initializing until loaded even when blocked`() = runBlocking {
         val cache = AccountCache(InMemoryDataStore(account))
         cache.markBlocked()
 
@@ -51,7 +51,7 @@ class AccountCacheTest {
     }
 
     @Test
-    fun blocked_takes_precedence_over_stored_account() = runBlocking {
+    fun `blocked takes precedence over stored account`() = runBlocking {
         val cache = AccountCache(InMemoryDataStore(account))
 
         cache.markBlocked()
@@ -60,7 +60,7 @@ class AccountCacheTest {
     }
 
     @Test
-    fun stored_account_takes_precedence_over_session_expired() = runBlocking {
+    fun `stored account takes precedence over session expired`() = runBlocking {
         val dataStore = InMemoryDataStore(account)
         val cache = AccountCache(dataStore)
         cache.clearAsExpired()
@@ -71,7 +71,7 @@ class AccountCacheTest {
     }
 
     @Test
-    fun saves_account_while_its_session_is_active() = runBlocking {
+    fun `saves account while its session is active`() = runBlocking {
         val dataStore = InMemoryDataStore(null)
         val cache = AccountCache(dataStore)
 
@@ -83,7 +83,7 @@ class AccountCacheTest {
     }
 
     @Test
-    fun does_not_resurrect_account_when_session_ended_during_fetch() = runBlocking {
+    fun `does not resurrect account when session ended during fetch`() = runBlocking {
         val dataStore = InMemoryDataStore(null)
         val cache = AccountCache(dataStore)
 
@@ -94,7 +94,7 @@ class AccountCacheTest {
     }
 
     @Test
-    fun clearing_as_expired_reports_session_expired() = runBlocking {
+    fun `clearing as expired reports session expired`() = runBlocking {
         val dataStore = InMemoryDataStore(account)
         val cache = AccountCache(dataStore)
 
@@ -105,7 +105,7 @@ class AccountCacheTest {
     }
 
     @Test
-    fun clearing_as_expired_without_account_stays_unauthenticated() = runBlocking {
+    fun `clearing as expired without account stays unauthenticated`() = runBlocking {
         val cache = AccountCache(InMemoryDataStore(null))
 
         cache.clearAsExpired()
@@ -114,7 +114,7 @@ class AccountCacheTest {
     }
 
     @Test
-    fun deliberate_sign_out_followed_by_session_end_is_not_reported_as_expired() = runBlocking {
+    fun `deliberate sign out followed by session end is not reported as expired`() = runBlocking {
         val dataStore = InMemoryDataStore(account)
         val cache = AccountCache(dataStore)
 
@@ -126,7 +126,7 @@ class AccountCacheTest {
     }
 
     @Test
-    fun failed_sign_out_keeps_the_account() = runBlocking {
+    fun `failed sign out keeps the account`() = runBlocking {
         val dataStore = InMemoryDataStore(account)
         val cache = AccountCache(dataStore)
 
@@ -138,7 +138,7 @@ class AccountCacheTest {
     }
 
     @Test
-    fun blocked_wins_until_cleared_by_a_new_attempt() = runBlocking {
+    fun `blocked wins until cleared by a new attempt`() = runBlocking {
         val cache = AccountCache(InMemoryDataStore(null))
 
         cache.markBlocked()
@@ -150,7 +150,7 @@ class AccountCacheTest {
     }
 
     @Test
-    fun new_attempt_after_expiry_clears_session_expired() = runBlocking {
+    fun `new attempt after expiry clears session expired`() = runBlocking {
         val cache = AccountCache(InMemoryDataStore(account))
         cache.clearAsExpired()
 
@@ -160,7 +160,7 @@ class AccountCacheTest {
     }
 
     @Test
-    fun saving_an_active_session_clears_expired_and_blocked_flags() = runBlocking {
+    fun `saving an active session clears expired and blocked flags`() = runBlocking {
         val cache = AccountCache(InMemoryDataStore(account))
         cache.clearAsExpired()
         cache.markBlocked()
@@ -171,7 +171,7 @@ class AccountCacheTest {
     }
 
     @Test
-    fun write_failure_is_returned_as_error_instead_of_thrown() = runBlocking {
+    fun `write failure is returned as error instead of thrown`() = runBlocking {
         val cache = AccountCache(FailingDataStore())
 
         val saved = cache.saveIfSessionStillActive(account) { true }
@@ -182,7 +182,7 @@ class AccountCacheTest {
     }
 
     @Test
-    fun read_failure_settles_as_unauthenticated_instead_of_crashing() = runBlocking {
+    fun `read failure settles as unauthenticated instead of crashing`() = runBlocking {
         val cache = AccountCache(FailingDataStore())
 
         assertEquals(AuthState.Unauthenticated, cache.settledState())

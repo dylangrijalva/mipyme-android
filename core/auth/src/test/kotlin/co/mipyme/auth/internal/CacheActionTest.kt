@@ -6,7 +6,7 @@ import org.junit.Test
 class CacheActionTest {
 
     @Test
-    fun not_initialized_is_never_authoritative() {
+    fun `not initialized is never authoritative`() {
         val action = decideCacheAction(
             isInitialized = false,
             sessionState = null,
@@ -17,7 +17,7 @@ class CacheActionTest {
     }
 
     @Test
-    fun not_initialized_with_active_session_does_not_update_cache() {
+    fun `not initialized with active session does not update cache`() {
         val action = decideCacheAction(
             isInitialized = false,
             sessionState = SessionState.ACTIVE,
@@ -28,7 +28,7 @@ class CacheActionTest {
     }
 
     @Test
-    fun active_session_updates_cache_from_session() {
+    fun `active session updates cache from session`() {
         val action = decideCacheAction(
             isInitialized = true,
             sessionState = SessionState.ACTIVE,
@@ -39,7 +39,7 @@ class CacheActionTest {
     }
 
     @Test
-    fun pending_session_leaves_cache_untouched() {
+    fun `pending session leaves cache untouched`() {
         val action = decideCacheAction(
             isInitialized = true,
             sessionState = SessionState.PENDING,
@@ -50,7 +50,7 @@ class CacheActionTest {
     }
 
     @Test
-    fun unknown_session_leaves_cache_untouched() {
+    fun `unknown session leaves cache untouched`() {
         val action = decideCacheAction(
             isInitialized = true,
             sessionState = SessionState.UNKNOWN,
@@ -61,7 +61,7 @@ class CacheActionTest {
     }
 
     @Test
-    fun missing_session_with_cached_account_clears_as_expired() {
+    fun `missing session with cached account clears as expired`() {
         val action = decideCacheAction(
             isInitialized = true,
             sessionState = null,
@@ -72,7 +72,7 @@ class CacheActionTest {
     }
 
     @Test
-    fun missing_session_without_cached_account_does_nothing() {
+    fun `missing session without cached account does nothing`() {
         val action = decideCacheAction(
             isInitialized = true,
             sessionState = null,
@@ -83,7 +83,7 @@ class CacheActionTest {
     }
 
     @Test
-    fun ended_expired_and_revoked_sessions_with_cached_account_clear_as_expired() {
+    fun `ended expired and revoked sessions with cached account clear as expired`() {
         val terminalStates = listOf(
             SessionState.ABANDONED,
             SessionState.ENDED,

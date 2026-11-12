@@ -7,7 +7,7 @@ import org.junit.Test
 class OtpCooldownTest {
 
     @Test
-    fun same_email_during_cooldown_is_blocked() {
+    fun `same email during cooldown is blocked`() {
         val blocking = isOtpCooldownBlocking(
             secondsRemaining = 30,
             cooldownEmail = "ana@example.com",
@@ -18,7 +18,7 @@ class OtpCooldownTest {
     }
 
     @Test
-    fun same_email_with_different_case_or_spacing_is_blocked() {
+    fun `same email with different case or spacing is blocked`() {
         val blocking = isOtpCooldownBlocking(
             secondsRemaining = 30,
             cooldownEmail = "ana@example.com",
@@ -29,7 +29,7 @@ class OtpCooldownTest {
     }
 
     @Test
-    fun corrected_email_during_cooldown_is_allowed() {
+    fun `corrected email during cooldown is allowed`() {
         val blocking = isOtpCooldownBlocking(
             secondsRemaining = 30,
             cooldownEmail = "ana@exmaple.com",
@@ -40,7 +40,7 @@ class OtpCooldownTest {
     }
 
     @Test
-    fun same_email_after_cooldown_is_allowed() {
+    fun `same email after cooldown is allowed`() {
         val blocking = isOtpCooldownBlocking(
             secondsRemaining = 0,
             cooldownEmail = "ana@example.com",

@@ -7,14 +7,14 @@ import org.junit.Test
 class AuthErrorMappingTest {
 
     @Test
-    fun network_failure_wins_over_error_code() {
+    fun `network failure wins over error code`() {
         val error = mapAuthErrorCode(code = "user_locked", isNetworkFailure = true)
 
         assertEquals(AuthError.Network, error)
     }
 
     @Test
-    fun identifier_not_found_maps_to_invalid_email() {
+    fun `identifier not found maps to invalid email`() {
         assertEquals(
             AuthError.InvalidEmail,
             mapAuthErrorCode(code = "form_identifier_not_found", isNetworkFailure = false),
@@ -22,7 +22,7 @@ class AuthErrorMappingTest {
     }
 
     @Test
-    fun format_invalid_maps_to_invalid_email() {
+    fun `format invalid maps to invalid email`() {
         assertEquals(
             AuthError.InvalidEmail,
             mapAuthErrorCode(code = "form_param_format_invalid", isNetworkFailure = false),
@@ -30,7 +30,7 @@ class AuthErrorMappingTest {
     }
 
     @Test
-    fun incorrect_code_and_lockout_warning_map_to_invalid_otp_code() {
+    fun `incorrect code and lockout warning map to invalid otp code`() {
         assertEquals(
             AuthError.InvalidOtpCode,
             mapAuthErrorCode(code = "form_code_incorrect", isNetworkFailure = false),
@@ -42,7 +42,7 @@ class AuthErrorMappingTest {
     }
 
     @Test
-    fun expired_verification_maps_to_otp_code_expired() {
+    fun `expired verification maps to otp code expired`() {
         assertEquals(
             AuthError.OtpCodeExpired,
             mapAuthErrorCode(code = "verification_expired", isNetworkFailure = false),
@@ -50,7 +50,7 @@ class AuthErrorMappingTest {
     }
 
     @Test
-    fun failed_verification_maps_to_max_attempts_reached() {
+    fun `failed verification maps to max attempts reached`() {
         assertEquals(
             AuthError.MaxOtpVerificationAttemptsReached,
             mapAuthErrorCode(code = "verification_failed", isNetworkFailure = false),
@@ -58,7 +58,7 @@ class AuthErrorMappingTest {
     }
 
     @Test
-    fun locked_and_banned_users_map_to_their_errors() {
+    fun `locked and banned users map to their errors`() {
         assertEquals(
             AuthError.UserLocked,
             mapAuthErrorCode(code = "user_locked", isNetworkFailure = false),
@@ -70,7 +70,7 @@ class AuthErrorMappingTest {
     }
 
     @Test
-    fun too_many_code_requests_map_to_resend_rate_limited() {
+    fun `too many code requests map to resend rate limited`() {
         assertEquals(
             AuthError.OtpResendRateLimited,
             mapAuthErrorCode(code = "verification_code_too_many_requests", isNetworkFailure = false),
@@ -78,7 +78,7 @@ class AuthErrorMappingTest {
     }
 
     @Test
-    fun unrecognised_code_maps_to_unknown() {
+    fun `unrecognised code maps to unknown`() {
         val error = mapAuthErrorCode(code = "something_new", isNetworkFailure = false)
 
         assertEquals(
@@ -88,7 +88,7 @@ class AuthErrorMappingTest {
     }
 
     @Test
-    fun missing_code_maps_to_unknown() {
+    fun `missing code maps to unknown`() {
         val error = mapAuthErrorCode(code = null, isNetworkFailure = false)
 
         assertEquals(

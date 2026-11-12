@@ -13,7 +13,7 @@ import org.junit.Test
 class IdentityAccountMappingTest {
 
     @Test
-    fun name_joins_first_and_last_name_with_a_space() {
+    fun `name joins first and last name with a space`() {
         val account = identityAccountOf(
             id = "user_1",
             email = "ana@example.com",
@@ -27,7 +27,7 @@ class IdentityAccountMappingTest {
     }
 
     @Test
-    fun name_uses_only_the_present_part_when_one_name_is_missing() {
+    fun `name uses only the present part when one name is missing`() {
         val account = identityAccountOf(
             id = "user_1",
             email = null,
@@ -41,7 +41,7 @@ class IdentityAccountMappingTest {
     }
 
     @Test
-    fun name_is_empty_when_both_names_are_missing() {
+    fun `name is empty when both names are missing`() {
         val account = identityAccountOf(
             id = "user_1",
             email = null,
@@ -55,7 +55,7 @@ class IdentityAccountMappingTest {
     }
 
     @Test
-    fun email_and_picture_are_passed_through() {
+    fun `email and picture are passed through`() {
         val account = identityAccountOf(
             id = "user_1",
             email = "ana@example.com",
@@ -70,7 +70,7 @@ class IdentityAccountMappingTest {
     }
 
     @Test
-    fun snake_case_metadata_maps_to_identity_public_metadata() {
+    fun `snake case metadata maps to identity public metadata`() {
         val account = identityAccountOf(
             id = "user_1",
             email = null,
@@ -95,19 +95,19 @@ class IdentityAccountMappingTest {
     }
 
     @Test
-    fun account_type_values_map_to_account_types() {
+    fun `account type values map to account types`() {
         assertEquals(AccountType.OWNER, accountTypeFrom("owner"))
         assertEquals(AccountType.STAFF, accountTypeFrom("staff"))
         assertEquals(AccountType.INTERNAL, accountTypeFrom("internal"))
     }
 
     @Test
-    fun unknown_account_type_maps_to_null() {
+    fun `unknown account type maps to null`() {
         assertNull(accountTypeFrom("superuser"))
     }
 
     @Test
-    fun missing_metadata_keys_map_to_null_fields() {
+    fun `missing metadata keys map to null fields`() {
         val account = identityAccountOf(
             id = "user_1",
             email = null,
@@ -121,7 +121,7 @@ class IdentityAccountMappingTest {
     }
 
     @Test
-    fun null_and_non_primitive_metadata_values_map_to_null_fields() {
+    fun `null and non primitive metadata values map to null fields`() {
         val nonPrimitive: JsonElement = JsonArray(listOf(JsonPrimitive("merchant_1")))
         val account = identityAccountOf(
             id = "user_1",
