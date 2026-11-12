@@ -1,7 +1,7 @@
 <p align="center">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="assets/logo/lockup/mipyme-lockup-color-dark.svg">
-    <img src="assets/logo/lockup/mipyme-lockup-color.svg" alt="Mipyme" width="320">
+    <source media="(prefers-color-scheme: dark)" srcset="assets/readme/banner-dark.svg">
+    <img src="assets/readme/banner-light.svg" alt="Mipyme" width="100%">
   </picture>
 </p>
 
