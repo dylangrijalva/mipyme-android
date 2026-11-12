@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="splash_background">#131419</color>
+    <color name="splash_logo_left_arch">@color/logo_white</color>
+    <color name="splash_logo_pillar">@color/logo_blue</color>
+    <color name="splash_wordmark">@color/logo_white</color>
+</resources>
