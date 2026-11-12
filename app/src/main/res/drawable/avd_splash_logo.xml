@@ -26,7 +26,7 @@
                         android:pathData="M16,100V31H38A22,22 0 0 1 60,53V100"
                         android:strokeColor="@color/splash_logo_left_arch"
                         android:strokeLineJoin="miter"
-                        android:strokeWidth="24"
+                        android:strokeWidth="30"
                         android:trimPathEnd="0" />
                 </group>
                 <group>
