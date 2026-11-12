@@ -55,6 +55,8 @@ All user interfaces must be built with **Moshi**, Mipyme's design system. Moshi 
 
 Every screen must be backed by a `ViewModel`, either screen-specific or shared within a workflow.
 
+Every screen must declare its `@Preview` composable in the same file as the screen. Annotate it with `@ScreenPreview` (`co.mipyme.preview`), which renders light and dark themes with system UI. Previews render the stateless screen content directly, without a `ViewModel` or Koin, and are wrapped in `MoshiTheme`.
+
 - A screen-specific `ViewModel` owns that screen's presentation logic and UI state.
 - A `ViewModel` must never directly depend on another `ViewModel`.
 - Multiple screens may share a `ViewModel` only when they form a single presentation unit.
