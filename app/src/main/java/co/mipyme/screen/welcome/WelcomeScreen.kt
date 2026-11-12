@@ -3,10 +3,10 @@ package co.mipyme.screen.welcome
 import android.widget.Toast
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
@@ -17,7 +17,6 @@ import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.runtime.Composable
@@ -27,6 +26,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -39,7 +39,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withLink
-import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import co.mipyme.R
 import co.mipyme.navigation.Route
@@ -57,6 +56,8 @@ import org.koin.core.module.Module
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.navigation3.navigation
 
+private const val ILLUSTRATION_ASPECT_RATIO = 4f / 3f
+
 private data class WelcomeSlide(
     @param:DrawableRes val imageRes: Int,
     @param:StringRes val titleRes: Int,
@@ -65,19 +66,24 @@ private data class WelcomeSlide(
 
 private val welcomeSlides = listOf(
     WelcomeSlide(
-        imageRes = R.drawable.ic_fluent_image_24_regular,
+        imageRes = R.drawable.illustration_welcome_sell,
         titleRes = R.string.welcome_slide_sell_title,
         bodyRes = R.string.welcome_slide_sell_body,
     ),
     WelcomeSlide(
-        imageRes = R.drawable.ic_fluent_image_24_regular,
+        imageRes = R.drawable.illustration_welcome_stock,
         titleRes = R.string.welcome_slide_stock_title,
         bodyRes = R.string.welcome_slide_stock_body,
     ),
     WelcomeSlide(
-        imageRes = R.drawable.ic_fluent_image_24_regular,
+        imageRes = R.drawable.illustration_welcome_offline,
         titleRes = R.string.welcome_slide_offline_title,
         bodyRes = R.string.welcome_slide_offline_body,
+    ),
+    WelcomeSlide(
+        imageRes = R.drawable.illustration_welcome_trial,
+        titleRes = R.string.welcome_slide_trial_title,
+        bodyRes = R.string.welcome_slide_trial_body,
     ),
 )
 
@@ -192,28 +198,20 @@ private fun WelcomeSlidePage(slide: WelcomeSlide) {
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
     ) {
-        Box(
+        Image(
+            painter = painterResource(slide.imageRes),
+            contentDescription = null,
             modifier = Modifier
-                .align(Alignment.CenterHorizontally)
-                .fillMaxWidth(0.3f)
-                .aspectRatio(1f, matchHeightConstraintsFirst = true)
                 .weight(1f, fill = false)
-                .background(Moshi.colors.background.surface, RoundedCornerShape(24.dp)),
-            contentAlignment = Alignment.Center,
-        ) {
-            Icon(
-                painter = painterResource(slide.imageRes),
-                contentDescription = null,
-                modifier = Modifier.size(spacing.space8),
-                tint = Moshi.colors.foreground.tertiary,
-            )
-        }
+                .aspectRatio(ILLUSTRATION_ASPECT_RATIO),
+            contentScale = ContentScale.Fit,
+        )
         MoshiText(
             text = stringResource(slide.titleRes),
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = spacing.space8),
-            role = MoshiTextRole.Display,
+                .padding(top = spacing.space6),
+            role = MoshiTextRole.Heading,
             textAlign = TextAlign.Center,
         )
         MoshiText(

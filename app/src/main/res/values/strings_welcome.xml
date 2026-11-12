@@ -1,10 +1,12 @@
 <resources>
-    <string name="welcome_slide_sell_title">Sell in seconds, right from your phone</string>
-    <string name="welcome_slide_sell_body">Ring up sales, accept any payment method and keep every receipt in one place.</string>
-    <string name="welcome_slide_stock_title">Always know what\'s in stock</string>
-    <string name="welcome_slide_stock_body">Inventory updates as you sell, so you can restock before you lose a sale.</string>
-    <string name="welcome_slide_offline_title">Keep selling, even offline</string>
-    <string name="welcome_slide_offline_body">No internet? No problem. Sales are saved and sync on their own when you\'re back online.</string>
+    <string name="welcome_slide_sell_title">Sell from your phone in seconds</string>
+    <string name="welcome_slide_sell_body">Add products, take payment and you\'re done. No training, no manuals.</string>
+    <string name="welcome_slide_stock_title">Never run out of what sells</string>
+    <string name="welcome_slide_stock_body">Stock updates with every sale, so you know when it\'s time to restock.</string>
+    <string name="welcome_slide_offline_title">No internet? Keep selling</string>
+    <string name="welcome_slide_offline_body">Sales are saved on your phone and sync on their own when you\'re back online.</string>
+    <string name="welcome_slide_trial_title">Try it free for 14 days</string>
+    <string name="welcome_slide_trial_body">No credit card needed. Pick a plan only if Mipyme works for your business.</string>
     <string name="welcome_terms">I accept the %1$s and %2$s to continue.</string>
     <string name="welcome_terms_of_service">Terms of Service</string>
     <string name="welcome_privacy_policy">Privacy Policy</string>
