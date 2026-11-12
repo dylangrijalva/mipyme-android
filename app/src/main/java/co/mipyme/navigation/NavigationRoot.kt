@@ -1,21 +1,17 @@
 package co.mipyme.navigation
 
 import androidx.compose.runtime.Composable
-import androidx.navigation3.runtime.entryProvider
+import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.ui.NavDisplay
-import co.mipyme.screen.HomeScreen
-import co.mipyme.screen.WelcomeScreen
+import org.koin.compose.navigation3.koinEntryProvider
 
 @Composable
-fun NavigationRoot() {
-    val backStack = rememberNavBackStack(Route.Welcome)
+fun NavigationRoot(startRoute: Route) {
+    val backStack = rememberNavBackStack(startRoute)
 
     NavDisplay(
         backStack = backStack,
-        entryProvider = entryProvider {
-            entry<Route.Welcome> { WelcomeScreen() }
-            entry<Route.Home> { HomeScreen() }
-        }
+        entryProvider = koinEntryProvider<NavKey>(),
     )
 }

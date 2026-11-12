@@ -1,0 +1,13 @@
+<resources>
+    <string name="welcome_slide_sell_title">Vende en segundos, desde tu celular</string>
+    <string name="welcome_slide_sell_body">Registra ventas, acepta cualquier método de pago y guarda cada recibo en un solo lugar.</string>
+    <string name="welcome_slide_stock_title">Sabe siempre qué tienes en stock</string>
+    <string name="welcome_slide_stock_body">El inventario se actualiza con cada venta, para que repongas antes de perder una venta.</string>
+    <string name="welcome_slide_offline_title">Sigue vendiendo, incluso sin internet</string>
+    <string name="welcome_slide_offline_body">¿Sin conexión? No hay problema. Las ventas se guardan y se sincronizan solas cuando vuelvas a estar en línea.</string>
+    <string name="welcome_terms">Acepto los %1$s y la %2$s para continuar.</string>
+    <string name="welcome_terms_of_service">Términos de Servicio</string>
+    <string name="welcome_privacy_policy">Política de Privacidad</string>
+    <string name="welcome_continue_with_google">Continuar con Google</string>
+    <string name="welcome_continue_with_email">Continuar con correo</string>
+</resources>

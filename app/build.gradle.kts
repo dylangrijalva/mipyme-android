@@ -55,6 +55,12 @@ android {
     }
 }
 
+kotlin {
+    compilerOptions {
+        optIn.add("org.koin.core.annotation.KoinExperimentalAPI")
+    }
+}
+
 dependencies {
     implementation(project(":core:contract"))
     implementation(project(":core:ui"))
@@ -73,6 +79,9 @@ dependencies {
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.androidx.startup.runtime)
     implementation(libs.koin.android)
+    implementation(libs.koin.androidx.compose)
+    implementation(libs.koin.compose.navigation3)
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
 
     coreLibraryDesugaring(libs.desugar.jdk.libs)
 
