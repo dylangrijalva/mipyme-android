@@ -62,3 +62,24 @@ spinner. Hide the label and side content from accessibility services while
 exposing progress through the button's accessibility semantics.
 
 Use native button interaction and ripple feedback.
+
+### MoshiCheckbox
+
+Use for a single opt-in choice, such as accepting terms. The control is a 20 dp
+circle inside a 48 × 48 dp touch target. Checked uses `background.action.primary.default`
+with `foreground.onAction.primary` for the check; unchecked uses a `border.interactive`
+outline; disabled uses `background.disabled` and `border.default`.
+
+`MoshiCheckbox` renders only the box and exposes `Role.Checkbox`. Place the label beside it
+in a `Row` so the label can contain its own links.
+
+### MoshiPageIndicator
+
+Use below a paged surface to show position. The current page is a 24 × 8 dp pill in
+`foreground.primary`; other pages are 8 dp dots in `border.strong`. The indicator is a single
+accessibility node announcing "Page x of y". It is not interactive.
+
+### MoshiText with `AnnotatedString`
+
+An `AnnotatedString` overload of `MoshiText` supports inline styled spans and links.
+Style links with `foreground.link` and an underline.

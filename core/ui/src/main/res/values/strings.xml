@@ -1,3 +1,4 @@
 <resources>
     <string name="moshi_button_loading">Loading</string>
+    <string name="moshi_page_indicator">Page %1$d of %2$d</string>
 </resources>

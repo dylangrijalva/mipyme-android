@@ -5,10 +5,13 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.takeOrElse
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import co.mipyme.ui.Moshi
@@ -29,6 +32,21 @@ internal val LocalMoshiTextRole = staticCompositionLocalOf { MoshiTextRole.Body 
 internal val LocalMoshiTextColor = staticCompositionLocalOf { Color.Unspecified }
 
 @Composable
+@ReadOnlyComposable
+private fun MoshiTextRole.style(): TextStyle {
+    val typography = Moshi.typography
+
+    return when (this) {
+        MoshiTextRole.Caption -> typography.caption
+        MoshiTextRole.Small -> typography.small
+        MoshiTextRole.Body -> typography.body
+        MoshiTextRole.Subheading -> typography.subheading
+        MoshiTextRole.Heading -> typography.heading
+        MoshiTextRole.Display -> typography.display
+    }
+}
+
+@Composable
 fun MoshiText(
     text: String,
     modifier: Modifier = Modifier,
@@ -38,16 +56,6 @@ fun MoshiText(
     maxLines: Int = Int.MAX_VALUE,
     overflow: TextOverflow = TextOverflow.Clip,
 ) {
-    val typography = Moshi.typography
-    val style = when (role) {
-        MoshiTextRole.Caption -> typography.caption
-        MoshiTextRole.Small -> typography.small
-        MoshiTextRole.Body -> typography.body
-        MoshiTextRole.Subheading -> typography.subheading
-        MoshiTextRole.Heading -> typography.heading
-        MoshiTextRole.Display -> typography.display
-    }
-
     Text(
         text = text,
         modifier = modifier,
@@ -55,7 +63,28 @@ fun MoshiText(
         textAlign = textAlign,
         maxLines = maxLines,
         overflow = overflow,
-        style = style,
+        style = role.style(),
+    )
+}
+
+@Composable
+fun MoshiText(
+    text: AnnotatedString,
+    modifier: Modifier = Modifier,
+    role: MoshiTextRole = LocalMoshiTextRole.current,
+    color: Color = LocalMoshiTextColor.current.takeOrElse { MoshiColors.TextPrimary },
+    textAlign: TextAlign = TextAlign.Start,
+    maxLines: Int = Int.MAX_VALUE,
+    overflow: TextOverflow = TextOverflow.Clip,
+) {
+    Text(
+        text = text,
+        modifier = modifier,
+        color = color,
+        textAlign = textAlign,
+        maxLines = maxLines,
+        overflow = overflow,
+        style = role.style(),
     )
 }
 
