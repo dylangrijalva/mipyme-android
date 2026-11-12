@@ -3,6 +3,9 @@ package co.mipyme.screen.welcome
 import android.widget.Toast
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -41,6 +44,7 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withLink
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation3.ui.NavDisplay
 import co.mipyme.R
 import co.mipyme.navigation.Route
 import co.mipyme.preview.ScreenPreview
@@ -90,7 +94,12 @@ private val welcomeSlides = listOf(
 
 fun Module.welcomeScreenModule(): Module {
     viewModelOf(::WelcomeViewModel)
-    navigation<Route.Welcome> { WelcomeScreen() }
+    navigation<Route.Welcome>(
+        metadata = NavDisplay.transitionSpec {
+            slideInHorizontally(initialOffsetX = { -it }) togetherWith
+                slideOutHorizontally(targetOffsetX = { it })
+        },
+    ) { WelcomeScreen() }
     return this
 }
 
@@ -178,7 +187,7 @@ private fun WelcomeContent(
                 onClick = onEmailSignIn,
                 modifier = Modifier.fillMaxWidth(),
                 variant = MoshiButtonVariant.Primary,
-                enabled = state.termsAccepted,
+                enabled = state.termsAccepted && !state.isSigningIn,
                 leadingContent = {
                     Icon(
                         painter = painterResource(R.drawable.ic_fluent_mail_24_regular),
@@ -194,6 +203,7 @@ private fun WelcomeContent(
                 modifier = Modifier.fillMaxWidth(),
                 variant = MoshiButtonVariant.Outline,
                 enabled = state.termsAccepted,
+                isLoading = state.isSigningIn,
                 leadingContent = {
                     Icon(
                         painter = painterResource(R.drawable.ic_google_logo),
@@ -313,6 +323,21 @@ fun WelcomeScreenTermsAcceptedPreview() {
     MoshiTheme {
         WelcomeContent(
             state = WelcomeScreenUiState(termsAccepted = true),
+            onTermsAcceptedChange = {},
+            onGoogleSignIn = {},
+            onEmailSignIn = {},
+            onTermsClick = {},
+            onPrivacyClick = {},
+        )
+    }
+}
+
+@ScreenPreview
+@Composable
+fun WelcomeScreenSigningInPreview() {
+    MoshiTheme {
+        WelcomeContent(
+            state = WelcomeScreenUiState(termsAccepted = true, isSigningIn = true),
             onTermsAcceptedChange = {},
             onGoogleSignIn = {},
             onEmailSignIn = {},
