@@ -4,6 +4,7 @@ import android.widget.Toast
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -259,8 +260,12 @@ private fun TermsRow(
         MoshiCheckbox(checked = accepted, onCheckedChange = onAcceptedChange)
         MoshiText(
             text = text,
+            modifier = Modifier
+                .weight(1f)
+                .clickable { onAcceptedChange(!accepted) },
             role = MoshiTextRole.Small,
             color = Moshi.colors.foreground.secondary,
+            textAlign = TextAlign.Start,
         )
     }
 }
