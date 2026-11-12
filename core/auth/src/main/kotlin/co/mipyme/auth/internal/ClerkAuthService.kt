@@ -42,6 +42,7 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 private const val OTP_COOLDOWN_SECONDS = 60
 private const val ONE_SECOND_MILLIS = 1_000L
@@ -397,5 +398,16 @@ private fun ClerkResult.Failure<ClerkErrorResponse>.toAuthError(
     val isIoFailure = errorType == ClerkResult.Failure.ErrorType.UNKNOWN && throwable is IOException
     val hasNoDetails = error?.errors.isNullOrEmpty()
     val isNetworkFailure = isIoFailure || (missingDetailsMeansNetwork && hasNoDetails)
-    return mapAuthErrorCode(code = errorCode(), isNetworkFailure = isNetworkFailure)
+    return mapAuthErrorCode(code = errorCode(), isNetworkFailure = isNetworkFailure).also { authError ->
+        if (authError is AuthError.Unknown) {
+            Timber.e(
+                throwable,
+                "Unmapped auth provider failure: type=%s code=%s http=%s errors=%s",
+                errorType,
+                errorCode(),
+                code,
+                error?.errors,
+            )
+        }
+    }
 }

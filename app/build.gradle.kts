@@ -79,6 +79,7 @@ dependencies {
     implementation(libs.kotlinx.serialization.core)
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.androidx.startup.runtime)
+    implementation(libs.timber)
     implementation(libs.koin.android)
     implementation(libs.koin.androidx.compose)
     implementation(libs.koin.compose.navigation3)

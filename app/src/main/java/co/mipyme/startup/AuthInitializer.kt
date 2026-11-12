@@ -11,6 +11,6 @@ class AuthInitializer : Initializer<Unit> {
     }
 
     override fun dependencies(): List<Class<out Initializer<*>?>?> {
-        return emptyList()
+        return listOf(TimberInitializer::class.java)
     }
 }

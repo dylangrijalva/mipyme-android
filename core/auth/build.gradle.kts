@@ -29,6 +29,7 @@ dependencies {
     implementation(libs.koin.android)
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.androidx.datastore)
+    implementation(libs.timber)
 
     testImplementation(libs.junit)
 }

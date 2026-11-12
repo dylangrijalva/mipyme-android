@@ -15,6 +15,7 @@ import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
+import timber.log.Timber
 
 // Owns the cached account (the source of truth for the auth state) plus the in-memory
 // SessionExpired and Blocked flags. Every write is serialized so a deliberate sign-out is never
@@ -27,7 +28,10 @@ internal class AccountCache(private val dataStore: DataStore<IdentityAccount?>) 
     private val loadedAccount: Flow<Pair<Boolean, IdentityAccount?>> = dataStore.data
         .map { account -> true to account }
         .onStart { emit(false to null) }
-        .catch { emit(true to null) }
+        .catch { throwable ->
+            Timber.e(throwable, "Could not read the cached account")
+            emit(true to null)
+        }
 
     val authStateFlow: Flow<AuthState> = combine(
         loadedAccount,
@@ -43,7 +47,9 @@ internal class AccountCache(private val dataStore: DataStore<IdentityAccount?>) 
     }
 
     suspend fun hasAccount(): Boolean? {
-        return Either.catch { dataStore.data.first() != null }.getOrNull()
+        return Either.catch { dataStore.data.first() != null }
+            .onLeft { throwable -> Timber.e(throwable, "Could not check the cached account") }
+            .getOrNull()
     }
 
     // The session may end while the latest user is being fetched, so the caller re-checks it
@@ -83,6 +89,8 @@ internal class AccountCache(private val dataStore: DataStore<IdentityAccount?>) 
                 dataStore.updateData { null }
                 sessionExpired.update { false }
                 blocked.update { false }
+            }.onLeft { throwable ->
+                Timber.e(throwable, "Could not clear the cached account")
             }.mapLeft { AuthError.Unknown("Could not clear the cached account") }
         }
     }
@@ -108,7 +116,9 @@ internal class AccountCache(private val dataStore: DataStore<IdentityAccount?>) 
 
     private suspend fun guarded(block: suspend () -> Unit): Either<AuthError, Unit> {
         return mutex.withLock {
-            Either.catch { block() }.mapLeft { AuthError.Unknown("Could not update the cached account") }
+            Either.catch { block() }
+                .onLeft { throwable -> Timber.e(throwable, "Could not update the cached account") }
+                .mapLeft { AuthError.Unknown("Could not update the cached account") }
         }
     }
 }
