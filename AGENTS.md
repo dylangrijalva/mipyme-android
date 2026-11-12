@@ -1,12 +1,15 @@
 # AGENTS.md
 
-This file provides guidance to Claude (claude.com/claude-code) and Codex (openai.com/codex) when working in this repository. See `@README.md` for an overview of the product and its tech stack.
+This file provides guidance to Claude (claude.com/claude-code) and Codex (openai.com/codex) when working in this
+repository. See `@README.md` for an overview of the product and its tech stack.
 
 ## Architecture
 
 - **UI:** Jetpack Compose using MVI.
-- **State:** Unidirectional Data Flow using Kotlin Coroutines and `Flow`. Every `ViewModel` must expose exactly one immutable `StateFlow<XState>` named `stateFlow`, along with a `state` getter.
-- **Navigation:** Jetpack Compose Navigation 3. Every screen must have a navigation key defined in the `Route` sealed interface.
+- **State:** Unidirectional Data Flow using Kotlin Coroutines and `Flow`. Every `ViewModel` must expose exactly one
+  immutable `StateFlow<XState>` named `stateFlow`, along with a `state` getter.
+- **Navigation:** Jetpack Compose Navigation 3. Every screen must have a navigation key defined in the `Route` sealed
+  interface.
 - **Dependency Injection:** Koin.
 - **Data Sources:**
     - **Room:** Structured, queryable persistent data. See [Offline-First Architecture](#offline-first-architecture).
@@ -24,16 +27,27 @@ This file provides guidance to Claude (claude.com/claude-code) and Codex (openai
 
 ## Design System
 
-All user interfaces must be built with **Moshi**, Mipyme's design system. Moshi lives in the `:core:ui` module (`co.mipyme.ui`). See `@DESIGN.md` for component usage guidelines and `@core/ui/README.md` for the token source.
+All user interfaces must be built with **Moshi**, Mipyme's design system. Moshi lives in the `:core:ui` module (
+`co.mipyme.ui`). See `@DESIGN.md` for component usage guidelines and `@core/ui/README.md` for the token source.
 
-- **Theme:** Render all UI inside `MoshiTheme { … }`. It provides the light and dark palettes and follows the system setting by default.
-- **Components:** Use Moshi components (e.g., `MoshiButton`, `MoshiText`) instead of their Material 3 or Foundation equivalents. Do not use Material 3 components directly when a Moshi component exists.
-- **Tokens:** Read colors, typography, and spacing from `Moshi.colors`, `Moshi.typography`, and `Moshi.spacing`. Do not hardcode colors, font sizes, or `dp` values that a Moshi token already covers.
-- **Spacing between elements:** Use `Spacer` (e.g., `Spacer(Modifier.height(spacing.space4))`) to separate sibling composables instead of applying margins through `padding` modifiers on them. Reserve `padding` for a container's inner insets.
-- **Semantic colors:** Prefer semantic tokens (e.g., `background.action.primary`, `foreground.disabled`, `border.interactive`) that match the element's purpose over raw palette values.
-- **Missing components:** If a required component or token does not exist in Moshi, ask before creating it. New components belong in `:core:ui` under `co.mipyme.ui.component`, use the `Moshi` prefix, consume only Moshi tokens, and must be documented in `DESIGN.md`.
-- **Previews:** Wrap previews in `MoshiTheme`. Inside `:core:ui`, annotate component previews with `@MoshiPreview` to render both light and dark themes.
-- **Accessibility:** Preserve Moshi's accessibility behavior, including the 48 × 48 dp minimum touch target, sentence-case labels, and text that wraps at larger font sizes.
+- **Theme:** Render all UI inside `MoshiTheme { … }`. It provides the light and dark palettes and follows the system
+  setting by default.
+- **Components:** Use Moshi components (e.g., `MoshiButton`, `MoshiText`) instead of their Material 3 or Foundation
+  equivalents. Do not use Material 3 components directly when a Moshi component exists.
+- **Tokens:** Read colors, typography, and spacing from `Moshi.colors`, `Moshi.typography`, and `Moshi.spacing`. Do not
+  hardcode colors, font sizes, or `dp` values that a Moshi token already covers.
+- **Spacing between elements:** Use `Spacer` (e.g., `Spacer(Modifier.height(spacing.space4))`) to separate sibling
+  composables instead of applying margins through `padding` modifiers on them. Reserve `padding` for a container's inner
+  insets.
+- **Semantic colors:** Prefer semantic tokens (e.g., `background.action.primary`, `foreground.disabled`,
+  `border.interactive`) that match the element's purpose over raw palette values.
+- **Missing components:** If a required component or token does not exist in Moshi, ask before creating it. New
+  components belong in `:core:ui` under `co.mipyme.ui.component`, use the `Moshi` prefix, consume only Moshi tokens, and
+  must be documented in `DESIGN.md`.
+- **Previews:** Wrap previews in `MoshiTheme`. Inside `:core:ui`, annotate component previews with `@MoshiPreview` to
+  render both light and dark themes.
+- **Accessibility:** Preserve Moshi's accessibility behavior, including the 48 × 48 dp minimum touch target,
+  sentence-case labels, and text that wraps at larger font sizes.
 
 ## Coding Style
 
@@ -46,7 +60,8 @@ All user interfaces must be built with **Moshi**, Mipyme's design system. Moshi 
     - Lowercase package names, using underscores for multiple words (e.g., `getting_started`).
 - Use `kotlinx.coroutines`; avoid `Thread`, `AsyncTask`, and `GlobalScope`.
 - Use `Flow` for reactive streams.
-- Prefer named, feature- or domain-specific `Flow` functions over large anonymous `ViewModel` pipelines or generic transformer utilities.
+- Prefer named, feature- or domain-specific `Flow` functions over large anonymous `ViewModel` pipelines or generic
+  transformer utilities.
 - Represent UI state and events using sealed classes or data classes.
 - Update `MutableStateFlow` using `update`.
 - Use `viewModelScope` or `lifecycleScope`.
@@ -56,7 +71,9 @@ All user interfaces must be built with **Moshi**, Mipyme's design system. Moshi 
 
 Every screen must be backed by a `ViewModel`, either screen-specific or shared within a workflow.
 
-Every screen must declare its `@Preview` composable in the same file as the screen. Annotate it with `@ScreenPreview` (`co.mipyme.preview`), which renders light and dark themes with system UI. Previews render the stateless screen content directly, without a `ViewModel` or Koin, and are wrapped in `MoshiTheme`.
+Every screen must declare its `@Preview` composable in the same file as the screen. Annotate it with `@ScreenPreview` (
+`co.mipyme.preview`), which renders light and dark themes with system UI. Previews render the stateless screen content
+directly, without a `ViewModel` or Koin, and are wrapped in `MoshiTheme`.
 
 - A screen-specific `ViewModel` owns that screen's presentation logic and UI state.
 - A `ViewModel` must never directly depend on another `ViewModel`.
@@ -88,7 +105,8 @@ The shared `ViewModel` must be scoped to the workflow.
 
 ### Screen ViewModels with a Store
 
-Use a separate `ViewModel` for each screen and a shared `Store` when screens belong to the same workflow but require independent presentation logic.
+Use a separate `ViewModel` for each screen and a shared `Store` when screens belong to the same workflow but require
+independent presentation logic.
 
 Example structure:
 
@@ -108,15 +126,18 @@ CheckoutStore
 ### Decision Rule
 
 - **Shared `ViewModel`:** Use when multiple screens form one presentation unit.
-- **Separate `ViewModel` instances with a shared `Store`:** Use when screens require independent presentation logic but share mutable workflow state.
+- **Separate `ViewModel` instances with a shared `Store`:** Use when screens require independent presentation logic but
+  share mutable workflow state.
 
 ## Single Source of Truth
 
 Each service must define a **single source of truth** that maintains consistent, correct, and up-to-date data.
 
-Repositories must expose data directly from their source of truth. A source of truth may be a data source, such as a database, or an in-memory cache maintained by the repository.
+Repositories must expose data directly from their source of truth. A source of truth may be a data source, such as a
+database, or an in-memory cache maintained by the repository.
 
-Repositories are responsible for combining data sources, resolving conflicts, and updating the source of truth periodically or in response to user actions.
+Repositories are responsible for combining data sources, resolving conflicts, and updating the source of truth
+periodically or in response to user actions.
 
 Different repositories may use different sources of truth. For example:
 
@@ -127,14 +148,18 @@ For offline-first support, prefer a local data source, such as a database, as th
 
 ## Offline-First Architecture
 
-The application follows an **offline-first architecture** so merchants can continue selling and taking orders during internet outages.
+The application follows an **offline-first architecture** so merchants can continue selling and taking orders during
+internet outages.
 
 Offline mode has the following constraints:
 
-1. **Restricted writes:** Most write operations must be disabled while offline. Only sales and refunds are allowed. These operations must be queued, and a background service must upload them when connectivity is restored.
-2. **No business data updates:** Offline transactions must not change inventory quantities, reports, or other existing business data while offline. Queued operations must still be persisted for later synchronization.
+1. **Restricted writes:** Most write operations must be disabled while offline. Only sales and refunds are allowed.
+   These operations must be queued, and a background service must upload them when connectivity is restored.
+2. **No business data updates:** Offline transactions must not change inventory quantities, reports, or other existing
+   business data while offline. Queued operations must still be persisted for later synchronization.
 
-**Note:** When uploading queued orders, the server ignores the `allowBackOrders` property. This prevents losing a completed sale when the merchant could not adjust inventory due to the lack of connectivity.
+**Note:** When uploading queued orders, the server ignores the `allowBackOrders` property. This prevents losing a
+completed sale when the merchant could not adjust inventory due to the lack of connectivity.
 
 ### Offline Operation Safety
 
@@ -148,7 +173,8 @@ Offline mode has the following constraints:
 
 All data sources and repositories must be **main-safe**, meaning they can be called safely from the main thread.
 
-These components are responsible for moving long-running or blocking operations to the appropriate thread. This includes operations such as:
+These components are responsible for moving long-running or blocking operations to the appropriate thread. This includes
+operations such as:
 
 - Reading files from a data source.
 - Performing expensive filtering on large collections in a repository.
