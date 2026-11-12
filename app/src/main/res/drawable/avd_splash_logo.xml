@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Animated splash icon (API 31+). The Arcos mark is drawn like a pen writing a lowercase m: the
+    left arch is traced up the stem and over the first hump, the right arch continues over the second
+    hump, and the pillar is drawn up last to lock them together. Each piece is a thick stroke along
+    the shape's centreline, clipped to the exact logo path so the final frame matches ic_splash_logo.
+    Total length: 1300 ms, matching windowSplashScreenAnimationDuration in values-v31/themes.xml.
+-->
+<animated-vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt">
+    <aapt:attr name="android:drawable">
+        <vector
+            android:width="108dp"
+            android:height="108dp"
+            android:viewportWidth="108"
+            android:viewportHeight="108">
+            <group
+                android:scaleX="0.42"
+                android:scaleY="0.42"
+                android:translateX="28.8"
+                android:translateY="28.8">
+                <group>
+                    <clip-path android:pathData="M5,20H38A33,33 0 0 1 71,53V100H49V53A11,11 0 0 0 27,53V100H5Z" />
+                    <path
+                        android:name="left_arch"
+                        android:pathData="M16,100V31H38A22,22 0 0 1 60,53V100"
+                        android:strokeColor="@color/splash_logo_left_arch"
+                        android:strokeLineJoin="miter"
+                        android:strokeWidth="24"
+                        android:trimPathEnd="0" />
+                </group>
+                <group>
+                    <clip-path android:pathData="M49,100V53A33,33 0 0 1 115,53V100H93V53A11,11 0 0 0 71,53V100Z" />
+                    <path
+                        android:name="right_arch"
+                        android:pathData="M60,100V53A22,22 0 0 1 104,53V100"
+                        android:strokeColor="@color/logo_orange"
+                        android:strokeWidth="24"
+                        android:trimPathEnd="0" />
+                </group>
+                <group>
+                    <clip-path android:pathData="M60,28.4A33,33 0 0 1 71,53V100H49V53A33,33 0 0 1 60,28.4Z" />
+                    <path
+                        android:name="pillar"
+                        android:pathData="M60,100V25"
+                        android:strokeColor="@color/splash_logo_pillar"
+                        android:strokeWidth="24"
+                        android:trimPathEnd="0" />
+                </group>
+            </group>
+        </vector>
+    </aapt:attr>
+
+    <target android:name="left_arch">
+        <aapt:attr name="android:animation">
+            <objectAnimator
+                android:duration="550"
+                android:interpolator="@android:interpolator/fast_out_linear_in"
+                android:propertyName="trimPathEnd"
+                android:valueFrom="0"
+                android:valueTo="1" />
+        </aapt:attr>
+    </target>
+
+    <target android:name="right_arch">
+        <aapt:attr name="android:animation">
+            <objectAnimator
+                android:duration="520"
+                android:interpolator="@android:interpolator/linear_out_slow_in"
+                android:propertyName="trimPathEnd"
+                android:startOffset="550"
+                android:valueFrom="0"
+                android:valueTo="1" />
+        </aapt:attr>
+    </target>
+
+    <target android:name="pillar">
+        <aapt:attr name="android:animation">
+            <objectAnimator
+                android:duration="260"
+                android:interpolator="@android:interpolator/fast_out_slow_in"
+                android:propertyName="trimPathEnd"
+                android:startOffset="1040"
+                android:valueFrom="0"
+                android:valueTo="1" />
+        </aapt:attr>
+    </target>
+</animated-vector>

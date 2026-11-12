@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 110 80" width="330" height="240" role="img" aria-label="mipyme animated splash symbol">
+<!-- Preview of app/src/main/res/drawable/avd_splash_logo.xml (loops every 2.6 s for review). -->
+<defs>
+  <clipPath id="c-left"><path d="M5,20H38A33,33 0 0 1 71,53V100H49V53A11,11 0 0 0 27,53V100H5Z"/></clipPath>
+  <clipPath id="c-right"><path d="M49,100V53A33,33 0 0 1 115,53V100H93V53A11,11 0 0 0 71,53V100Z"/></clipPath>
+  <clipPath id="c-pillar"><path d="M60,28.4A33,33 0 0 1 71,53V100H49V53A33,33 0 0 1 60,28.4Z"/></clipPath>
+</defs>
+<style>
+  .stroke { fill: none; stroke-width: 24; stroke-linejoin: miter; stroke-dasharray: 1 1; stroke-dashoffset: 1; animation-duration: 2.6s; animation-iteration-count: infinite; animation-fill-mode: both; }
+  .left   { animation-name: left; }
+  .right  { animation-name: right; }
+  .pillar { animation-name: pillar; }
+  /* left 0–550 ms, right 550–1070 ms, pillar 1040–1300 ms; then hold. Percentages are of 2.6 s. */
+  @keyframes left   { 0% { stroke-dashoffset: 1; animation-timing-function: cubic-bezier(.4,0,1,1); } 21%, 100% { stroke-dashoffset: 0; } }
+  @keyframes right  { 0%, 21% { stroke-dashoffset: 1; animation-timing-function: cubic-bezier(0,0,.2,1); } 41%, 100% { stroke-dashoffset: 0; } }
+  @keyframes pillar { 0%, 40% { stroke-dashoffset: 1; animation-timing-function: cubic-bezier(.4,0,.2,1); } 50%, 100% { stroke-dashoffset: 0; } }
+  @media (prefers-reduced-motion: reduce) { .stroke { animation: none; stroke-dashoffset: 0; } }
+</style>
+<g transform="translate(-5 -20)">
+  <path class="stroke left" clip-path="url(#c-left)" stroke="#2B4FB9" pathLength="1" d="M16,100V31H38A22,22 0 0 1 60,53V100"/>
+  <path class="stroke right" clip-path="url(#c-right)" stroke="#FF4C00" pathLength="1" d="M60,100V53A22,22 0 0 1 104,53V100"/>
+  <path class="stroke pillar" clip-path="url(#c-pillar)" stroke="#252525" pathLength="1" d="M60,100V25"/>
+</g>
+</svg>

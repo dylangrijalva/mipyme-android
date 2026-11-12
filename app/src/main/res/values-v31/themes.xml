@@ -3,8 +3,10 @@
 
     <style name="Theme.Mipyme.Starting" parent="Theme.SplashScreen">
         <item name="windowSplashScreenBackground">@color/splash_background</item>
-        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_splash_logo</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/avd_splash_logo</item>
+        <item name="windowSplashScreenAnimationDuration">1300</item>
         <item name="android:windowSplashScreenBrandingImage">@drawable/ic_splash_wordmark</item>
+        <item name="android:windowLightStatusBar">true</item>
         <item name="postSplashScreenTheme">@style/Theme.Mipyme</item>
     </style>
 </resources>
