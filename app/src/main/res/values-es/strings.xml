@@ -1,3 +1,16 @@
 <resources>
-    <string name="app_name">Mipyme: Sistema Punto de Ventas para pequeños y medianos negocios de Centroamérica</string>
+    <string name="app_name">Mipyme</string>
+    <string name="welcome_slide_sell_title">Vende desde tu celular en segundos</string>
+    <string name="welcome_slide_sell_body">Agrega productos, cobra y listo. Sin cursos ni manuales.</string>
+    <string name="welcome_slide_stock_title">Que nunca te falte lo que más vendes</string>
+    <string name="welcome_slide_stock_body">Tu inventario se actualiza con cada venta, así sabes cuándo toca reponer.</string>
+    <string name="welcome_slide_offline_title">¿Sin internet? Sigue vendiendo</string>
+    <string name="welcome_slide_offline_body">Tus ventas se guardan en tu celular y se sincronizan solas cuando vuelve la conexión.</string>
+    <string name="welcome_slide_trial_title">Pruébalo gratis por 14 días</string>
+    <string name="welcome_slide_trial_body">Sin tarjeta de crédito. Elige un plan solo si Mipyme le sirve a tu negocio.</string>
+    <string name="welcome_terms">Acepto los %1$s y la %2$s para continuar.</string>
+    <string name="welcome_terms_of_service">Términos de Servicio</string>
+    <string name="welcome_privacy_policy">Política de Privacidad</string>
+    <string name="welcome_continue_with_google">Continuar con Google</string>
+    <string name="welcome_continue_with_email">Continuar con correo</string>
 </resources>
