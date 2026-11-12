@@ -206,20 +206,50 @@ Prefer existing main-safe APIs when available, such as the suspending APIs provi
 - Do not introduce new dependencies or architectural patterns without approval.
 - Do not assume how something works when its implementation can be inspected.
 
-### Planning
+# Planning
 
 When asked to plan a feature, architectural change, or complex implementation:
 
-- Explore the relevant design decisions and their dependencies.
-- Ask one question at a time and wait for my response before continuing.
-- Provide your recommended answer with each question.
-- Resolve factual questions by inspecting the codebase rather than asking me.
-- Leave architectural and product decisions to me. Present each decision and wait for my answer.
-- **Do not implement until I explicitly approve the plan.**
+1. Explore the relevant design decisions and their dependencies.
+2. Ask one question at a time and wait for my response before continuing.
+3. Provide your recommended answer with each question.
+4. Resolve factual questions by inspecting the codebase rather than asking me.
+5. Leave architectural and product decisions to me. Present each decision and wait for my answer.
+6. Do not implement until I explicitly approve the plan.
 
-For straightforward implementation tasks, proceed using established repository conventions. Ask for clarification only when a decision cannot be resolved from the codebase or existing instructions.
+For straightforward implementation tasks, follow established repository conventions. Ask for clarification only when a
+decision cannot be resolved from the codebase or existing instructions.
 
-Do not commit implementation plans, research notes, or agent scratch files. Keep temporary working materials outside the worktree. The `.plans/` directory is gitignored only as a safety net for legacy tooling.
+# Implementation Delegation
+
+Before starting any implementation, always ask me which model should handle it, even for straightforward tasks.
+
+- Detect the current AI vendor and the models available for delegation.
+- Recommend the least expensive model that can reliably implement the task, considering complexity, reasoning
+  requirements, and risk.
+- Prefer lower-cost models for straightforward, well-specified implementations.
+- Recommend a more capable model when complexity or architectural risk justifies it.
+- Briefly explain the recommendation, including any relevant cost/capability trade-offs.
+- Never select the implementation model on my behalf. Wait for my explicit choice.
+- Once selected, delegate implementation to a subagent using that model and provide it with the approved plan, relevant
+  repository context, constraints, and acceptance criteria.
+- If model-specific delegation is unavailable, explain the limitation rather than silently using a different model.
+
+# Code Review
+
+After every implementation, always spawn a separate code-review subagent before considering the task complete.
+
+- The reviewer must be independent of the implementation subagent.
+- Review the actual changes against the approved plan, requirements, and repository conventions.
+- Check for correctness, bugs, regressions, security issues, edge cases, maintainability, and missing tests.
+- Prioritize actionable findings by severity and include file and line references.
+- Do not modify code during the review. The reviewer should report findings independently.
+- If issues are found, delegate fixes to the implementation agent and request another independent review of the fixes.
+- Repeat until no blocking findings remain, or report unresolved issues explicitly.
+- Summarize the implementation, validation results, review findings, and any remaining risks.
+
+Never skip the review, even for small changes. If subagent spawning is unavailable, explicitly disclose that the
+required independent review could not be performed.
 
 ### Surgical Changes
 
