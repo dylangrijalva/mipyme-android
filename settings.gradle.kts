@@ -26,3 +26,4 @@ rootProject.name = "Mipyme"
 include(":app")
 include(":core:contract")
 include(":core:ui")
+include(":core:auth")
