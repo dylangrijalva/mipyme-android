@@ -319,11 +319,23 @@ internal class ClerkAuthService(
         val hasCachedAccount = accountCache.hasAccount() ?: return
         when (decideCacheAction(snapshot.isInitialized, sessionState, hasCachedAccount)) {
             CacheAction.UpdateFromActiveSession -> {
-                val account = snapshot.session?.latestAccount() ?: return
-                accountCache.saveIfSessionStillActive(account, ::isActiveSessionOf)
+                val latest = snapshot.session?.latestAccount() ?: return
+                accountCache.saveIfSessionStillActive(latest.account, ::isActiveSessionOf)
+                if (shouldRefreshAfterRestore(latest.account, latest.isFromServer)) {
+                    refreshAfterRestore()
+                }
             }
             CacheAction.ClearAsExpired -> accountCache.clearAsExpired()
             CacheAction.None -> Unit
+        }
+    }
+
+    // Best effort and off the session pipeline, so a slow request never delays session changes.
+    private fun refreshAfterRestore() {
+        applicationScope.launch {
+            refresh().onLeft { error ->
+                Timber.w("Could not refresh the account after restoring the session: %s", error)
+            }
         }
     }
 
@@ -332,11 +344,11 @@ internal class ClerkAuthService(
         return session?.status == Session.SessionStatus.ACTIVE && session.user?.id == userId
     }
 
-    private suspend fun Session.latestAccount(): IdentityAccount? {
+    private suspend fun Session.latestAccount(): LatestAccount? {
         val sessionUser = user ?: return null
         return when (val result = sessionUser.get()) {
-            is ClerkResult.Failure -> sessionUser.toIdentityAccount()
-            is ClerkResult.Success -> result.value.toIdentityAccount()
+            is ClerkResult.Failure -> LatestAccount(sessionUser.toIdentityAccount(), isFromServer = false)
+            is ClerkResult.Success -> LatestAccount(result.value.toIdentityAccount(), isFromServer = true)
         }
     }
 
@@ -359,6 +371,8 @@ internal class ClerkAuthService(
     }
 
     private data class ClerkSnapshot(val isInitialized: Boolean, val session: Session?)
+
+    private data class LatestAccount(val account: IdentityAccount, val isFromServer: Boolean)
 }
 
 private fun Session.SessionStatus.toSessionState(): SessionState {
