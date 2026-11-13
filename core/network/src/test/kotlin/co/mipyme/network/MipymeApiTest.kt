@@ -1,6 +1,5 @@
 package co.mipyme.network
 
-import arrow.core.Either
 import co.mipyme.contract.BusinessType
 import co.mipyme.contract.CountryIsoCode
 import co.mipyme.contract.Decimal
@@ -374,9 +373,5 @@ class MipymeApiTest {
             tokenProvider = AuthTokenProvider { TEST_TOKEN },
             engine = MockEngine { throw exception },
         )
-    }
-
-    private fun <T> Either<NetworkError, T>.leftOrNull(): NetworkError? {
-        return fold(ifLeft = { it }, ifRight = { null })
     }
 }
