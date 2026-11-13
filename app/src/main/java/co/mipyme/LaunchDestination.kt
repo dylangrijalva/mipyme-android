@@ -1,5 +1,7 @@
 package co.mipyme
 
+import co.mipyme.navigation.Route
+
 sealed interface LaunchDestination {
     data object Idle : LaunchDestination
 
@@ -8,4 +10,13 @@ sealed interface LaunchDestination {
     data object Onboarding : LaunchDestination
 
     data object Home : LaunchDestination
+}
+
+fun LaunchDestination.toRoute(): Route? {
+    return when (this) {
+        LaunchDestination.Idle -> null
+        LaunchDestination.Welcome -> Route.Welcome
+        LaunchDestination.Onboarding -> Route.Onboarding
+        LaunchDestination.Home -> Route.Home
+    }
 }

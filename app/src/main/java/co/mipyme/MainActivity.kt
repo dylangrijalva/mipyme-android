@@ -13,7 +13,6 @@ import androidx.core.splashscreen.SplashScreenViewProvider
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import co.mipyme.navigation.NavigationRoot
-import co.mipyme.navigation.Route
 import co.mipyme.ui.MoshiTheme
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
@@ -89,14 +88,5 @@ class MainActivity : ComponentActivity() {
     private companion object {
         const val SPLASH_EXIT_DURATION_MILLIS = 300L
         const val SPLASH_EXIT_ICON_SCALE = 1.15f
-    }
-}
-
-private fun LaunchDestination.toRoute(): Route? {
-    return when (this) {
-        LaunchDestination.Idle -> null
-        LaunchDestination.Welcome -> Route.Welcome
-        LaunchDestination.Onboarding -> Route.Onboarding
-        LaunchDestination.Home -> Route.Home
     }
 }
