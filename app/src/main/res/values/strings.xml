@@ -13,7 +13,6 @@
     <string name="welcome_privacy_policy">Privacy Policy</string>
     <string name="welcome_continue_with_google">Continue with Google</string>
     <string name="welcome_continue_with_email">Continue with email</string>
-    <string name="welcome_api_unreachable">Can\'t reach Mipyme right now. Check your connection.</string>
 
     <string name="onboarding_name_title">What\'s your name?</string>
     <string name="onboarding_name_subtitle">Enter the name you go by. We\'ll use it to set up your account and identify you in your business.</string>

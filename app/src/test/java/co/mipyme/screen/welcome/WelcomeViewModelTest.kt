@@ -3,16 +3,12 @@ package co.mipyme.screen.welcome
 import arrow.core.Either
 import arrow.core.left
 import arrow.core.right
-import co.mipyme.R
 import co.mipyme.auth.AuthError
 import co.mipyme.auth.AuthService
 import co.mipyme.auth.AuthState
 import co.mipyme.auth.SignInAttempt
 import co.mipyme.auth.SignInStrategy
 import co.mipyme.auth.toStringResource
-import co.mipyme.testing.FakeMipymeApi
-import co.mipyme.testing.FakeResponse
-import io.ktor.http.HttpStatusCode
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -49,7 +45,7 @@ class WelcomeViewModelTest {
     @Test
     fun `successful google sign in shows no toast and clears signing in`() = runTest(dispatcher) {
         val authService = FakeAuthService(result = SignInAttempt.Completed.right())
-        val viewModel = createViewModel(authService)
+        val viewModel = WelcomeViewModel(authService)
 
         viewModel.onGoogleSignIn()
         advanceUntilIdle()
@@ -61,7 +57,7 @@ class WelcomeViewModelTest {
     @Test
     fun `oauth cancelled shows no toast`() = runTest(dispatcher) {
         val authService = FakeAuthService(result = AuthError.OAuthCancelled.left())
-        val viewModel = createViewModel(authService)
+        val viewModel = WelcomeViewModel(authService)
 
         viewModel.onGoogleSignIn()
         advanceUntilIdle()
@@ -74,7 +70,7 @@ class WelcomeViewModelTest {
     fun `other sign in error shows mapped toast`() = runTest(dispatcher) {
         val error = AuthError.Network
         val authService = FakeAuthService(result = error.left())
-        val viewModel = createViewModel(authService)
+        val viewModel = WelcomeViewModel(authService)
 
         viewModel.onGoogleSignIn()
         advanceUntilIdle()
@@ -87,7 +83,7 @@ class WelcomeViewModelTest {
     fun `double tap while signing in calls sign in once`() = runTest(dispatcher) {
         val gate = CompletableDeferred<Either<AuthError, SignInAttempt>>()
         val authService = FakeAuthService(gate = gate)
-        val viewModel = createViewModel(authService)
+        val viewModel = WelcomeViewModel(authService)
 
         viewModel.onGoogleSignIn()
         viewModel.onGoogleSignIn()
@@ -102,7 +98,7 @@ class WelcomeViewModelTest {
     fun `signing in is true while the call is suspended and false afterwards`() = runTest(dispatcher) {
         val gate = CompletableDeferred<Either<AuthError, SignInAttempt>>()
         val authService = FakeAuthService(gate = gate)
-        val viewModel = createViewModel(authService)
+        val viewModel = WelcomeViewModel(authService)
 
         viewModel.onGoogleSignIn()
         advanceUntilIdle()
@@ -111,34 +107,6 @@ class WelcomeViewModelTest {
         gate.complete(SignInAttempt.Completed.right())
         advanceUntilIdle()
         assertFalse(viewModel.state.isSigningIn)
-    }
-
-    @Test
-    fun `healthy api shows no toast`() = runTest(dispatcher) {
-        val fakeApi = FakeMipymeApi { FakeResponse(HttpStatusCode.NoContent, "") }
-        val viewModel = createViewModel(FakeAuthService(), fakeApi)
-
-        advanceUntilIdle()
-
-        assertTrue(fakeApi.requests.any { it.url.encodedPath == "/_health" })
-        assertNull(viewModel.state.pendingToastRes)
-    }
-
-    @Test
-    fun `unhealthy api shows unreachable toast`() = runTest(dispatcher) {
-        val fakeApi = FakeMipymeApi { FakeResponse(HttpStatusCode.InternalServerError, "{}") }
-        val viewModel = createViewModel(FakeAuthService(), fakeApi)
-
-        advanceUntilIdle()
-
-        assertEquals(R.string.welcome_api_unreachable, viewModel.state.pendingToastRes)
-    }
-
-    private fun createViewModel(
-        authService: AuthService,
-        fakeApi: FakeMipymeApi = FakeMipymeApi { FakeResponse(HttpStatusCode.NoContent, "") },
-    ): WelcomeViewModel {
-        return WelcomeViewModel(authService, fakeApi.api)
     }
 
     private class FakeAuthService(
