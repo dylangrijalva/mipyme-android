@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Arches mark on its own, cropped to content. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="110dp"
+    android:height="80dp"
+    android:viewportWidth="110"
+    android:viewportHeight="80">
+    <group
+        android:translateX="-5"
+        android:translateY="-20">
+        <path
+            android:fillColor="@color/logo_mark_left_arch"
+            android:pathData="M5,20H38A33,33 0 0 1 71,53V100H49V53A11,11 0 0 0 27,53V100H5Z" />
+        <path
+            android:fillColor="@color/logo_orange"
+            android:pathData="M49,100V53A33,33 0 0 1 115,53V100H93V53A11,11 0 0 0 71,53V100Z" />
+        <path
+            android:fillColor="@color/logo_mark_pillar"
+            android:pathData="M60,28.4A33,33 0 0 1 71,53V100H49V53A33,33 0 0 1 60,28.4Z" />
+    </group>
+</vector>
