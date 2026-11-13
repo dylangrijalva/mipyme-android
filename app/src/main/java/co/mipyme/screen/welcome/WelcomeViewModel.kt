@@ -8,19 +8,27 @@ import co.mipyme.auth.AuthError
 import co.mipyme.auth.AuthService
 import co.mipyme.auth.SignInStrategy
 import co.mipyme.auth.toStringResource
+import co.mipyme.network.MipymeApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 class WelcomeViewModel(
     private val authService: AuthService,
+    private val api: MipymeApi,
 ) : ViewModel() {
     private val _stateFlow = MutableStateFlow(WelcomeScreenUiState())
     val stateFlow: StateFlow<WelcomeScreenUiState> = _stateFlow.asStateFlow()
     val state: WelcomeScreenUiState
         get() = _stateFlow.value
+
+    init {
+        checkApiHealth()
+        fetchCurrentUser()
+    }
 
     fun onTermsAcceptedChange(accepted: Boolean) {
         _stateFlow.update { it.copy(termsAccepted = accepted) }
@@ -54,6 +62,26 @@ class WelcomeViewModel(
 
     fun onToastShown() {
         _stateFlow.update { it.copy(pendingToastRes = null) }
+    }
+
+    private fun checkApiHealth() {
+        viewModelScope.launch {
+            if (api.isHealthy()) {
+                Timber.i("The API is reachable and healthy")
+            } else {
+                Timber.w("The API health check failed")
+                showToast(R.string.welcome_api_unreachable)
+            }
+        }
+    }
+
+    private fun fetchCurrentUser() {
+        viewModelScope.launch {
+            api.accounts.currentUser().fold(
+                ifLeft = { error -> Timber.w("GET /me failed: %s", error) },
+                ifRight = { Timber.i("GET /me succeeded") },
+            )
+        }
     }
 
     private fun showToast(@StringRes labelRes: Int) {
