@@ -1,10 +1,8 @@
 package co.mipyme.screen.onboarding
 
-import androidx.annotation.StringRes
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import co.mipyme.R
 import co.mipyme.auth.AuthService
 import co.mipyme.auth.AuthState
 import co.mipyme.auth.toStringResource
@@ -15,6 +13,8 @@ import co.mipyme.contract.request.OnboardAccountRequest
 import co.mipyme.contract.request.OnboardLocationRequest
 import co.mipyme.data.onboarding.OnboardingError
 import co.mipyme.data.onboarding.OnboardingRepository
+import co.mipyme.data.onboarding.mayHaveReachedServer
+import co.mipyme.data.onboarding.toStringResource
 import java.util.Locale
 import java.util.UUID
 import kotlinx.coroutines.Job
@@ -162,21 +162,6 @@ class OnboardingViewModel(
         savedStateHandle.remove<String>(IDEMPOTENCY_REQUEST)
     }
 
-    // Failures after which the server may already hold the outcome for the key, so a retry must
-    // keep it to replay that outcome.
-    private fun OnboardingError.mayHaveReachedServer(): Boolean {
-        return when (this) {
-            OnboardingError.Network,
-            OnboardingError.IdempotencyPending,
-            OnboardingError.AccountRefreshFailed -> true
-
-            is OnboardingError.Validation,
-            OnboardingError.EmployeeConflict,
-            OnboardingError.IdempotencyKeyMismatch,
-            OnboardingError.Unknown -> false
-        }
-    }
-
     // The ViewModel outlives sign-out, so another account must not inherit the previous form.
     private fun onAuthStateChanged(authState: AuthState) {
         when (authState) {
@@ -239,19 +224,6 @@ class OnboardingViewModel(
             "location.businessType", "location.business_type" -> OnboardingStep.BUSINESS_TYPE
             "country" -> OnboardingStep.COUNTRY
             else -> null
-        }
-    }
-
-    @StringRes
-    private fun OnboardingError.toStringResource(): Int {
-        return when (this) {
-            OnboardingError.Network,
-            OnboardingError.IdempotencyPending,
-            OnboardingError.AccountRefreshFailed -> R.string.onboarding_error_network
-            is OnboardingError.Validation -> R.string.onboarding_error_validation
-            OnboardingError.EmployeeConflict -> R.string.onboarding_error_employee_conflict
-            OnboardingError.IdempotencyKeyMismatch,
-            OnboardingError.Unknown -> R.string.onboarding_error_unknown
         }
     }
 

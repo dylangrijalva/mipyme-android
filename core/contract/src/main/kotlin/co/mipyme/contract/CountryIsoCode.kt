@@ -1,5 +1,6 @@
 package co.mipyme.contract
 
+import java.util.Locale
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -73,4 +74,8 @@ enum class CountryIsoCode {
 
     @SerialName("ve")
     VE,
+}
+
+fun CountryIsoCode.displayName(locale: Locale): String {
+    return Locale.Builder().setRegion(name).build().getDisplayCountry(locale)
 }

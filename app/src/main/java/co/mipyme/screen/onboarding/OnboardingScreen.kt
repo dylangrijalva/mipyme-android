@@ -51,6 +51,7 @@ import androidx.navigation3.ui.NavDisplay
 import co.mipyme.R
 import co.mipyme.contract.BusinessType
 import co.mipyme.contract.CountryIsoCode
+import co.mipyme.contract.displayName
 import co.mipyme.data.onboarding.OnboardingRepository
 import co.mipyme.navigation.Route
 import co.mipyme.preview.ScreenPreview
@@ -69,7 +70,6 @@ import co.mipyme.ui.component.MoshiTextRole
 import co.mipyme.ui.component.MoshiToolbar
 import co.mipyme.ui.component.MoshiToolbarAction
 import co.mipyme.ui.component.MoshiToolbarNavigation
-import java.util.Locale
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.singleOf
@@ -427,26 +427,6 @@ private fun SignOutConfirmationDialog(
 }
 
 @StringRes
-private fun OnboardingStep.titleRes(): Int {
-    return when (this) {
-        OnboardingStep.NAME -> R.string.onboarding_name_title
-        OnboardingStep.BUSINESS_NAME -> R.string.onboarding_business_name_title
-        OnboardingStep.BUSINESS_TYPE -> R.string.onboarding_business_type_title
-        OnboardingStep.COUNTRY -> R.string.onboarding_country_title
-    }
-}
-
-@StringRes
-private fun OnboardingStep.subtitleRes(): Int {
-    return when (this) {
-        OnboardingStep.NAME -> R.string.onboarding_name_subtitle
-        OnboardingStep.BUSINESS_NAME -> R.string.onboarding_business_name_subtitle
-        OnboardingStep.BUSINESS_TYPE -> R.string.onboarding_business_type_subtitle
-        OnboardingStep.COUNTRY -> R.string.onboarding_country_subtitle
-    }
-}
-
-@StringRes
 private fun BusinessType.labelRes(): Int {
     return when (this) {
         BusinessType.CONVENIENCE_STORE -> R.string.onboarding_business_type_convenience_store
@@ -535,10 +515,6 @@ private fun CountryIsoCode.listGroup(): Int {
         CountryIsoCode.SV -> 1
         else -> 2
     }
-}
-
-private fun CountryIsoCode.displayName(locale: Locale): String {
-    return Locale.Builder().setRegion(name).build().getDisplayCountry(locale)
 }
 
 @ScreenPreview
