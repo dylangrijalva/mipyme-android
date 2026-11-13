@@ -14,6 +14,26 @@
     <string name="welcome_continue_with_google">Continuar con Google</string>
     <string name="welcome_continue_with_email">Continuar con correo</string>
 
+    <string name="sign_in_with_email_title">¿Cuál es tu correo?</string>
+    <string name="sign_in_with_email_subtitle">Te enviaremos un código para continuar.</string>
+    <string name="sign_in_with_email_label">Correo electrónico</string>
+    <string name="sign_in_with_email_continue">Continuar</string>
+    <string name="sign_in_with_email_cooldown">Podrás pedir un nuevo código en %1$d s.</string>
+    <string name="sign_in_with_email_blocked_title">No se puede iniciar sesión</string>
+    <string name="sign_in_with_email_blocked_action">Entendido</string>
+
+    <string name="verify_otp_code_title">Ingresa tu código</string>
+    <string name="verify_otp_code_description">Enviamos un código a %1$s.</string>
+    <string name="verify_otp_code_use_different_email">Usar otro correo</string>
+    <string name="verify_otp_code_label">Código de verificación</string>
+    <string name="verify_otp_code_verify">Verificar</string>
+    <string name="verify_otp_code_guidance">¿No te llegó? Revisa tu carpeta de spam o reenvía el código.</string>
+    <string name="verify_otp_code_resend">Reenviar código</string>
+    <string name="verify_otp_code_resend_countdown">Reenviar código (%1$ds)</string>
+    <string name="verify_otp_code_resent">Te enviamos un nuevo código.</string>
+    <string name="verify_otp_code_blocked_title">No se puede iniciar sesión</string>
+    <string name="verify_otp_code_blocked_action">Entendido</string>
+
     <string name="onboarding_name_title">¿Cómo te llamas?</string>
     <string name="onboarding_name_subtitle">Ingresa el nombre con el que te conocen. Lo usaremos para configurar tu cuenta e identificarte en tu negocio.</string>
     <string name="onboarding_name_label">Tu nombre</string>

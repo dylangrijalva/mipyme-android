@@ -40,10 +40,6 @@ class WelcomeViewModel(
         }
     }
 
-    fun onEmailSignIn() {
-        showToast(R.string.welcome_continue_with_email)
-    }
-
     fun onTermsClick() {
         showToast(R.string.welcome_terms_of_service)
     }

@@ -44,6 +44,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation3.ui.NavDisplay
 import co.mipyme.R
+import co.mipyme.navigation.LocalNavBackStack
 import co.mipyme.navigation.Route
 import co.mipyme.preview.ScreenPreview
 import co.mipyme.ui.Moshi
@@ -99,6 +100,7 @@ fun Module.welcomeScreenModule(): Module {
 internal fun WelcomeScreen(viewModel: WelcomeViewModel = koinViewModel()) {
     val state by viewModel.stateFlow.collectAsStateWithLifecycle()
     val context = LocalContext.current
+    val backStack = LocalNavBackStack.current
     val pendingToastRes = state.pendingToastRes
     val toastText = pendingToastRes?.let { stringResource(it) }
 
@@ -113,7 +115,11 @@ internal fun WelcomeScreen(viewModel: WelcomeViewModel = koinViewModel()) {
         state = state,
         onTermsAcceptedChange = viewModel::onTermsAcceptedChange,
         onGoogleSignIn = viewModel::onGoogleSignIn,
-        onEmailSignIn = viewModel::onEmailSignIn,
+        onEmailSignIn = {
+            if (backStack.lastOrNull() != Route.SignInWithEmail) {
+                backStack.add(Route.SignInWithEmail)
+            }
+        },
         onTermsClick = viewModel::onTermsClick,
         onPrivacyClick = viewModel::onPrivacyClick,
     )
