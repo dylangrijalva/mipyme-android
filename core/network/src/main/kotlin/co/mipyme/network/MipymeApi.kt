@@ -31,10 +31,6 @@ import io.ktor.http.HttpHeaders
 import io.ktor.serialization.kotlinx.json.json
 import java.io.Closeable
 
-private const val SOCKET_TIMEOUT_MILLIS = 30_000L
-private const val REQUEST_TIMEOUT_MILLIS = 30_000L
-private const val CONNECT_TIMEOUT_MILLIS = 10_000L
-
 class MipymeApi(
     baseUrl: String,
     tokenProvider: AuthTokenProvider,
@@ -95,5 +91,11 @@ class MipymeApi(
 
     override fun close() {
         client.close()
+    }
+
+    private companion object {
+        private const val SOCKET_TIMEOUT_MILLIS = 30_000L
+        private const val REQUEST_TIMEOUT_MILLIS = 30_000L
+        private const val CONNECT_TIMEOUT_MILLIS = 10_000L
     }
 }
