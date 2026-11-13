@@ -6,6 +6,17 @@ import co.mipyme.contract.CountryIsoCode
 
 const val ONBOARDING_NAME_MAX_LENGTH = 64
 
+// Only Central American countries are offered for now. Other countries stay in CountryIsoCode.
+val ONBOARDING_SELECTABLE_COUNTRIES: Set<CountryIsoCode> = setOf(
+    CountryIsoCode.NI,
+    CountryIsoCode.BZ,
+    CountryIsoCode.CR,
+    CountryIsoCode.GT,
+    CountryIsoCode.HN,
+    CountryIsoCode.PA,
+    CountryIsoCode.SV,
+)
+
 enum class OnboardingStep {
     NAME,
     BUSINESS_NAME,
@@ -24,7 +35,7 @@ data class OnboardingScreenUiState(
     val step: OnboardingStep = OnboardingStep.NAME,
     val name: String = "",
     val businessName: String = "",
-    val businessType: BusinessType = BusinessType.OTHER,
+    val businessType: BusinessType = BusinessType.CONVENIENCE_STORE,
     val country: CountryIsoCode = CountryIsoCode.NI,
     val isSubmitting: Boolean = false,
     val isSigningOut: Boolean = false,

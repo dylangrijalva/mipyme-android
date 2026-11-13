@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -27,12 +28,10 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.layout.Layout
@@ -46,6 +45,7 @@ import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.DialogProperties
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation3.ui.NavDisplay
 import co.mipyme.R
@@ -56,16 +56,19 @@ import co.mipyme.navigation.Route
 import co.mipyme.preview.ScreenPreview
 import co.mipyme.ui.Moshi
 import co.mipyme.ui.MoshiTheme
+import co.mipyme.ui.component.MoshiAlertDialog
 import co.mipyme.ui.component.MoshiButton
 import co.mipyme.ui.component.MoshiButtonVariant
 import co.mipyme.ui.component.MoshiCardSelector
-import co.mipyme.ui.component.MoshiModal
+import co.mipyme.ui.component.MoshiLinearProgressIndicator
 import co.mipyme.ui.component.MoshiModalAction
 import co.mipyme.ui.component.MoshiRadioOption
-import co.mipyme.ui.component.MoshiStepProgressIndicator
 import co.mipyme.ui.component.MoshiText
 import co.mipyme.ui.component.MoshiTextField
 import co.mipyme.ui.component.MoshiTextRole
+import co.mipyme.ui.component.MoshiToolbar
+import co.mipyme.ui.component.MoshiToolbarAction
+import co.mipyme.ui.component.MoshiToolbarNavigation
 import java.util.Locale
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.module.Module
@@ -112,6 +115,7 @@ internal fun OnboardingScreen(viewModel: OnboardingViewModel = koinViewModel()) 
         onCountrySelected = viewModel::onCountrySelected,
         onContinue = viewModel::onContinue,
         onBack = viewModel::onBack,
+        onSignOutClick = viewModel::onSignOutClick,
         onSignOutConfirmed = viewModel::onSignOutConfirmed,
         onSignOutDismissed = viewModel::onSignOutDismissed,
     )
@@ -126,6 +130,7 @@ private fun OnboardingContent(
     onCountrySelected: (CountryIsoCode) -> Unit,
     onContinue: () -> Unit,
     onBack: () -> Unit,
+    onSignOutClick: () -> Unit,
     onSignOutConfirmed: () -> Unit,
     onSignOutDismissed: () -> Unit,
 ) {
@@ -136,117 +141,117 @@ private fun OnboardingContent(
         modifier = Modifier
             .fillMaxSize()
             .background(Moshi.colors.background.canvas)
-            .safeDrawingPadding()
-            .padding(horizontal = spacing.pageGutterNarrow),
+            .safeDrawingPadding(),
     ) {
-        MoshiButton(
-            onClick = onBack,
-            variant = MoshiButtonVariant.Text,
-            enabled = !state.isBusy,
-            isLoading = state.isSigningOut,
-        ) {
-            val labelRes = if (state.step == OnboardingStep.NAME) {
-                R.string.onboarding_sign_out
+        MoshiToolbar(
+            navigation = if (state.step.previous != null) {
+                MoshiToolbarNavigation.Back(onClick = onBack)
             } else {
-                R.string.onboarding_back
-            }
-            Icon(
-                painter = painterResource(R.drawable.ic_fluent_arrow_left_24_regular),
-                contentDescription = stringResource(labelRes),
-                modifier = Modifier.size(spacing.space6),
-            )
-        }
-        Spacer(Modifier.height(spacing.space4))
-        MoshiStepProgressIndicator(
-            stepCount = OnboardingStep.entries.size,
-            currentStep = state.step.ordinal,
-            modifier = Modifier
-                .fillMaxWidth(0.36f)
-                .align(Alignment.CenterHorizontally),
+                null
+            },
+            actions = listOf(
+                MoshiToolbarAction(
+                    icon = R.drawable.ic_fluent_sign_out_24_regular,
+                    label = stringResource(R.string.onboarding_sign_out),
+                    onClick = onSignOutClick,
+                ),
+            ),
+            windowInsets = WindowInsets(0),
         )
-        Spacer(Modifier.height(spacing.space6))
-        AnimatedContent(
-            targetState = state.step,
+        MoshiLinearProgressIndicator(
+            progress = (state.step.ordinal + 1).toFloat() / OnboardingStep.entries.size,
+        )
+        Column(
             modifier = Modifier
                 .weight(1f)
-                .fillMaxWidth()
-                .clipToBounds(),
-            transitionSpec = {
-                val forward = targetState.ordinal > initialState.ordinal
-                val direction = if (forward != isRtl) 1 else -1
-                slideInHorizontally(initialOffsetX = { it * direction }) togetherWith
-                    slideOutHorizontally(targetOffsetX = { -it * direction })
-            },
-            label = "Onboarding step",
-        ) { step ->
-            Column(modifier = Modifier.fillMaxSize()) {
-                MoshiText(
-                    text = stringResource(step.titleRes()),
-                    role = MoshiTextRole.Heading,
-                )
-                Spacer(Modifier.height(spacing.space2))
-                MoshiText(
-                    text = stringResource(step.subtitleRes()),
-                    role = MoshiTextRole.Body,
-                    color = Moshi.colors.foreground.secondary,
-                )
-                Spacer(Modifier.height(spacing.space6))
-                Column(
-                    modifier = Modifier
-                        .weight(1f)
-                        .fillMaxWidth()
-                        .verticalScroll(rememberScrollState()),
-                ) {
-                    when (step) {
-                        OnboardingStep.NAME -> TextStep(
-                            value = state.name,
-                            onValueChange = onNameChange,
-                            labelRes = R.string.onboarding_name_label,
-                            isTooLong = state.isNameTooLong,
-                            enabled = !state.isBusy,
-                            onNext = onContinue,
-                        )
+                .padding(horizontal = spacing.pageGutterNarrow),
+        ) {
+            Spacer(Modifier.height(spacing.space6))
+            AnimatedContent(
+                targetState = state.step,
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxWidth()
+                    .clipToBounds(),
+                transitionSpec = {
+                    val forward = targetState.ordinal > initialState.ordinal
+                    val direction = if (forward != isRtl) 1 else -1
+                    slideInHorizontally(initialOffsetX = { it * direction }) togetherWith
+                        slideOutHorizontally(targetOffsetX = { -it * direction })
+                },
+                label = "Onboarding step",
+            ) { step ->
+                Column(modifier = Modifier.fillMaxSize()) {
+                    MoshiText(
+                        text = stringResource(step.titleRes()),
+                        role = MoshiTextRole.Heading,
+                    )
+                    Spacer(Modifier.height(spacing.space2))
+                    MoshiText(
+                        text = stringResource(step.subtitleRes()),
+                        role = MoshiTextRole.Body,
+                        color = Moshi.colors.foreground.secondary,
+                    )
+                    Spacer(Modifier.height(spacing.space6))
+                    Column(
+                        modifier = Modifier
+                            .weight(1f)
+                            .fillMaxWidth()
+                            .verticalScroll(rememberScrollState()),
+                    ) {
+                        when (step) {
+                            OnboardingStep.NAME -> TextStep(
+                                value = state.name,
+                                onValueChange = onNameChange,
+                                labelRes = R.string.onboarding_name_label,
+                                placeholderRes = R.string.onboarding_name_placeholder,
+                                isTooLong = state.isNameTooLong,
+                                enabled = !state.isBusy,
+                                onNext = onContinue,
+                            )
 
-                        OnboardingStep.BUSINESS_NAME -> TextStep(
-                            value = state.businessName,
-                            onValueChange = onBusinessNameChange,
-                            labelRes = R.string.onboarding_business_name_label,
-                            isTooLong = state.isBusinessNameTooLong,
-                            enabled = !state.isBusy,
-                            onNext = onContinue,
-                        )
+                            OnboardingStep.BUSINESS_NAME -> TextStep(
+                                value = state.businessName,
+                                onValueChange = onBusinessNameChange,
+                                labelRes = R.string.onboarding_business_name_label,
+                                placeholderRes = R.string.onboarding_business_name_placeholder,
+                                isTooLong = state.isBusinessNameTooLong,
+                                enabled = !state.isBusy,
+                                onNext = onContinue,
+                            )
 
-                        OnboardingStep.BUSINESS_TYPE -> BusinessTypeStep(
-                            selected = state.businessType,
-                            onSelected = onBusinessTypeSelected,
-                            enabled = !state.isBusy,
-                        )
+                            OnboardingStep.BUSINESS_TYPE -> BusinessTypeStep(
+                                selected = state.businessType,
+                                onSelected = onBusinessTypeSelected,
+                                enabled = !state.isBusy,
+                            )
 
-                        OnboardingStep.COUNTRY -> CountryStep(
-                            selected = state.country,
-                            onSelected = onCountrySelected,
-                            enabled = !state.isBusy,
-                        )
+                            OnboardingStep.COUNTRY -> CountryStep(
+                                selected = state.country,
+                                onSelected = onCountrySelected,
+                                enabled = !state.isBusy,
+                            )
+                        }
                     }
                 }
             }
-        }
-        Spacer(Modifier.height(spacing.space4))
-        MoshiButton(
-            onClick = onContinue,
-            modifier = Modifier.fillMaxWidth(),
-            variant = MoshiButtonVariant.Primary,
-            enabled = state.isContinueEnabled,
-            isLoading = state.isSubmitting,
-        ) {
-            val labelRes = if (state.step.next == null) {
-                R.string.onboarding_finish
-            } else {
-                R.string.onboarding_continue
+            Spacer(Modifier.height(spacing.space4))
+            MoshiButton(
+                onClick = onContinue,
+                modifier = Modifier.fillMaxWidth(),
+                variant = MoshiButtonVariant.Primary,
+                enabled = state.isContinueEnabled,
+                isLoading = state.isSubmitting,
+            ) {
+                val labelRes = if (state.step.next == null) {
+                    R.string.onboarding_finish
+                } else {
+                    R.string.onboarding_continue
+                }
+                MoshiText(text = stringResource(labelRes))
             }
-            MoshiText(text = stringResource(labelRes))
+            Spacer(Modifier.height(spacing.space4))
         }
-        Spacer(Modifier.height(spacing.space4))
     }
 
     if (state.isSignOutConfirmationVisible) {
@@ -262,6 +267,7 @@ private fun TextStep(
     value: String,
     onValueChange: (String) -> Unit,
     @StringRes labelRes: Int,
+    @StringRes placeholderRes: Int,
     isTooLong: Boolean,
     enabled: Boolean,
     onNext: () -> Unit,
@@ -271,6 +277,7 @@ private fun TextStep(
         onValueChange = onValueChange,
         modifier = Modifier.fillMaxWidth(),
         label = stringResource(labelRes),
+        placeholder = stringResource(placeholderRes),
         supportingText = if (isTooLong) {
             stringResource(R.string.onboarding_text_too_long, ONBOARDING_NAME_MAX_LENGTH)
         } else {
@@ -300,6 +307,7 @@ private fun BusinessTypeStep(
                 label = stringResource(type.labelRes()),
                 selected = type == selected,
                 onClick = { onSelected(type) },
+                icon = type.iconRes(),
                 enabled = enabled,
             )
         }
@@ -315,7 +323,7 @@ private fun CountryStep(
     val locale = LocalConfiguration.current.locales[0]
     val countries = remember(locale) {
         CountryIsoCode.entries
-            .filter { it != CountryIsoCode.ZZ }
+            .filter { it in ONBOARDING_SELECTABLE_COUNTRIES }
             .map { country -> country to country.displayName(locale) }
             .sortedWith(compareBy({ (country, _) -> country.listGroup() }, { (_, name) -> name }))
     }
@@ -399,16 +407,18 @@ private fun SignOutConfirmationDialog(
     onConfirm: () -> Unit,
     onDismiss: () -> Unit,
 ) {
-    MoshiModal(
+    MoshiAlertDialog(
+        modifier = Modifier.padding(horizontal = Moshi.spacing.space6),
+        properties = DialogProperties(usePlatformDefaultWidth = false),
         title = stringResource(R.string.onboarding_sign_out_confirm_title),
-        supportingText = stringResource(R.string.onboarding_sign_out_confirm_message),
+        message = stringResource(R.string.onboarding_sign_out_confirm_message),
         onDismissRequest = onDismiss,
-        primaryAction = MoshiModalAction(
+        confirmAction = MoshiModalAction(
             label = stringResource(R.string.onboarding_sign_out_confirm_action),
             onClick = onConfirm,
         ),
-        primaryActionVariant = MoshiButtonVariant.Destructive,
-        secondaryAction = MoshiModalAction(
+        confirmActionVariant = MoshiButtonVariant.Destructive,
+        cancelAction = MoshiModalAction(
             label = stringResource(R.string.onboarding_sign_out_confirm_cancel),
             onClick = onDismiss,
         ),
@@ -456,6 +466,30 @@ private fun BusinessType.labelRes(): Int {
         BusinessType.STATIONERY_STORE -> R.string.onboarding_business_type_stationery_store
         BusinessType.BAKERY -> R.string.onboarding_business_type_bakery
         BusinessType.OTHER -> R.string.onboarding_business_type_other
+    }
+}
+
+@DrawableRes
+private fun BusinessType.iconRes(): Int {
+    return when (this) {
+        BusinessType.CONVENIENCE_STORE -> R.drawable.ic_fluent_building_retail_24_regular
+        BusinessType.RESTAURANT -> R.drawable.ic_fluent_food_24_regular
+        BusinessType.COFFEE_SHOP -> R.drawable.ic_fluent_drink_coffee_24_regular
+        BusinessType.CLOTHING_STORE -> R.drawable.ic_fluent_clothes_hanger_24_regular
+        BusinessType.ELECTRONICS_STORE -> R.drawable.ic_fluent_phone_laptop_24_regular
+        BusinessType.GROCERY_STORE -> R.drawable.ic_fluent_cart_24_regular
+        BusinessType.PHARMACY -> R.drawable.ic_fluent_pill_24_regular
+        BusinessType.HARDWARE_STORE -> R.drawable.ic_fluent_wrench_screwdriver_24_regular
+        BusinessType.BEAUTY_SALON -> R.drawable.ic_fluent_cut_24_regular
+        BusinessType.BAR -> R.drawable.ic_fluent_drink_beer_24_regular
+        BusinessType.AUTOPARTS_STORE -> R.drawable.ic_fluent_vehicle_car_24_regular
+        BusinessType.SPORTS_STORE -> R.drawable.ic_fluent_sport_soccer_24_regular
+        BusinessType.BOOKSTORE -> R.drawable.ic_fluent_book_open_24_regular
+        BusinessType.JEWELRY_STORE -> R.drawable.ic_fluent_diamond_24_regular
+        BusinessType.SHOE_STORE -> R.drawable.ic_fluent_run_24_regular
+        BusinessType.STATIONERY_STORE -> R.drawable.ic_fluent_pen_24_regular
+        BusinessType.BAKERY -> R.drawable.ic_fluent_food_toast_24_regular
+        BusinessType.OTHER -> R.drawable.ic_fluent_more_horizontal_24_regular
     }
 }
 
@@ -579,6 +613,7 @@ private fun OnboardingPreviewContent(state: OnboardingScreenUiState) {
         onCountrySelected = {},
         onContinue = {},
         onBack = {},
+        onSignOutClick = {},
         onSignOutConfirmed = {},
         onSignOutDismissed = {},
     )

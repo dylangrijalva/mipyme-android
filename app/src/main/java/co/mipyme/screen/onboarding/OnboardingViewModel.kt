@@ -83,7 +83,11 @@ class OnboardingViewModel(
         if (state.isBusy) return
         val previousStep = state.step.previous
         if (previousStep == null) {
-            onSignOutClick()
+            if (hasTypedInput()) {
+                onSignOutClick()
+            } else {
+                signOut()
+            }
         } else {
             _stateFlow.update { it.copy(step = previousStep) }
         }
@@ -91,11 +95,7 @@ class OnboardingViewModel(
 
     fun onSignOutClick() {
         if (state.isBusy) return
-        if (hasTypedInput()) {
-            _stateFlow.update { it.copy(isSignOutConfirmationVisible = true) }
-        } else {
-            signOut()
-        }
+        _stateFlow.update { it.copy(isSignOutConfirmationVisible = true) }
     }
 
     fun onSignOutConfirmed() {
@@ -262,7 +262,7 @@ class OnboardingViewModel(
     private fun defaultCountry(): CountryIsoCode {
         val deviceCountry = Locale.getDefault().country
         return CountryIsoCode.entries.firstOrNull { country ->
-            country != CountryIsoCode.ZZ && country.name.equals(deviceCountry, ignoreCase = true)
+            country in ONBOARDING_SELECTABLE_COUNTRIES && country.name.equals(deviceCountry, ignoreCase = true)
         } ?: CountryIsoCode.NI
     }
 }

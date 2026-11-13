@@ -110,15 +110,22 @@ class OnboardingViewModelTest {
     }
 
     @Test
-    fun `business type starts as Other`() = runTest(dispatcher) {
-        assertEquals(BusinessType.OTHER, harness().viewModel.state.businessType)
+    fun `business type starts as Convenience Store`() = runTest(dispatcher) {
+        assertEquals(BusinessType.CONVENIENCE_STORE, harness().viewModel.state.businessType)
     }
 
     @Test
     fun `country starts as the device country when it is supported`() = runTest(dispatcher) {
+        Locale.setDefault(Locale.forLanguageTag("es-GT"))
+
+        assertEquals(CountryIsoCode.GT, harness().viewModel.state.country)
+    }
+
+    @Test
+    fun `country starts as Nicaragua when the device country is supported but hidden`() = runTest(dispatcher) {
         Locale.setDefault(Locale.forLanguageTag("es-MX"))
 
-        assertEquals(CountryIsoCode.MX, harness().viewModel.state.country)
+        assertEquals(CountryIsoCode.NI, harness().viewModel.state.country)
     }
 
     @Test
