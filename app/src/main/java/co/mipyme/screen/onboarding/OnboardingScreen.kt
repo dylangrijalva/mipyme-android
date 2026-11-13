@@ -156,6 +156,7 @@ private fun OnboardingContent(
                     onClick = onSignOutClick,
                 ),
             ),
+            compact = true,
             windowInsets = WindowInsets(0),
         )
         MoshiLinearProgressIndicator(

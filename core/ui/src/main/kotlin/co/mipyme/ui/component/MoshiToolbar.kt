@@ -68,6 +68,12 @@ class MoshiToolbarAction(
 
 private const val MAX_VISIBLE_ACTIONS = 2
 
+/**
+ * A top toolbar with an optional navigation action, title, subtitle, and end actions.
+ *
+ * Up to [MAX_VISIBLE_ACTIONS] actions show as icon buttons and more collapse into an overflow menu.
+ * Set [compact] to always place [actions] in the overflow menu, even when there is only one.
+ */
 @Composable
 fun MoshiToolbar(
     modifier: Modifier = Modifier,
@@ -75,6 +81,7 @@ fun MoshiToolbar(
     subtitle: String? = null,
     navigation: MoshiToolbarNavigation? = null,
     actions: List<MoshiToolbarAction> = emptyList(),
+    compact: Boolean = false,
     windowInsets: WindowInsets = WindowInsets.statusBars,
 ) {
     val colors = Moshi.colors
@@ -117,7 +124,7 @@ fun MoshiToolbar(
                 )
             }
         }
-        if (actions.size <= MAX_VISIBLE_ACTIONS) {
+        if (!compact && actions.size <= MAX_VISIBLE_ACTIONS) {
             actions.forEach { action ->
                 ToolbarIconButton(
                     iconRes = action.icon,
@@ -125,7 +132,7 @@ fun MoshiToolbar(
                     onClick = action.onClick,
                 )
             }
-        } else {
+        } else if (actions.isNotEmpty()) {
             ToolbarOverflowMenu(actions = actions)
         }
     }

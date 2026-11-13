@@ -220,7 +220,8 @@ Pass `actions` (optional) to add `MoshiToolbarAction` items after the title. Wit
 each shows as a 24 dp icon in a 48 × 48 dp touch target, labeled with the action's `label`. With
 three or more, the toolbar shows a single "More actions" button that opens a menu on
 `background.elevated` listing every action with its icon and label; choosing one closes the menu
-and runs its callback.
+and runs its callback. Set `compact = true` (default `false`) to use the "More actions" menu for any
+number of actions, even a single one.
 
 ### MoshiLinearProgressIndicator
 
