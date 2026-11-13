@@ -102,8 +102,9 @@ internal fun OnboardingScreen(viewModel: OnboardingViewModel = koinViewModel()) 
         }
     }
 
-    // The first step keeps the default back behavior and leaves the app.
-    BackHandler(enabled = state.step != OnboardingStep.NAME) {
+    // The first step keeps the default back behavior and leaves the app, unless a request is in
+    // flight: then back is consumed (and ignored by the ViewModel) so the user cannot leave midway.
+    BackHandler(enabled = state.step != OnboardingStep.NAME || state.isBusy) {
         viewModel.onBack()
     }
 
@@ -144,7 +145,7 @@ private fun OnboardingContent(
             .safeDrawingPadding(),
     ) {
         MoshiToolbar(
-            navigation = if (state.step.previous != null) {
+            navigation = if (state.step.previous != null && !state.isBusy) {
                 MoshiToolbarNavigation.Back(onClick = onBack)
             } else {
                 null
