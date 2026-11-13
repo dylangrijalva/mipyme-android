@@ -61,7 +61,6 @@ data class OnboardingScreenUiState(
             OnboardingStep.COUNTRY -> true
         }
 
-    // Creating the business is temporarily disabled, so the last step's button never enables.
     val isContinueEnabled: Boolean
-        get() = isStepValid && !isBusy && step.next != null
+        get() = isStepValid && !isBusy
 }

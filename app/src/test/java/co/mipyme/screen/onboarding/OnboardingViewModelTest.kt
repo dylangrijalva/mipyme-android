@@ -166,7 +166,7 @@ class OnboardingViewModelTest {
     }
 
     @Test
-    fun `finish button stays disabled on the country step while business creation is turned off`() = runTest(dispatcher) {
+    fun `finish button is enabled on the country step`() = runTest(dispatcher) {
         val viewModel = harness().viewModel
 
         assertEquals(true, viewModel.state.isContinueEnabled)
@@ -174,7 +174,7 @@ class OnboardingViewModelTest {
         viewModel.completeAllSteps()
 
         assertEquals(OnboardingStep.COUNTRY, viewModel.state.step)
-        assertEquals(false, viewModel.state.isContinueEnabled)
+        assertEquals(true, viewModel.state.isContinueEnabled)
     }
 
     @Test
@@ -292,6 +292,7 @@ class OnboardingViewModelTest {
         val harness = harness(authService)
 
         harness.viewModel.onSignOutClick()
+        harness.viewModel.onSignOutConfirmed()
         advanceUntilIdle()
 
         assertEquals(AuthError.Network.toStringResource(), harness.viewModel.state.pendingToastRes)
@@ -304,6 +305,7 @@ class OnboardingViewModelTest {
         val authService = FakeAuthService(AuthState.Authenticated(account), signOutGate = gate)
         val harness = harness(authService)
         harness.viewModel.onSignOutClick()
+        harness.viewModel.onSignOutConfirmed()
         advanceUntilIdle()
         assertTrue(harness.viewModel.state.isSigningOut)
 
