@@ -159,6 +159,24 @@ exposed as the error message when the enabled field is invalid. An optional trai
 and pass `KeyboardOptions`, `KeyboardActions`, and `VisualTransformation` for keyboard and display
 behavior. The field is single line.
 
+### MoshiCodeField
+
+Use for a fixed-length numeric one-time code, such as the email verification code. It draws one cell
+per digit (six by default) with a 6 dp corner radius and a 64 dp minimum height. Cells use
+`background.surface` with a 1 dp `border.interactive` border, and the cell that receives the next
+digit gets a 2 dp `border.focus` border while the field is focused. Invalid fields use
+`border.status.error`. Disabled fields use `background.disabled`, `border.default`, and
+`foreground.disabled`. Disabled styling takes precedence over error, and error takes precedence over
+focus. Digits use the Heading role in `foreground.primary`.
+
+Input is filtered to digits and truncated to `length`, and the keyboard is numeric with the Done
+action. Pass `KeyboardActions` to react to Done. Supporting text wraps below the cells with
+`typography.caption` in `foreground.secondary`, or `foreground.status.error` when invalid.
+
+The whole field is a single accessibility node named by the required `label`; the cells are
+decorative. Supporting text is also exposed as the error message when the enabled field is invalid.
+Tapping anywhere on the cells focuses the field and shows the keyboard.
+
 ### MoshiCardSelector
 
 Use for a single choice presented as a card, such as the business type during onboarding.
