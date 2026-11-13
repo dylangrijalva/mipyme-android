@@ -1,8 +1,6 @@
 package co.mipyme.screen.welcome
 
 import android.widget.Toast
-import androidx.annotation.DrawableRes
-import androidx.annotation.StringRes
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.togetherWith
@@ -62,12 +60,6 @@ import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.navigation3.navigation
 
 private const val ILLUSTRATION_ASPECT_RATIO = 4f / 3f
-
-private data class WelcomeSlide(
-    @param:DrawableRes val imageRes: Int,
-    @param:StringRes val titleRes: Int,
-    @param:StringRes val bodyRes: Int,
-)
 
 private val welcomeSlides = listOf(
     WelcomeSlide(
