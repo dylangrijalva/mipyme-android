@@ -252,6 +252,20 @@ class MipymeApiTest {
     }
 
     @Test
+    fun `error responses accept a camel case request id`() {
+        runTest {
+            val body = """{"requestId":"req_abc","status":401,"code":"invalid_oauth_token","message":"Provide a bearer token.","details":[]}"""
+            recordingApi(body, HttpStatusCode.Unauthorized).use { recording ->
+                val error = recording.api.accounts.currentUser().leftOrNull()
+
+                val response = assertIs<NetworkError.Response>(error).error
+                assertEquals("req_abc", response.requestId)
+                assertEquals(MipymeErrorCode.INVALID_OAUTH_TOKEN, response.code)
+            }
+        }
+    }
+
+    @Test
     fun `an unreadable error body is a serialization failure`() {
         runTest {
             recordingApi("not json", HttpStatusCode.BadGateway).use { recording ->
