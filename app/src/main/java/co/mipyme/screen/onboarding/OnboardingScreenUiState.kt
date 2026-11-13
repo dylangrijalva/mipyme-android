@@ -6,7 +6,7 @@ import co.mipyme.contract.CountryIsoCode
 
 const val ONBOARDING_NAME_MAX_LENGTH = 64
 
-// Only Central American countries are offered for now. Other countries stay in CountryIsoCode.
+// Only Central America, Mexico and Colombia are offered for now. Other countries stay in CountryIsoCode.
 val ONBOARDING_SELECTABLE_COUNTRIES: Set<CountryIsoCode> = setOf(
     CountryIsoCode.NI,
     CountryIsoCode.BZ,
@@ -15,6 +15,8 @@ val ONBOARDING_SELECTABLE_COUNTRIES: Set<CountryIsoCode> = setOf(
     CountryIsoCode.HN,
     CountryIsoCode.PA,
     CountryIsoCode.SV,
+    CountryIsoCode.CO,
+    CountryIsoCode.MX,
 )
 
 enum class OnboardingStep {

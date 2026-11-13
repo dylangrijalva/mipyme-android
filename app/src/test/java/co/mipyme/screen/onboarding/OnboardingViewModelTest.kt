@@ -122,8 +122,15 @@ class OnboardingViewModelTest {
     }
 
     @Test
-    fun `country starts as Nicaragua when the device country is supported but hidden`() = runTest(dispatcher) {
+    fun `country starts as Mexico when the device country is Mexico`() = runTest(dispatcher) {
         Locale.setDefault(Locale.forLanguageTag("es-MX"))
+
+        assertEquals(CountryIsoCode.MX, harness().viewModel.state.country)
+    }
+
+    @Test
+    fun `country starts as Nicaragua when the device country is supported but hidden`() = runTest(dispatcher) {
+        Locale.setDefault(Locale.forLanguageTag("es-AR"))
 
         assertEquals(CountryIsoCode.NI, harness().viewModel.state.country)
     }

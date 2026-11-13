@@ -534,7 +534,7 @@ private fun CountryIsoCode.flagRes(): Int? {
     }
 }
 
-// Nicaragua first, then the rest of Central America, then every other country.
+// Nicaragua first, then the rest of Central America, then every other selectable country.
 private fun CountryIsoCode.listGroup(): Int {
     return when (this) {
         CountryIsoCode.NI -> 0
