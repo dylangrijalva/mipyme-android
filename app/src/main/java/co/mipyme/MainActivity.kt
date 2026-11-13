@@ -19,7 +19,14 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.core.module.Module
+import org.koin.core.module.dsl.viewModelOf
 import kotlin.time.Duration.Companion.milliseconds
+
+fun Module.mainScreenModule(): Module {
+    viewModelOf(::MainViewModel)
+    return this
+}
 
 class MainActivity : ComponentActivity() {
     private val viewModel: MainViewModel by viewModel()
