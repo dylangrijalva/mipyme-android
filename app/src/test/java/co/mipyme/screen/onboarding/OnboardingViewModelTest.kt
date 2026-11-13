@@ -502,7 +502,6 @@ class OnboardingViewModelTest {
             OnboardingScreenUiState(name = "Monkey D. Luffy", country = harness.viewModel.state.country),
             harness.viewModel.state,
         )
-        // The second account submits exactly the same values, so only a cleared key can differ.
         harness.viewModel.completeAllSteps()
         harness.viewModel.onBusinessNameChange("Straw Hat Pirates")
         harness.viewModel.onContinue()

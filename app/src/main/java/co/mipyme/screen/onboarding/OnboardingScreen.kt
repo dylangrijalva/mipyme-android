@@ -102,8 +102,6 @@ internal fun OnboardingScreen(viewModel: OnboardingViewModel = koinViewModel()) 
         }
     }
 
-    // The first step keeps the default back behavior and leaves the app, unless a request is in
-    // flight: then back is consumed (and ignored by the ViewModel) so the user cannot leave midway.
     BackHandler(enabled = state.step != OnboardingStep.NAME || state.isBusy) {
         viewModel.onBack()
     }
@@ -396,7 +394,6 @@ private fun CountryFlag(country: CountryIsoCode) {
 
     Image(
         painter = painterResource(flagRes),
-        // Decorative: the option's label already names the country.
         contentDescription = null,
         modifier = Modifier
             .size(Moshi.spacing.space8)
@@ -504,7 +501,6 @@ private fun CountryIsoCode.flagRes(): Int? {
     }
 }
 
-// Nicaragua first, then the rest of Central America, then every other selectable country.
 private fun CountryIsoCode.listGroup(): Int {
     return when (this) {
         CountryIsoCode.NI -> 0

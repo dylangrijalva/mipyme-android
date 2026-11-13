@@ -17,9 +17,6 @@ import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import timber.log.Timber
 
-// Owns the cached account (the source of truth for the auth state) plus the in-memory
-// SessionExpired and Blocked flags. Every write is serialized so a deliberate sign-out is never
-// reported as an expired session, and DataStore failures surface as errors instead of crashing.
 internal class AccountCache(private val dataStore: DataStore<IdentityAccount?>) {
     private val mutex = Mutex()
     private val sessionExpired = MutableStateFlow(false)
@@ -52,8 +49,6 @@ internal class AccountCache(private val dataStore: DataStore<IdentityAccount?>) 
             .getOrNull()
     }
 
-    // The session may end while the latest user is being fetched, so the caller re-checks it
-    // under the lock before the account is written.
     suspend fun saveIfSessionStillActive(
         account: IdentityAccount,
         isActiveSessionOf: (String) -> Boolean,
@@ -69,7 +64,6 @@ internal class AccountCache(private val dataStore: DataStore<IdentityAccount?>) 
 
     suspend fun clearAsExpired(): Either<AuthError, Unit> {
         return guarded {
-            // A concurrent sign-out may already have cleared the cache.
             if (dataStore.data.first() != null) {
                 dataStore.updateData { null }
                 sessionExpired.update { true }
@@ -77,8 +71,6 @@ internal class AccountCache(private val dataStore: DataStore<IdentityAccount?>) 
         }
     }
 
-    // Runs a provider action under the lock and clears the cache only when it succeeds, so the
-    // session reaction that the action triggers finds an empty cache and stays quiet.
     suspend fun clearAfter(action: suspend () -> Either<AuthError, Unit>): Either<AuthError, Unit> {
         return mutex.withLock {
             val actionResult = action()

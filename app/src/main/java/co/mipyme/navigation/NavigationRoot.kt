@@ -22,7 +22,6 @@ fun NavigationRoot(startRoute: Route) {
 
     NavDisplay(
         backStack = backStack,
-        // Scopes each entry's ViewModels to that entry, so they are cleared when it is popped.
         entryDecorators = listOf(
             rememberSaveableStateHolderNavEntryDecorator(),
             rememberViewModelStoreNavEntryDecorator(),

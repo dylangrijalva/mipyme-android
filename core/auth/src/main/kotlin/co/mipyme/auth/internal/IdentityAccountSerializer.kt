@@ -23,9 +23,6 @@ private val Context.storedAccountDataStore: DataStore<StoredAccount> by dataStor
 internal val Context.identityAccountDataStore: DataStore<IdentityAccount?>
     get() = NullableAccountDataStore(storedAccountDataStore)
 
-// DataStore reads files through Okio, which fails with a NullPointerException when a serializer
-// returns null for an existing file. The "no account" state therefore travels inside a non-null
-// wrapper; an empty file on disk still means "no account".
 internal data class StoredAccount(val account: IdentityAccount?)
 
 internal class NullableAccountDataStore(
@@ -48,7 +45,6 @@ internal object IdentityAccountSerializer : Serializer<StoredAccount> {
             val account = identityAccountJson.decodeFromString(IdentityAccount.serializer(), bytes.decodeToString())
             StoredAccount(account)
         } catch (exception: IllegalArgumentException) {
-            // Covers SerializationException and invalid values rejected by the contract class.
             defaultValue
         }
     }

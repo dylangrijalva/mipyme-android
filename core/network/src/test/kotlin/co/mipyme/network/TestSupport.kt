@@ -28,13 +28,11 @@ internal const val TEST_TOKEN = "straw-hat-token"
 
 internal val TestJson = Json { ignoreUnknownKeys = true }
 
-// Reads the checked-in OpenAPI snapshot (`core/network/openapi.json`).
 internal object OpenApiSpec {
     private val HTTP_METHODS = setOf("get", "post", "put", "patch", "delete")
     private val specification = TestJson.parseToJsonElement(File("openapi.json").readText()).jsonObject
     private val schemas = specification.getValue("components").jsonObject.getValue("schemas").jsonObject
 
-    // Every `(lowercase method, path template)` pair documented by the specification.
     val operations: Set<Pair<String, String>> = specification.getValue("paths").jsonObject
         .flatMap { (path, item) ->
             item.jsonObject.keys
@@ -43,7 +41,6 @@ internal object OpenApiSpec {
         }
         .toSet()
 
-    // Operations that document the `Idempotency-Key` header.
     val idempotentOperations: Set<Pair<String, String>> = specification.getValue("paths").jsonObject
         .flatMap { (path, item) ->
             item.jsonObject

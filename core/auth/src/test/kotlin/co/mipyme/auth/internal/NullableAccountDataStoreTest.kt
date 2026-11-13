@@ -88,7 +88,6 @@ class NullableAccountDataStoreTest {
         assertNull(newStore().data.first())
     }
 
-    // Simulates a process restart: the previous store is stopped before a new one opens the file.
     private suspend fun newStore(): DataStore<IdentityAccount?> {
         stopRunningStores()
         val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)

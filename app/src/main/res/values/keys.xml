@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Clerk publishable keys are meant to be public; replace with the real key. -->
     <string name="clerk_publishable_key" translatable="false">pk_test_REPLACE_ME</string>
-    <!-- Base URL of the Mipyme API; replace with the real one, including the trailing slash. -->
     <string name="mipyme_api_base_url" translatable="false">https://REPLACE_ME/</string>
 </resources>

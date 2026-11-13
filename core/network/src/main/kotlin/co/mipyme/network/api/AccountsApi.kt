@@ -13,7 +13,6 @@ import io.ktor.client.request.get
 import io.ktor.client.request.post
 
 class AccountsApi internal constructor(private val client: HttpClient) {
-    // `GET /me` returns the identity claims, not an onboarding or merchant-membership decision.
     suspend fun currentUser(): Either<NetworkError, JsonWebTokenPayload> {
         return client.runSafe {
             get("/me")

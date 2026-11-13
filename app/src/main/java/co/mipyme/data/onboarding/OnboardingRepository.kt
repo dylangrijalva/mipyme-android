@@ -16,9 +16,6 @@ class OnboardingRepository(
     private val api: MipymeApi,
     private val authService: AuthService,
 ) {
-    // The new merchant reaches the app through the refreshed account, so success is only reported
-    // once the refresh worked. When it fails the merchant already exists, and repeating the same
-    // request with the same key replays the original response and retries the refresh.
     suspend fun onboard(
         request: OnboardAccountRequest,
         idempotencyKey: String,

@@ -58,7 +58,6 @@ internal class ClerkAuthService(
 ) : AuthService {
 
     private val otpCooldownSecondsRemaining = MutableStateFlow(0)
-    // Written from Clerk continuations and read from callers' dispatchers.
     @Volatile
     private var otpCooldownEmail: String? = null
     private var otpCooldownJob: Job? = null
@@ -72,15 +71,12 @@ internal class ClerkAuthService(
         otpCooldownSecondsRemaining.asStateFlow()
 
     override suspend fun signIn(strategy: SignInStrategy): Either<AuthError, SignInAttempt> {
-        // Reject a too-early retry before resetting anything, so the current state stays intact.
         if (strategy is SignInStrategy.EmailCode &&
             isOtpCooldownBlocking(otpCooldownSecondsRemaining.value, otpCooldownEmail, strategy.email)
         ) {
             return AuthError.OtpResendRateLimited.left()
         }
         pendingEmailChallenge = null
-        // Discard a stale Clerk session first; doing it through the cache keeps the resulting
-        // session change from being reported as an expired session.
         val reset = accountCache.clearAfter {
             if (Clerk.isSignedIn) {
                 Clerk.auth.signOut()
@@ -143,7 +139,6 @@ internal class ClerkAuthService(
         return accountCache.clearAfter {
             val session = Clerk.session
             if (session == null) {
-                // Without a server-confirmed state a session may still exist remotely.
                 if (Clerk.isInitialized.value) Unit.right() else AuthError.Network.left()
             } else {
                 signOutFromServer(session)
@@ -162,14 +157,11 @@ internal class ClerkAuthService(
         }
     }
 
-    // Signing out by session id only touches the server; the no-argument variant wipes the local
-    // session even when the request fails, which would sign the merchant out while offline.
     private suspend fun signOutFromServer(session: Session): Either<AuthError, Unit> {
         return when (val result = Clerk.auth.signOut(sessionId = session.id)) {
             is ClerkResult.Failure -> result.toAuthError(missingDetailsMeansNetwork = true).left()
             is ClerkResult.Success -> {
                 if (Clerk.session != null) {
-                    // The server session is gone; this only clears Clerk's local state.
                     Clerk.auth.signOut()
                 }
                 Unit.right()
@@ -330,7 +322,6 @@ internal class ClerkAuthService(
         }
     }
 
-    // Best effort and off the session pipeline, so a slow request never delays session changes.
     private fun refreshAfterRestore() {
         applicationScope.launch {
             refresh().onLeft { error ->
@@ -404,8 +395,6 @@ private fun ClerkResult.Failure<ClerkErrorResponse>.errorCode(): String? {
     return error?.errors?.firstOrNull()?.code
 }
 
-// Some Clerk calls (sign-out by session id, token fetching) drop the IOException and return a
-// failure without error details; for those, missing details means the request never got through.
 private fun ClerkResult.Failure<ClerkErrorResponse>.toAuthError(
     missingDetailsMeansNetwork: Boolean = false,
 ): AuthError {

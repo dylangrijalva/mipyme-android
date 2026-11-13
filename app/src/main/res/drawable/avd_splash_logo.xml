@@ -1,11 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--
-    Animated splash icon (API 31+). The Arcos mark is drawn like a pen writing a lowercase m: the
-    left arch is traced up the stem and over the first hump, the right arch continues over the second
-    hump, and the pillar is drawn up last to lock them together. Each piece is a thick stroke along
-    the shape's centreline, clipped to the exact logo path so the final frame matches ic_splash_logo.
-    Total length: 1300 ms, matching windowSplashScreenAnimationDuration in values-v31/themes.xml.
--->
 <animated-vector xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:aapt="http://schemas.android.com/aapt">
     <aapt:attr name="android:drawable">

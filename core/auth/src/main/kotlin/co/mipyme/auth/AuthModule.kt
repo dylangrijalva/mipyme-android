@@ -9,7 +9,6 @@ import org.koin.dsl.module
 
 fun authModule(): Module {
     return module {
-        // Eager, so Clerk session changes are mirrored into the cache from app start.
         single<AuthService>(createdAtStart = true) {
             ClerkAuthService(
                 applicationScope = get(),

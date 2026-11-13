@@ -22,7 +22,6 @@ import kotlinx.coroutines.Dispatchers
 
 class FakeResponse(val status: HttpStatusCode, val body: String)
 
-// Stands in for ktor-client-mock, which `:app` does not depend on.
 class FakeMipymeApi(
     private val respond: suspend (HttpRequestData) -> FakeResponse,
 ) {

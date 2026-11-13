@@ -79,7 +79,6 @@ fun MoshiCardSelector(
                 .padding(vertical = spacing.space3),
         ) {
             if (icon != null) {
-                // Decorative: the label already names the option.
                 Icon(
                     painter = painterResource(icon),
                     contentDescription = null,

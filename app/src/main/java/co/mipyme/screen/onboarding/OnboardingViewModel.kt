@@ -125,12 +125,10 @@ class OnboardingViewModel(
         submitJob = viewModelScope.launch {
             var result = repository.onboard(request, idempotencyKeyFor(request))
             if (result.leftOrNull() == OnboardingError.IdempotencyKeyMismatch) {
-                // The key was spent on a different request, so retry once with a fresh one.
                 forgetIdempotencyKey()
                 result = repository.onboard(request, idempotencyKeyFor(request))
             }
             _stateFlow.update { it.copy(isSubmitting = false) }
-            // On success the refreshed account moves the app to its next destination.
             result.fold(
                 ifLeft = { error ->
                     if (!error.mayHaveReachedServer()) {
@@ -143,8 +141,6 @@ class OnboardingViewModel(
         }
     }
 
-    // A key is only reused to retry the very same request; any other request gets a fresh key,
-    // because the server rejects a known key that arrives with a different body.
     private fun idempotencyKeyFor(request: OnboardAccountRequest): String {
         val fingerprint = request.toString()
         val storedKey = savedStateHandle.get<String>(IDEMPOTENCY_KEY)
@@ -162,7 +158,6 @@ class OnboardingViewModel(
         savedStateHandle.remove<String>(IDEMPOTENCY_REQUEST)
     }
 
-    // The ViewModel outlives sign-out, so another account must not inherit the previous form.
     private fun onAuthStateChanged(authState: AuthState) {
         when (authState) {
             is AuthState.Authenticated -> {
