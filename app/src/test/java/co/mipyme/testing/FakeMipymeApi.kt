@@ -1,0 +1,56 @@
+package co.mipyme.testing
+
+import co.mipyme.network.AuthTokenProvider
+import co.mipyme.network.MipymeApi
+import io.ktor.client.engine.HttpClientEngineBase
+import io.ktor.client.engine.HttpClientEngineCapability
+import io.ktor.client.engine.HttpClientEngineConfig
+import io.ktor.client.engine.callContext
+import io.ktor.client.plugins.HttpTimeoutCapability
+import io.ktor.client.request.HttpRequestData
+import io.ktor.client.request.HttpResponseData
+import io.ktor.http.ContentType
+import io.ktor.http.HttpHeaders
+import io.ktor.http.HttpProtocolVersion
+import io.ktor.http.HttpStatusCode
+import io.ktor.http.headersOf
+import io.ktor.util.date.GMTDate
+import io.ktor.utils.io.ByteReadChannel
+import io.ktor.utils.io.InternalAPI
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
+
+class FakeResponse(val status: HttpStatusCode, val body: String)
+
+// Stands in for ktor-client-mock, which `:app` does not depend on.
+class FakeMipymeApi(
+    private val respond: suspend (HttpRequestData) -> FakeResponse,
+) {
+    val requests = mutableListOf<HttpRequestData>()
+
+    val api: MipymeApi = MipymeApi(
+        baseUrl = "https://api.mipyme.example.com",
+        tokenProvider = AuthTokenProvider { "token" },
+        engine = FakeEngine(),
+    )
+
+    @OptIn(InternalAPI::class)
+    private inner class FakeEngine : HttpClientEngineBase("fake-mipyme") {
+        override val config = HttpClientEngineConfig()
+        override val dispatcher: CoroutineDispatcher = Dispatchers.Unconfined
+        override val supportedCapabilities: Set<HttpClientEngineCapability<*>> = setOf(HttpTimeoutCapability)
+
+        override suspend fun execute(data: HttpRequestData): HttpResponseData {
+            requests += data
+            val response = respond(data)
+            return HttpResponseData(
+                statusCode = response.status,
+                requestTime = GMTDate(),
+                headers = headersOf(HttpHeaders.ContentType, ContentType.Application.Json.toString()),
+                version = HttpProtocolVersion.HTTP_1_1,
+                body = ByteReadChannel(response.body.encodeToByteArray()),
+                callContext = callContext(),
+            )
+        }
+    }
+}

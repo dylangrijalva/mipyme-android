@@ -28,7 +28,13 @@ class MainViewModel(
     private fun AuthState.toLaunchDestination(): LaunchDestination {
         return when (this) {
             AuthState.Initializing -> LaunchDestination.Idle
-            is AuthState.Authenticated -> LaunchDestination.Home
+            is AuthState.Authenticated -> {
+                if (account.publicMetadata.merchantId == null) {
+                    LaunchDestination.Onboarding
+                } else {
+                    LaunchDestination.Home
+                }
+            }
             AuthState.Unauthenticated,
             AuthState.SessionExpired,
             AuthState.Blocked -> LaunchDestination.Welcome

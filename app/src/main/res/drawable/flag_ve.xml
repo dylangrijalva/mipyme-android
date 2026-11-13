@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="48dp"
+    android:height="48dp"
+    android:viewportWidth="48"
+    android:viewportHeight="48">
+    <group>
+        <clip-path android:pathData="M0,24a24,24 0 1,0 48,0a24,24 0 1,0 -48,0z" />
+        <path android:fillColor="#FFCC00" android:pathData="M0,0h48v16h-48z" />
+        <path android:fillColor="#00247D" android:pathData="M0,16h48v16h-48z" />
+        <path android:fillColor="#CF142B" android:pathData="M0,32h48v16h-48z" />
+        <path android:fillColor="#FFFFFF" android:pathData="M15.54,25.42L15.88,26.46L16.97,26.46L16.09,27.1L16.42,28.14L15.54,27.49L14.66,28.14L15,27.1L14.12,26.46L15.21,26.46z" />
+        <path android:fillColor="#FFFFFF" android:pathData="M17.11,22.71L17.44,23.75L18.53,23.75L17.65,24.39L17.99,25.43L17.11,24.79L16.22,25.43L16.56,24.39L15.68,23.75L16.77,23.75z" />
+        <path android:fillColor="#FFFFFF" android:pathData="M19.5,20.71L19.84,21.74L20.93,21.74L20.04,22.38L20.38,23.42L19.5,22.78L18.62,23.42L18.96,22.38L18.07,21.74L19.16,21.74z" />
+        <path android:fillColor="#FFFFFF" android:pathData="M22.44,19.64L22.77,20.67L23.86,20.67L22.98,21.31L23.32,22.35L22.44,21.71L21.56,22.35L21.89,21.31L21.01,20.67L22.1,20.67z" />
+        <path android:fillColor="#FFFFFF" android:pathData="M25.56,19.64L25.9,20.67L26.99,20.67L26.11,21.31L26.44,22.35L25.56,21.71L24.68,22.35L25.02,21.31L24.14,20.67L25.23,20.67z" />
+        <path android:fillColor="#FFFFFF" android:pathData="M28.5,20.71L28.84,21.74L29.93,21.74L29.04,22.38L29.38,23.42L28.5,22.78L27.62,23.42L27.96,22.38L27.07,21.74L28.16,21.74z" />
+        <path android:fillColor="#FFFFFF" android:pathData="M30.89,22.71L31.23,23.75L32.32,23.75L31.44,24.39L31.78,25.43L30.89,24.79L30.01,25.43L30.35,24.39L29.47,23.75L30.56,23.75z" />
+        <path android:fillColor="#FFFFFF" android:pathData="M32.46,25.42L32.79,26.46L33.88,26.46L33,27.1L33.34,28.14L32.46,27.49L31.58,28.14L31.91,27.1L31.03,26.46L32.12,26.46z" />
+    </group>
+</vector>

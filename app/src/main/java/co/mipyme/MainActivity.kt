@@ -89,6 +89,7 @@ private fun LaunchDestination.toRoute(): Route? {
     return when (this) {
         LaunchDestination.Idle -> null
         LaunchDestination.Welcome -> Route.Welcome
+        LaunchDestination.Onboarding -> Route.Onboarding
         LaunchDestination.Home -> Route.Home
     }
 }

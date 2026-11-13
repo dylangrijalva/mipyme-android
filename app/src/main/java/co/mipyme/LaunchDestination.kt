@@ -5,5 +5,7 @@ sealed interface LaunchDestination {
 
     data object Welcome : LaunchDestination
 
+    data object Onboarding : LaunchDestination
+
     data object Home : LaunchDestination
 }
