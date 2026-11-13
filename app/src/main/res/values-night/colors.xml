@@ -8,4 +8,9 @@
     <color name="logo_mark_left_arch">@color/logo_white</color>
     <color name="logo_mark_pillar">@color/logo_blue</color>
     <color name="logo_wordmark">@color/logo_white</color>
+
+    <color name="illustration_ink">#ECECEE</color>
+    <color name="illustration_paper">#1D1F27</color>
+    <color name="illustration_hatch">#262933</color>
+    <color name="illustration_scribble">#5F6474</color>
 </resources>

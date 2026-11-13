@@ -7,4 +7,25 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+    <color name="logo_blue">#2B4FB9</color>
+    <color name="logo_orange">#FF4C00</color>
+    <color name="logo_ink">#252525</color>
+    <color name="logo_white">#FFFFFF</color>
+
+    <color name="logo_mark_left_arch">@color/logo_blue</color>
+    <color name="logo_mark_pillar">@color/logo_ink</color>
+    <color name="logo_wordmark">@color/logo_ink</color>
+
+    <color name="launcher_background">@color/logo_ink</color>
+
+    <color name="splash_background">#F0F0F2</color>
+    <color name="splash_logo_left_arch">@color/logo_blue</color>
+    <color name="splash_logo_pillar">@color/logo_ink</color>
+    <color name="splash_wordmark">@color/logo_ink</color>
+
+    <color name="illustration_ink">#1C1C1E</color>
+    <color name="illustration_paper">#FFFFFF</color>
+    <color name="illustration_hatch">#E2E3E8</color>
+    <color name="illustration_scribble">#A4A7B3</color>
 </resources>
