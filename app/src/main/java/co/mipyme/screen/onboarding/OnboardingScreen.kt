@@ -12,7 +12,6 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -33,7 +32,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.layout.Layout
@@ -145,31 +143,21 @@ private fun OnboardingContent(
             .background(Moshi.colors.background.canvas)
             .safeDrawingPadding(),
     ) {
-        Box {
-            MoshiToolbar(
-                navigation = if (state.step.previous != null) {
-                    MoshiToolbarNavigation.Back(onClick = onBack)
-                } else {
-                    null
-                },
-                actions = listOf(
-                    MoshiToolbarAction(
-                        icon = R.drawable.ic_fluent_sign_out_24_regular,
-                        label = stringResource(R.string.onboarding_sign_out),
-                        onClick = onSignOutClick,
-                    ),
+        MoshiToolbar(
+            navigation = if (state.step.previous != null) {
+                MoshiToolbarNavigation.Back(onClick = onBack)
+            } else {
+                null
+            },
+            actions = listOf(
+                MoshiToolbarAction(
+                    icon = R.drawable.ic_fluent_sign_out_24_regular,
+                    label = stringResource(R.string.onboarding_sign_out),
+                    onClick = onSignOutClick,
                 ),
-                windowInsets = WindowInsets(0),
-            )
-            Image(
-                painter = painterResource(R.drawable.logo_mark),
-                // Decorative: announcing the brand on every step adds noise after the toolbar actions.
-                contentDescription = null,
-                modifier = Modifier
-                    .align(Alignment.Center)
-                    .height(spacing.space6),
-            )
-        }
+            ),
+            windowInsets = WindowInsets(0),
+        )
         MoshiLinearProgressIndicator(
             progress = (state.step.ordinal + 1).toFloat() / OnboardingStep.entries.size,
         )
