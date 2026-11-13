@@ -3,9 +3,13 @@
     <string name="moshi_modal_preview_supporting_text">Revisa tu información antes de pasar al siguiente paso.</string>
     <string name="moshi_modal_preview_primary_action">Continuar</string>
     <string name="moshi_modal_preview_secondary_action">Cancelar</string>
+    <string name="moshi_modal_preview_tertiary_action">Ahora no</string>
     <string name="moshi_card_selector_preview_label">Título del selector</string>
     <string name="moshi_card_selector_preview_supporting_text">Texto del selector</string>
     <string name="moshi_button_loading">Cargando</string>
     <string name="moshi_page_indicator">Página %1$d de %2$d</string>
     <string name="moshi_step_progress_indicator">Paso %1$d de %2$d</string>
+    <string name="moshi_toolbar_back">Atrás</string>
+    <string name="moshi_toolbar_menu">Abrir menú</string>
+    <string name="moshi_toolbar_more_actions">Más acciones</string>
 </resources>

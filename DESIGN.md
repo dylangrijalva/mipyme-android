@@ -41,26 +41,41 @@ The Android token implementations and component code define the behavior shipped
 
 ### MoshiModal
 
-Use for a focused message or decision that interrupts the current screen. Based on the
-Android Dialog variants on the Native Components Modals page, it has a centered title,
-optional supporting text, an optional 80 dp icon slot, and one or two stacked full-width actions.
-The elevated surface has a 12 dp corner radius, a maximum width of 296 dp, and 24 dp side
-and bottom insets. Top padding is 32 dp without an icon and 16 dp with one. Text uses
-Subheading and Body roles, with primary and secondary foreground colors. Content scrolls
-when the available height is limited, and text and buttons grow with the font size.
+Use for a focused message or decision that interrupts the current screen. It has a left-aligned
+title, optional supporting text, an optional 80 dp icon slot, and up to three actions. The elevated
+surface has a 12 dp corner radius and a maximum width of 720 dp. It uses the active Moshi theme,
+so the charcoal surface appears in dark theme and the light theme keeps its light elevated surface.
+Side insets are 12 dp, the bottom inset is 24 dp, and top padding is 24 dp without an icon and
+16 dp with one. Text
+uses Subheading and Body roles, with primary and secondary foreground colors. Two actions sit side
+by side when the content is at least 260 dp wide. Three actions use a horizontal row at 480 dp or
+wider, with the optional tertiary text action at the start and secondary and primary actions at the
+end. At narrower widths, actions stack full-width in primary, secondary, tertiary order. Content
+scrolls when the available height is limited, and text and buttons grow with the font size.
 
-Pass `MoshiModalAction` values for the required primary action and optional secondary action.
-Each action has its own callback, enabled state, and loading state. The primary action uses
-`MoshiButtonVariant.Primary` by default; use `primaryActionVariant` for a destructive action.
-The secondary action uses `Outline`. Actions have a 16 dp gap and sit 32 dp below the text.
-The caller owns visibility and must hide the modal in response to the appropriate callbacks;
-clicking an action does not automatically dismiss it.
+Pass `MoshiModalAction` values for the required primary action and optional secondary and tertiary
+actions. Each action has its own callback, enabled state, and loading state. The primary action uses
+`MoshiButtonVariant.Primary` by default; use `primaryActionVariant` for a destructive action. The
+secondary action uses `Outline`, and the tertiary action uses `Text`. Actions sit 32 dp below the
+text and use 8 dp gaps. The caller owns visibility and must hide the modal in response to the
+appropriate callbacks; clicking an action does not automatically dismiss it.
 
 `onDismissRequest` handles Back and outside taps through the native Android dialog.
 Pass `DialogProperties` to adjust dismissal behavior, including during a pending operation.
 The title is exposed as both a pane title and a heading. Keep icons decorative when the text
 already explains the message. The icon slot supplies layout only; the caller provides its
 artwork and any background using Moshi colors. All content must be inside `MoshiTheme`.
+
+### MoshiAlertDialog
+
+Use for a confirmation with a title, message, confirm action, and cancel action. It wraps
+`MoshiModal` with the message required and maps the confirm action to the primary button and the
+cancel action to the secondary button. Each action is a `MoshiModalAction`, so it carries its own
+label, callback, enabled state, and loading state. The confirm button uses `Primary` by default;
+set `confirmActionVariant` to `Destructive` for sign-out or other destructive confirmations. The
+cancel button uses `Outline`. Pass `onDismissRequest` for Back and outside taps; the cancel action
+has its own callback. It inherits the same theme, responsive layout, and accessibility behavior as
+`MoshiModal`. Use `MoshiModal` directly when the dialog needs a third action.
 
 ### MoshiButton
 
@@ -124,29 +139,38 @@ Style links with `foreground.link` and an underline.
 
 ### MoshiTextField
 
-Use for a single piece of free-form text, such as a name. The field is a 48 dp minimum height
-container on `background.surface` with a 12 dp corner radius and `typography.body` text.
-The border is 1 dp `border.interactive` at rest, 2 dp `border.focus` while focused, and
-`border.status.error` when `isError` is set. Disabled fields use `background.disabled`,
-`border.default`, and `foreground.disabled`.
+Use for a single piece of free-form text, such as a name. The field has a required label inside a
+64 dp minimum-height container with a 6 dp corner radius and `typography.body` text. The label rests
+vertically centered when the field is empty and unfocused, then floats to the top and shrinks to
+`typography.caption` when focused or filled. An optional prefix also keeps the label floated.
 
-The optional label sits above the field in `typography.small`, and the placeholder uses
-`foreground.tertiary`. Optional supporting text sits below in `typography.caption` with
-`foreground.secondary`, or `foreground.status.error` when `isError` is set. The label and supporting text are
-rendered inside the field, so they merge into its accessibility node and are announced with the
-typed text or placeholder, and the supporting text is also exposed as the error message while
-`isError` is set. Use sentence case for labels and pass `KeyboardOptions` and `KeyboardActions`
-for the keyboard type and IME action. The field is single line unless `singleLine` is `false`.
+The container uses `background.surface`, with a 1 dp `border.default` at rest, a 2 dp
+`border.focus` while focused, and `border.status.error` when invalid. Disabled styling takes
+precedence over error, and error takes precedence over focus. Disabled fields use
+`background.disabled`, `border.default`, and `foreground.disabled`.
+
+An optional non-editable `prefixText` identifies the value's unit. The placeholder uses
+`foreground.tertiary` and appears only while the field is focused and empty. Supporting text wraps
+below the field with a 16 dp start inset aligned to the field content. It uses `typography.caption`
+with `foreground.secondary`, or `foreground.status.error` when invalid. The label is exposed as the
+field's accessible name, and supporting text is also
+exposed as the error message when the enabled field is invalid. An optional trailing action uses a
+24 dp icon in a 48 dp touch target and requires an accessible name. Use sentence case for labels
+and pass `KeyboardOptions`, `KeyboardActions`, and `VisualTransformation` for keyboard and display
+behavior. The field is single line.
 
 ### MoshiCardSelector
 
 Use for a single choice presented as a card, such as the business type during onboarding.
 Based on [Mobile Card Selector V02](https://www.figma.com/design/XIRCkRjiI126cvhOjZXn4r/Business-Native?node-id=11131-274057),
-it has an 8 dp corner radius, a 64 dp minimum height, a body label, optional Small supporting
-text, and a trailing radio indicator. Labels and supporting text wrap as needed. The onboarding
-business type grid gives every card the height of its tallest option. The card uses
-`background.surface` in both selection states, `border.default` when unselected, and
-`foreground.primary` for its selected border and indicator. Disabled cards use
+it has an 8 dp corner radius, a 64 dp minimum height, an optional 24 dp icon above the label, a
+body label, optional Small supporting text, and a trailing radio indicator. Pass `icon` as a
+Fluent drawable; it sits `space2` above the label, takes the label color (including the disabled
+color), and stays decorative because the label already names the option. Labels and supporting text wrap as needed. The onboarding
+business type grid gives every card the height of its tallest option. Every card has a
+`border.default` border. Unselected cards use `background.surface`; the selected card uses
+`background.action.secondary.hover`, a tint of the primary action blue, with a
+`background.action.primary.default` indicator. Disabled cards use
 `background.disabled`, `border.default`, and `foreground.disabled`.
 
 The whole card exposes `Role.RadioButton`; the indicator has no separate click action.
@@ -159,9 +183,10 @@ and 12 dp vertical text insets. Typography and colors follow Moshi in both theme
 Use for one choice in a list where exactly one option applies, such as a business type. The
 option is a full-width row with the label first and a 20 dp selected indicator last, with a 64 dp
 minimum height and a 12 dp corner radius. This keeps cards aligned while allowing them to grow when
-labels wrap. Unselected options use `background.surface` and
-`border.default`. The selected option uses `background.selected`, a `border.interactive` border,
-and a `background.action.primary.default` outline and dot in the indicator. Disabled options use
+labels wrap. Every option has a `border.default` border. Unselected options use
+`background.surface`; the selected option uses `background.action.secondary.hover`, a tint of the
+primary action blue, with a `background.action.primary.default` outline and dot in the indicator.
+Disabled options use
 `background.disabled`, `border.default`, and `foreground.disabled`.
 
 Pass `leadingContent` to show a visual before the label, such as a country flag. It is placed
@@ -170,3 +195,39 @@ Pass `leadingContent` to show a visual before the label, such as a country flag.
 `MoshiRadioOption` exposes `Role.RadioButton` and is selectable as a whole row. Place the options
 in a container with `Modifier.selectableGroup()` so assistive technology announces them as one
 group. Space the options with `Spacer` or `Arrangement.spacedBy`.
+
+### MoshiToolbar
+
+Use at the top of a screen to show where the user is. Based on the Android App Bar, it has an
+optional `typography.subheading` title in `foreground.primary`, an optional `typography.body` subtitle in
+`foreground.secondary` (such as the current location), and an optional navigation action before the
+title. The bar uses `background.canvas`, has a 64 dp minimum height, and grows when text wraps at
+larger font sizes. It applies `WindowInsets.statusBars` by default so the background extends behind
+the status bar; pass `windowInsets` to change that, for example when a `Scaffold` already handles them.
+
+Pass `MoshiToolbarNavigation.Back` to return to the previous screen or `MoshiToolbarNavigation.Menu`
+to open the app menu. Each shows a 24 dp icon centered in a 48 × 48 dp touch target, with a 16 dp
+visual inset from the start edge and the title 56 dp from the start edge. Without navigation, the
+title sits 16 dp from the start edge. The navigation action exposes `Role.Button` with a localized
+label ("Back" or "Open menu"), and the title is exposed as a heading. Omit the title when the
+screen content already has its own heading, such as a step in a workflow that only needs a back
+action. The navigation action only runs its callback; it has no enabled or loading state.
+`MoshiToolbarNavigation.Back` takes an optional `icon` drawable to replace the default arrow, such as a
+dismiss icon for a full-screen flow. When you change the icon, also pass a localized
+`contentDescription` that matches it; without one, the action keeps the "Back" label.
+
+Pass `actions` (optional) to add `MoshiToolbarAction` items after the title. With one or two actions,
+each shows as a 24 dp icon in a 48 × 48 dp touch target, labeled with the action's `label`. With
+three or more, the toolbar shows a single "More actions" button that opens a menu on
+`background.elevated` listing every action with its icon and label; choosing one closes the menu
+and runs its callback.
+
+### MoshiLinearProgressIndicator
+
+Use to show how far along a determinate task or workflow is, such as the onboarding steps. It is a
+single continuous, fully rounded bar with `spacing.space1` height. The track uses `border.default`
+and the fill uses `foreground.primary`. Pass `progress` from `0f` to `1f`; values outside that range
+are clamped, and the fill animates when the value changes. The bar is one accessibility node that
+exposes its progress through `ProgressBarRangeInfo`, so assistive technology announces it as a
+percentage. It is not interactive. Use `MoshiStepProgressIndicator` instead when each step should be
+shown as its own segment.

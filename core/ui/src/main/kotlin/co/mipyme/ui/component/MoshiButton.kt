@@ -147,7 +147,7 @@ fun MoshiButton(
         ) {
             Row(
                 modifier = contentVisibility.padding(
-                    horizontal = spacing.space4,
+                    horizontal = spacing.space6,
                     vertical = spacing.space2,
                 ),
                 horizontalArrangement = Arrangement.spacedBy(spacing.space2),

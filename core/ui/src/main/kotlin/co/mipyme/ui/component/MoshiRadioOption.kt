@@ -43,13 +43,8 @@ fun MoshiRadioOption(
     val shape = RoundedCornerShape(12.dp)
     val containerColor = when {
         !enabled -> colors.background.disabled
-        selected -> colors.background.selected
+        selected -> colors.background.action.secondary.hover
         else -> colors.background.surface
-    }
-    val borderColor = when {
-        !enabled -> colors.border.default
-        selected -> colors.border.interactive
-        else -> colors.border.default
     }
     val labelColor = if (enabled) colors.foreground.primary else colors.foreground.disabled
 
@@ -59,7 +54,7 @@ fun MoshiRadioOption(
             .sizeIn(minHeight = spacing.space16)
             .clip(shape)
             .background(containerColor)
-            .border(width = 1.dp, color = borderColor, shape = shape)
+            .border(width = 1.dp, color = colors.border.default, shape = shape)
             .selectable(
                 selected = selected,
                 enabled = enabled,
