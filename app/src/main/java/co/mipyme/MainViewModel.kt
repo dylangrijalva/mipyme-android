@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import co.mipyme.auth.AuthService
 import co.mipyme.auth.AuthState
+import co.mipyme.auth.merchantId
 import co.mipyme.data.notification.NotificationPermissionRepository
 import co.mipyme.sync.SyncEngine
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -49,7 +50,7 @@ class MainViewModel(
     @OptIn(ExperimentalCoroutinesApi::class)
     private fun initialSyncProgressFlow(): Flow<InitialSyncProgress> {
         return authService.authStateFlow.flatMapLatest { authState ->
-            val merchantId = (authState as? AuthState.Authenticated)?.account?.publicMetadata?.merchantId
+            val merchantId = authState.merchantId
             if (merchantId == null) {
                 flowOf(InitialSyncProgress(merchantId = null, completed = false))
             } else {

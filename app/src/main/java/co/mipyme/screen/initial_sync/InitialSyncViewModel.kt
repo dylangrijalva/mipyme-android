@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import co.mipyme.R
 import co.mipyme.auth.AuthService
-import co.mipyme.auth.AuthState
+import co.mipyme.auth.merchantId
 import co.mipyme.auth.toStringResource
 import co.mipyme.sync.SyncEngine
 import co.mipyme.sync.SyncError
@@ -72,10 +72,7 @@ class InitialSyncViewModel(
     }
 
     private suspend fun isInitialSyncCompleted(): Boolean {
-        val merchantId = (authService.authStateFlow.value as? AuthState.Authenticated)
-            ?.account
-            ?.publicMetadata
-            ?.merchantId ?: return false
+        val merchantId = authService.authStateFlow.value.merchantId ?: return false
         return syncEngine.initialSyncCompletedFlow(merchantId).first()
     }
 

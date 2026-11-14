@@ -6,8 +6,8 @@ import arrow.core.raise.either
 import arrow.core.flatMap
 import arrow.core.right
 import co.mipyme.auth.AuthService
-import co.mipyme.auth.AuthState
 import co.mipyme.auth.SessionReadiness
+import co.mipyme.auth.merchantId
 import co.mipyme.contract.SyncResponse
 import co.mipyme.contract.request.SyncRequest
 import co.mipyme.database.MipymeCache
@@ -256,10 +256,7 @@ internal class DefaultSyncEngine(
     }
 
     private fun currentMerchantId(): String? {
-        return (authService.authStateFlow.value as? AuthState.Authenticated)
-            ?.account
-            ?.publicMetadata
-            ?.merchantId
+        return authService.authStateFlow.value.merchantId
     }
 
     private companion object {

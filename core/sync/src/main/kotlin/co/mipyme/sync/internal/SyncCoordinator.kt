@@ -4,6 +4,7 @@ import arrow.core.Either
 import co.mipyme.auth.AuthService
 import co.mipyme.auth.AuthState
 import co.mipyme.auth.SessionReadiness
+import co.mipyme.auth.merchantId
 import co.mipyme.database.SyncCacheWriter
 import co.mipyme.sync.SyncError
 import co.mipyme.sync.SyncLauncher
@@ -48,7 +49,7 @@ internal class SyncCoordinator(
                 previous = authState
                 when (authState) {
                     is AuthState.Authenticated -> {
-                        val merchantId = authState.account.publicMetadata.merchantId
+                        val merchantId = authState.merchantId
                         if (merchantId != null) {
                             arm(merchantId)
                         }

@@ -9,3 +9,8 @@ sealed interface AuthState {
     data object SessionExpired : AuthState
     data object Blocked : AuthState
 }
+
+val AuthState.merchantId: String?
+    get() {
+        return (this as? AuthState.Authenticated)?.account?.publicMetadata?.merchantId
+    }
