@@ -118,6 +118,7 @@ class WelcomeViewModelTest {
 
         override val authStateFlow: StateFlow<AuthState> = MutableStateFlow(AuthState.Initializing)
         override val otpCooldownSecondsRemainingFlow: StateFlow<Int> = MutableStateFlow(0)
+        override val otpCooldownEmailFlow: StateFlow<String?> = MutableStateFlow(null)
 
         override suspend fun signIn(strategy: SignInStrategy): Either<AuthError, SignInAttempt> {
             signInCalls++

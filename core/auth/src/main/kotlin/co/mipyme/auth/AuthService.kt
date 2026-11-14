@@ -7,6 +7,7 @@ import kotlinx.coroutines.flow.StateFlow
 interface AuthService : TokenProvider {
     val authStateFlow: StateFlow<AuthState>
     val otpCooldownSecondsRemainingFlow: StateFlow<Int>
+    val otpCooldownEmailFlow: StateFlow<String?>
     suspend fun signIn(strategy: SignInStrategy): Either<AuthError, SignInAttempt>
     suspend fun completeChallenge(code: String): Either<AuthError, SignInAttempt>
     suspend fun resendOtpCode(): Either<AuthError, Unit>

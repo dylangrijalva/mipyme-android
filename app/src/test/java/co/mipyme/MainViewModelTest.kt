@@ -100,6 +100,7 @@ class MainViewModelTest {
 
         override val authStateFlow: StateFlow<AuthState> = authState
         override val otpCooldownSecondsRemainingFlow: StateFlow<Int> = MutableStateFlow(0)
+        override val otpCooldownEmailFlow: StateFlow<String?> = MutableStateFlow(null)
 
         override suspend fun getToken(): Either<AuthError, String> = error("Not used")
         override suspend fun signIn(strategy: SignInStrategy): Either<AuthError, SignInAttempt> = error("Not used")

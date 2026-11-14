@@ -58,8 +58,7 @@ internal class ClerkAuthService(
 ) : AuthService {
 
     private val otpCooldownSecondsRemaining = MutableStateFlow(0)
-    @Volatile
-    private var otpCooldownEmail: String? = null
+    private val otpCooldownEmail = MutableStateFlow<String?>(null)
     private var otpCooldownJob: Job? = null
     @Volatile
     private var pendingEmailChallenge: EmailChallenge? = null
@@ -70,13 +69,15 @@ internal class ClerkAuthService(
     override val otpCooldownSecondsRemainingFlow: StateFlow<Int> =
         otpCooldownSecondsRemaining.asStateFlow()
 
+    override val otpCooldownEmailFlow: StateFlow<String?> = otpCooldownEmail.asStateFlow()
+
     override suspend fun signIn(strategy: SignInStrategy): Either<AuthError, SignInAttempt> {
         if (strategy is SignInStrategy.EmailCode &&
-            isOtpCooldownBlocking(otpCooldownSecondsRemaining.value, otpCooldownEmail, strategy.email)
+            isOtpCooldownBlocking(otpCooldownSecondsRemaining.value, otpCooldownEmail.value, strategy.email)
         ) {
             return AuthError.OtpResendRateLimited.left()
         }
-        pendingEmailChallenge = null
+        clearEmailChallenge()
         val reset = accountCache.clearAfter {
             if (Clerk.isSignedIn) {
                 Clerk.auth.signOut()
@@ -135,7 +136,7 @@ internal class ClerkAuthService(
     }
 
     override suspend fun signOut(): Either<AuthError, Unit> {
-        pendingEmailChallenge = null
+        clearEmailChallenge()
         return accountCache.clearAfter {
             val session = Clerk.session
             if (session == null) {
@@ -227,7 +228,7 @@ internal class ClerkAuthService(
         return when (val result = signIn.verifyCode(code)) {
             is ClerkResult.Failure -> result.toAuthError().left()
             is ClerkResult.Success -> {
-                pendingEmailChallenge = null
+                clearEmailChallenge()
                 handlePostSignIn(result.value)
             }
         }
@@ -245,7 +246,7 @@ internal class ClerkAuthService(
 
     private suspend fun completeSignUp(signUp: SignUp): Either<AuthError, SignInAttempt> {
         if (signUp.status == SignUp.Status.COMPLETE) {
-            pendingEmailChallenge = null
+            clearEmailChallenge()
             return SignInAttempt.Completed.right()
         }
         val onlyLegalAcceptanceMissing = signUp.status == SignUp.Status.MISSING_REQUIREMENTS &&
@@ -257,7 +258,7 @@ internal class ClerkAuthService(
             is ClerkResult.Failure -> result.toAuthError().left()
             is ClerkResult.Success -> {
                 if (result.value.status == SignUp.Status.COMPLETE) {
-                    pendingEmailChallenge = null
+                    clearEmailChallenge()
                     SignInAttempt.Completed.right()
                 } else {
                     AuthError.Unknown("Missing sign-up requirements: ${result.value.missingFields}").left()
@@ -288,9 +289,17 @@ internal class ClerkAuthService(
             ?: Clerk.auth.currentSignUp?.let { EmailChallenge.NewAccount(it) }
     }
 
+    private fun clearEmailChallenge() {
+        pendingEmailChallenge = null
+        otpCooldownJob?.cancel()
+        otpCooldownJob = null
+        otpCooldownEmail.update { null }
+        otpCooldownSecondsRemaining.update { 0 }
+    }
+
     private fun startOtpCooldown(email: String) {
         otpCooldownJob?.cancel()
-        otpCooldownEmail = email.trim()
+        otpCooldownEmail.update { email.trim() }
         otpCooldownSecondsRemaining.update { OTP_COOLDOWN_SECONDS }
         otpCooldownJob = applicationScope.launch {
             while (otpCooldownSecondsRemaining.value > 0) {

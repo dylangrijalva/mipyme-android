@@ -34,8 +34,11 @@ class FakeAuthService(
 
     val otpCooldown = MutableStateFlow(0)
 
+    val otpCooldownEmail = MutableStateFlow<String?>(null)
+
     override val authStateFlow: StateFlow<AuthState> = authState
     override val otpCooldownSecondsRemainingFlow: StateFlow<Int> = otpCooldown
+    override val otpCooldownEmailFlow: StateFlow<String?> = otpCooldownEmail
 
     override suspend fun refresh(): Either<AuthError, Unit> {
         refreshCalls++

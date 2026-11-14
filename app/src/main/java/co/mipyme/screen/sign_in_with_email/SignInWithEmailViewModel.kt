@@ -27,6 +27,11 @@ class SignInWithEmailViewModel(
                 _stateFlow.update { it.copy(otpCooldownSecondsRemaining = cooldown) }
             }
         }
+        viewModelScope.launch {
+            authService.otpCooldownEmailFlow.collect { email ->
+                _stateFlow.update { it.copy(cooldownEmail = email) }
+            }
+        }
     }
 
     fun onEmailChange(email: String) {
@@ -50,7 +55,6 @@ class SignInWithEmailViewModel(
                                 it.copy(
                                     isLoading = false,
                                     pendingChallengeEmail = attempt.email,
-                                    cooldownEmail = attempt.email,
                                 )
                             }
                         }

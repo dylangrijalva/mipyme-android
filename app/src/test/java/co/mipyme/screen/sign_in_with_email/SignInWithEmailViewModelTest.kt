@@ -236,6 +236,7 @@ class SignInWithEmailViewModelTest {
 
         viewModel.onSubmit()
         advanceUntilIdle()
+        authService.otpCooldownEmail.value = "ada@example.com"
         authService.otpCooldown.value = 30
         advanceUntilIdle()
 
@@ -261,6 +262,7 @@ class SignInWithEmailViewModelTest {
             viewModel.onSubmit()
             advanceUntilIdle()
             viewModel.consumeChallenge()
+            authService.otpCooldownEmail.value = "ada@example.com"
             authService.otpCooldown.value = 30
             advanceUntilIdle()
             val signInCalls = authService.signInStrategies.size
@@ -274,4 +276,21 @@ class SignInWithEmailViewModelTest {
             assertEquals("ada@example.com", viewModel.state.pendingChallengeEmail)
             assertFalse(viewModel.state.isLoading)
         }
+
+    @Test
+    fun `a new screen during an active cooldown returns to the pending challenge`() = runTest(dispatcher) {
+        val authService = FakeAuthService()
+        authService.otpCooldownEmail.value = "ada@example.com"
+        authService.otpCooldown.value = 30
+        val viewModel = SignInWithEmailViewModel(authService)
+        advanceUntilIdle()
+
+        viewModel.onEmailChange("ada@example.com")
+        assertTrue(viewModel.state.showsCooldownHint)
+        viewModel.onSubmit()
+        advanceUntilIdle()
+
+        assertTrue(authService.signInStrategies.isEmpty())
+        assertEquals("ada@example.com", viewModel.state.pendingChallengeEmail)
+    }
 }
