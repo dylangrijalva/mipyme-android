@@ -5,6 +5,7 @@ import co.mipyme.auth.AuthError
 internal fun mapAuthErrorCode(code: String?, isNetworkFailure: Boolean): AuthError {
     if (isNetworkFailure) return AuthError.Network
     return when (code) {
+        "account_transfer_invalid" -> AuthError.AccountTransferInvalid
         "form_identifier_not_found", "form_param_format_invalid" -> AuthError.InvalidEmail
         "form_code_incorrect", "account_lockout_warning" -> AuthError.InvalidOtpCode
         "verification_expired" -> AuthError.OtpCodeExpired

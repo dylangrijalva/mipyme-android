@@ -6,6 +6,7 @@ import arrow.core.right
 import co.mipyme.auth.AuthError
 import co.mipyme.auth.AuthService
 import co.mipyme.auth.AuthState
+import co.mipyme.auth.SessionReadiness
 import co.mipyme.auth.SignInAttempt
 import co.mipyme.auth.SignInStrategy
 import co.mipyme.contract.IdentityAccount
@@ -39,6 +40,7 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.scan
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -65,6 +67,21 @@ internal class ClerkAuthService(
 
     override val authStateFlow: StateFlow<AuthState> = accountCache.authStateFlow
         .stateIn(applicationScope, SharingStarted.Eagerly, AuthState.Initializing)
+
+    override val sessionReadinessFlow: StateFlow<SessionReadiness> = run {
+        val initialReadiness = decideSessionReadiness(
+            isInitialized = Clerk.isInitialized.value,
+            hasInitializationError = Clerk.initializationError.value != null,
+        )
+        combine(Clerk.isInitialized, Clerk.initializationError) { isInitialized, error ->
+            isInitialized to (error != null)
+        }
+            .scan(initialReadiness) { previous, (isInitialized, hasError) ->
+                decideSessionReadiness(isInitialized, hasError, hasEverInitialized = previous == SessionReadiness.Ready)
+            }
+            .distinctUntilChanged()
+            .stateIn(applicationScope, SharingStarted.Eagerly, initialReadiness)
+    }
 
     override val otpCooldownSecondsRemainingFlow: StateFlow<Int> =
         otpCooldownSecondsRemaining.asStateFlow()

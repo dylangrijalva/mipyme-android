@@ -11,4 +11,5 @@
     <string name="auth_error_missing_otp_challenge">Your sign-in has ended. Start again.</string>
     <string name="auth_error_network">No internet connection. Check your connection and try again.</string>
     <string name="auth_error_not_authenticated">Sign in to continue.</string>
+    <string name="auth_error_account_transfer_invalid">Sign-in could not be completed. Try again or continue with email.</string>
 </resources>

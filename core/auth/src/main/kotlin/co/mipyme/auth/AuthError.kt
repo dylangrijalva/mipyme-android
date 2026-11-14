@@ -12,6 +12,7 @@ sealed interface AuthError {
     data object MaxOtpVerificationAttemptsReached : AuthError
     data object OtpResendRateLimited : AuthError
     data object MissingOtpChallenge : AuthError
+    data object AccountTransferInvalid : AuthError
     data object OAuthCancelled : AuthError
     data object Network : AuthError
     data object NotAuthenticated : AuthError
@@ -29,6 +30,7 @@ fun AuthError.toStringResource(): Int {
         AuthError.MaxOtpVerificationAttemptsReached -> R.string.auth_error_max_otp_attempts
         AuthError.OtpResendRateLimited -> R.string.auth_error_otp_resend_rate_limited
         AuthError.MissingOtpChallenge -> R.string.auth_error_missing_otp_challenge
+        AuthError.AccountTransferInvalid -> R.string.auth_error_account_transfer_invalid
         AuthError.OAuthCancelled -> R.string.auth_error_unknown
         AuthError.Network -> R.string.auth_error_network
         AuthError.NotAuthenticated -> R.string.auth_error_not_authenticated

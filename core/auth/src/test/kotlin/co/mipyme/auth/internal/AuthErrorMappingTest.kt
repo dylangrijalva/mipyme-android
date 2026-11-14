@@ -7,6 +7,13 @@ import org.junit.Test
 class AuthErrorMappingTest {
 
     @Test
+    fun `invalid account transfer is a recognised error`() {
+        val error = mapAuthErrorCode(code = "account_transfer_invalid", isNetworkFailure = false)
+
+        assertEquals(AuthError.AccountTransferInvalid, error)
+    }
+
+    @Test
     fun `network failure wins over error code`() {
         val error = mapAuthErrorCode(code = "user_locked", isNetworkFailure = true)
 
