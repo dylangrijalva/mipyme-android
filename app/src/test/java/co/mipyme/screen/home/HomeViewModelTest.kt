@@ -9,6 +9,8 @@ import co.mipyme.auth.AuthState
 import co.mipyme.auth.SignInAttempt
 import co.mipyme.auth.SignInStrategy
 import co.mipyme.auth.toStringResource
+import co.mipyme.contract.IdentityAccount
+import co.mipyme.contract.IdentityPublicMetadata
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -97,6 +99,46 @@ class HomeViewModelTest {
     }
 
     @Test
+    fun `authenticated account email is exposed`() = runTest(dispatcher) {
+        val authStateFlow = MutableStateFlow<AuthState>(AuthState.Authenticated(account(email = "ada@example.com")))
+        val viewModel = HomeViewModel(FakeAuthService(result = Unit.right(), authStateFlow = authStateFlow))
+
+        advanceUntilIdle()
+
+        assertEquals("ada@example.com", viewModel.state.email)
+    }
+
+    @Test
+    fun `authenticated account email is available before collection starts`() = runTest(dispatcher) {
+        val authStateFlow = MutableStateFlow<AuthState>(AuthState.Authenticated(account(email = "ada@example.com")))
+        val viewModel = HomeViewModel(FakeAuthService(result = Unit.right(), authStateFlow = authStateFlow))
+
+        assertEquals("ada@example.com", viewModel.state.email)
+    }
+
+    @Test
+    fun `email is cleared when no longer authenticated`() = runTest(dispatcher) {
+        val authStateFlow = MutableStateFlow<AuthState>(AuthState.Authenticated(account(email = "ada@example.com")))
+        val viewModel = HomeViewModel(FakeAuthService(result = Unit.right(), authStateFlow = authStateFlow))
+        advanceUntilIdle()
+
+        authStateFlow.value = AuthState.Unauthenticated
+        advanceUntilIdle()
+
+        assertNull(viewModel.state.email)
+    }
+
+    @Test
+    fun `account without email exposes no email`() = runTest(dispatcher) {
+        val authStateFlow = MutableStateFlow<AuthState>(AuthState.Authenticated(account(email = null)))
+        val viewModel = HomeViewModel(FakeAuthService(result = Unit.right(), authStateFlow = authStateFlow))
+
+        advanceUntilIdle()
+
+        assertNull(viewModel.state.email)
+    }
+
+    @Test
     fun `toast shown clears the pending toast`() = runTest(dispatcher) {
         val viewModel = HomeViewModel(FakeAuthService(result = AuthError.Network.left()))
 
@@ -107,14 +149,24 @@ class HomeViewModelTest {
         assertNull(viewModel.state.pendingToastRes)
     }
 
+    private fun account(email: String?): IdentityAccount {
+        return IdentityAccount(
+            id = "user_1",
+            name = "Ada Lovelace",
+            email = email,
+            pictureUrl = "https://img.example.com/ada.png",
+            publicMetadata = IdentityPublicMetadata(),
+        )
+    }
+
     private class FakeAuthService(
         private val result: Either<AuthError, Unit>? = null,
         private val gate: CompletableDeferred<Either<AuthError, Unit>>? = null,
+        override val authStateFlow: StateFlow<AuthState> = MutableStateFlow(AuthState.Initializing),
     ) : AuthService {
         var signOutCalls = 0
             private set
 
-        override val authStateFlow: StateFlow<AuthState> = MutableStateFlow(AuthState.Initializing)
         override val otpCooldownSecondsRemainingFlow: StateFlow<Int> = MutableStateFlow(0)
         override val otpCooldownEmailFlow: StateFlow<String?> = MutableStateFlow(null)
 

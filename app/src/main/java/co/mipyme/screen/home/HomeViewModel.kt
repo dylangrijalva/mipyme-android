@@ -3,6 +3,7 @@ package co.mipyme.screen.home
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import co.mipyme.auth.AuthService
+import co.mipyme.auth.AuthState
 import co.mipyme.auth.toStringResource
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -13,10 +14,24 @@ import kotlinx.coroutines.launch
 class HomeViewModel(
     private val authService: AuthService,
 ) : ViewModel() {
-    private val _stateFlow = MutableStateFlow(HomeScreenUiState())
+    private val _stateFlow = MutableStateFlow(
+        HomeScreenUiState(email = emailOf(authService.authStateFlow.value)),
+    )
     val stateFlow: StateFlow<HomeScreenUiState> = _stateFlow.asStateFlow()
     val state: HomeScreenUiState
         get() = _stateFlow.value
+
+    init {
+        viewModelScope.launch {
+            authService.authStateFlow.collect { authState ->
+                _stateFlow.update { it.copy(email = emailOf(authState)) }
+            }
+        }
+    }
+
+    private fun emailOf(authState: AuthState): String? {
+        return (authState as? AuthState.Authenticated)?.account?.email
+    }
 
     fun onSignOut() {
         if (state.isSigningOut) return
