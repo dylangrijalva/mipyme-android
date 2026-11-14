@@ -46,12 +46,6 @@ import co.mipyme.ui.MoshiTheme
 private const val DEFAULT_CODE_LENGTH = 6
 private val CODE_CELL_CORNER_RADIUS = 6.dp
 
-/**
- * A one-time code field that shows one cell per digit.
- *
- * Input is filtered to digits and truncated to [length]. The whole field is a single accessibility
- * node named by [label]; the cells are decorative.
- */
 @Composable
 fun MoshiCodeField(
     value: String,
