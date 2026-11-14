@@ -9,6 +9,8 @@ sealed interface LaunchDestination {
 
     data object Onboarding : LaunchDestination
 
+    data object AskNotificationPermissions : LaunchDestination
+
     data object Home : LaunchDestination
 }
 
@@ -17,6 +19,7 @@ fun LaunchDestination.toRoute(): Route? {
         LaunchDestination.Idle -> null
         LaunchDestination.Welcome -> Route.Welcome
         LaunchDestination.Onboarding -> Route.Onboarding
+        LaunchDestination.AskNotificationPermissions -> Route.AskNotificationPermissions
         LaunchDestination.Home -> Route.Home
     }
 }

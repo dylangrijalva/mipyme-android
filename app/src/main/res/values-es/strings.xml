@@ -76,6 +76,11 @@
     <string name="onboarding_business_type_bakery">Panadería</string>
     <string name="onboarding_business_type_other">Otro</string>
 
+    <string name="ask_notification_permissions_title">Mantente al tanto de tu negocio</string>
+    <string name="ask_notification_permissions_body">Te avisaremos cuando pase algo importante, como poco inventario, ventas sin conexión sincronizadas o novedades de tu cuenta.</string>
+    <string name="ask_notification_permissions_turn_on">Activar notificaciones</string>
+    <string name="ask_notification_permissions_skip">Ahora no</string>
+
     <string name="home_title">Inicio</string>
     <string name="home_sign_out">Cerrar sesión</string>
 </resources>
