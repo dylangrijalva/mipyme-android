@@ -21,6 +21,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.autofill.ContentType
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
@@ -166,6 +167,7 @@ private fun SignInWithEmailContent(
                         }
                     },
                 ),
+                contentType = ContentType.EmailAddress,
             )
             Spacer(Modifier.height(spacing.space6))
             MoshiButton(

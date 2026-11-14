@@ -157,7 +157,8 @@ field's accessible name, and supporting text is also
 exposed as the error message when the enabled field is invalid. An optional trailing action uses a
 24 dp icon in a 48 dp touch target and requires an accessible name. Use sentence case for labels
 and pass `KeyboardOptions`, `KeyboardActions`, and `VisualTransformation` for keyboard and display
-behavior. The field is single line.
+behavior. Pass an optional autofill `ContentType`, such as `ContentType.EmailAddress`, so the system
+can suggest saved values. The field is single line.
 
 ### MoshiCodeField
 

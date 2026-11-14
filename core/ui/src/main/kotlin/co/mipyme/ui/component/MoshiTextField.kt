@@ -34,6 +34,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.autofill.ContentType
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.SolidColor
@@ -42,6 +43,7 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.contentType
 import androidx.compose.ui.semantics.error
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.input.VisualTransformation
@@ -77,6 +79,7 @@ fun MoshiTextField(
     onFocusChange: ((Boolean) -> Unit)? = null,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     keyboardActions: KeyboardActions = KeyboardActions.Default,
+    contentType: ContentType? = null,
     visualTransformation: VisualTransformation = VisualTransformation.None,
     trailingAction: MoshiTextFieldTrailingAction? = null,
 ) {
@@ -213,6 +216,9 @@ fun MoshiTextField(
                         .focusRequester(focusRequester)
                         .semantics {
                             contentDescription = label
+                            if (contentType != null) {
+                                this.contentType = contentType
+                            }
                             if (enabled && isError) {
                                 error(supportingText.orEmpty())
                             }
