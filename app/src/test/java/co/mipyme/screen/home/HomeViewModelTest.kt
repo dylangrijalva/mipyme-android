@@ -6,6 +6,7 @@ import arrow.core.right
 import co.mipyme.auth.AuthError
 import co.mipyme.auth.AuthService
 import co.mipyme.auth.AuthState
+import co.mipyme.auth.SessionReadiness
 import co.mipyme.auth.SignInAttempt
 import co.mipyme.auth.SignInStrategy
 import co.mipyme.auth.toStringResource
@@ -167,6 +168,7 @@ class HomeViewModelTest {
         var signOutCalls = 0
             private set
 
+        override val sessionReadinessFlow: StateFlow<SessionReadiness> = MutableStateFlow(SessionReadiness.Ready)
         override val otpCooldownSecondsRemainingFlow: StateFlow<Int> = MutableStateFlow(0)
         override val otpCooldownEmailFlow: StateFlow<String?> = MutableStateFlow(null)
 

@@ -76,6 +76,19 @@
     <string name="onboarding_business_type_bakery">Panadería</string>
     <string name="onboarding_business_type_other">Otro</string>
 
+    <string name="initial_sync_loading">Preparando tu negocio</string>
+    <string name="initial_sync_retry">Reintentar</string>
+    <string name="initial_sync_error_network">Revisa tu conexión e inténtalo de nuevo.</string>
+    <string name="initial_sync_error_server">Nuestros servidores están ocupados. Inténtalo de nuevo en un momento.</string>
+    <string name="initial_sync_error_unauthorized">Tu sesión necesita actualizarse. Inténtalo de nuevo.</string>
+    <string name="initial_sync_error_forbidden">Esta cuenta no puede cargar los datos de su negocio por ahora.</string>
+    <string name="initial_sync_error_unknown">Algo salió mal. Inténtalo de nuevo.</string>
+    <string name="initial_sync_sign_out">Cerrar sesión</string>
+    <string name="initial_sync_sign_out_confirm_title">¿Cerrar sesión?</string>
+    <string name="initial_sync_sign_out_confirm_message">Tendrás que iniciar sesión de nuevo para continuar.</string>
+    <string name="initial_sync_sign_out_confirm_action">Cerrar sesión</string>
+    <string name="initial_sync_sign_out_confirm_cancel">Cancelar</string>
+
     <string name="ask_notification_permissions_title">Mantente al tanto de tu negocio</string>
     <string name="ask_notification_permissions_body">Te avisaremos cuando pase algo importante, como poco inventario, ventas sin conexión sincronizadas o novedades de tu cuenta.</string>
     <string name="ask_notification_permissions_turn_on">Activar notificaciones</string>
@@ -83,4 +96,7 @@
 
     <string name="home_title">Inicio</string>
     <string name="home_sign_out">Cerrar sesión</string>
+    <string name="welcome_google_sign_in_failed_title">No se pudo iniciar sesión con Google</string>
+    <string name="welcome_google_sign_in_failed_message">Puedes continuar con tu correo electrónico o intentar de nuevo con Google.</string>
+    <string name="welcome_google_sign_in_recovery_dismiss">Ahora no</string>
 </resources>

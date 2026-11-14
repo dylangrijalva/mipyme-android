@@ -28,16 +28,24 @@ class WelcomeViewModel(
 
     fun onGoogleSignIn() {
         if (state.isSigningIn) return
-        _stateFlow.update { it.copy(isSigningIn = true) }
+        _stateFlow.update { it.copy(isSigningIn = true, showEmailSignInRecovery = false) }
         viewModelScope.launch {
             val result = authService.signIn(SignInStrategy.Google)
             _stateFlow.update { it.copy(isSigningIn = false) }
             result.onLeft { error ->
-                if (error != AuthError.OAuthCancelled) {
-                    showToast(error.toStringResource())
+                when (error) {
+                    AuthError.AccountTransferInvalid -> {
+                        _stateFlow.update { it.copy(showEmailSignInRecovery = true) }
+                    }
+                    AuthError.OAuthCancelled -> Unit
+                    else -> showToast(error.toStringResource())
                 }
             }
         }
+    }
+
+    fun onEmailSignInRecoveryDismissed() {
+        _stateFlow.update { it.copy(showEmailSignInRecovery = false) }
     }
 
     fun onTermsClick() {

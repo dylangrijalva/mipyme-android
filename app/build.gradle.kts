@@ -66,6 +66,8 @@ dependencies {
     implementation(project(":core:ui"))
     implementation(project(":core:auth"))
     implementation(project(":core:network"))
+    implementation(project(":core:database"))
+    implementation(project(":core:sync"))
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.core.splashscreen)

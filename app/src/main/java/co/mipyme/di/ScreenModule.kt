@@ -3,6 +3,7 @@ package co.mipyme.di
 import co.mipyme.mainScreenModule
 import co.mipyme.screen.ask_notification_permissions.askNotificationPermissionsScreenModule
 import co.mipyme.screen.home.homeScreenModule
+import co.mipyme.screen.initial_sync.initialSyncScreenModule
 import co.mipyme.screen.onboarding.onboardingScreenModule
 import co.mipyme.screen.sign_in_with_email.signInWithEmailScreenModule
 import co.mipyme.screen.verify_otp_code.verifyOtpCodeScreenModule
@@ -17,6 +18,7 @@ fun screenModule(): Module {
         signInWithEmailScreenModule()
         verifyOtpCodeScreenModule()
         onboardingScreenModule()
+        initialSyncScreenModule()
         askNotificationPermissionsScreenModule()
         homeScreenModule()
     }

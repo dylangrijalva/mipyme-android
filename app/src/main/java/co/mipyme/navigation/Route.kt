@@ -18,6 +18,9 @@ sealed interface Route : NavKey {
     data object Onboarding : Route
 
     @Serializable
+    data object InitialSync : Route
+
+    @Serializable
     data object AskNotificationPermissions : Route
 
     @Serializable

@@ -2,4 +2,6 @@
 <resources>
     <string name="clerk_publishable_key" translatable="false">pk_test_REPLACE_ME</string>
     <string name="mipyme_api_base_url" translatable="false">https://REPLACE_ME/</string>
+    <string name="pusher_api_key" translatable="false">REPLACE_ME</string>
+    <string name="pusher_cluster" translatable="false">REPLACE_ME</string>
 </resources>

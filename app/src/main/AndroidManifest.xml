@@ -41,6 +41,9 @@
             <meta-data
                 android:name="co.mipyme.startup.AuthInitializer"
                 android:value="androidx.startup" />
+            <meta-data
+                android:name="co.mipyme.startup.SyncInitializer"
+                android:value="androidx.startup" />
         </provider>
     </application>
 

@@ -6,6 +6,7 @@ import arrow.core.right
 import co.mipyme.auth.AuthError
 import co.mipyme.auth.AuthService
 import co.mipyme.auth.AuthState
+import co.mipyme.auth.SessionReadiness
 import co.mipyme.auth.SignInAttempt
 import co.mipyme.auth.SignInStrategy
 import co.mipyme.auth.toStringResource
@@ -43,6 +44,40 @@ class WelcomeViewModelTest {
     }
 
     @Test
+    fun `invalid account transfer offers email recovery without a toast`() = runTest(dispatcher) {
+        val authService = FakeAuthService(result = AuthError.AccountTransferInvalid.left())
+        val viewModel = WelcomeViewModel(authService)
+
+        viewModel.onGoogleSignIn()
+        advanceUntilIdle()
+
+        assertTrue(viewModel.state.showEmailSignInRecovery)
+        assertFalse(viewModel.state.isSigningIn)
+        assertNull(viewModel.state.pendingToastRes)
+        assertEquals(1, authService.signInCalls)
+
+        viewModel.onEmailSignInRecoveryDismissed()
+
+        assertFalse(viewModel.state.showEmailSignInRecovery)
+        assertEquals(1, authService.signInCalls)
+    }
+
+    @Test
+    fun `retrying Google clears the recovery choice while signing in`() = runTest(dispatcher) {
+        val authService = FakeAuthService(result = AuthError.AccountTransferInvalid.left())
+        val viewModel = WelcomeViewModel(authService)
+        viewModel.onGoogleSignIn()
+        advanceUntilIdle()
+
+        viewModel.onGoogleSignIn()
+
+        assertFalse(viewModel.state.showEmailSignInRecovery)
+        assertTrue(viewModel.state.isSigningIn)
+        advanceUntilIdle()
+        assertEquals(2, authService.signInCalls)
+    }
+
+    @Test
     fun `successful google sign in shows no toast and clears signing in`() = runTest(dispatcher) {
         val authService = FakeAuthService(result = SignInAttempt.Completed.right())
         val viewModel = WelcomeViewModel(authService)
@@ -51,6 +86,7 @@ class WelcomeViewModelTest {
         advanceUntilIdle()
 
         assertNull(viewModel.state.pendingToastRes)
+        assertFalse(viewModel.state.showEmailSignInRecovery)
         assertFalse(viewModel.state.isSigningIn)
     }
 
@@ -63,6 +99,7 @@ class WelcomeViewModelTest {
         advanceUntilIdle()
 
         assertNull(viewModel.state.pendingToastRes)
+        assertFalse(viewModel.state.showEmailSignInRecovery)
         assertFalse(viewModel.state.isSigningIn)
     }
 
@@ -75,6 +112,7 @@ class WelcomeViewModelTest {
         viewModel.onGoogleSignIn()
         advanceUntilIdle()
 
+        assertFalse(viewModel.state.showEmailSignInRecovery)
         assertEquals(error.toStringResource(), viewModel.state.pendingToastRes)
         assertFalse(viewModel.state.isSigningIn)
     }
@@ -117,6 +155,7 @@ class WelcomeViewModelTest {
             private set
 
         override val authStateFlow: StateFlow<AuthState> = MutableStateFlow(AuthState.Initializing)
+        override val sessionReadinessFlow: StateFlow<SessionReadiness> = MutableStateFlow(SessionReadiness.Ready)
         override val otpCooldownSecondsRemainingFlow: StateFlow<Int> = MutableStateFlow(0)
         override val otpCooldownEmailFlow: StateFlow<String?> = MutableStateFlow(null)
 

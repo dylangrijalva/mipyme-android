@@ -49,6 +49,8 @@ import co.mipyme.navigation.Route
 import co.mipyme.preview.ScreenPreview
 import co.mipyme.ui.Moshi
 import co.mipyme.ui.MoshiTheme
+import co.mipyme.ui.component.MoshiAlertDialog
+import co.mipyme.ui.component.MoshiModalAction
 import co.mipyme.ui.component.MoshiButton
 import co.mipyme.ui.component.MoshiButtonVariant
 import co.mipyme.ui.component.MoshiCheckbox
@@ -116,12 +118,14 @@ internal fun WelcomeScreen(viewModel: WelcomeViewModel = koinViewModel()) {
         onTermsAcceptedChange = viewModel::onTermsAcceptedChange,
         onGoogleSignIn = viewModel::onGoogleSignIn,
         onEmailSignIn = {
+            viewModel.onEmailSignInRecoveryDismissed()
             if (backStack.lastOrNull() != Route.SignInWithEmail) {
                 backStack.add(Route.SignInWithEmail)
             }
         },
         onTermsClick = viewModel::onTermsClick,
         onPrivacyClick = viewModel::onPrivacyClick,
+        onEmailSignInRecoveryDismissed = viewModel::onEmailSignInRecoveryDismissed,
     )
 }
 
@@ -133,9 +137,26 @@ private fun WelcomeContent(
     onEmailSignIn: () -> Unit,
     onTermsClick: () -> Unit,
     onPrivacyClick: () -> Unit,
+    onEmailSignInRecoveryDismissed: () -> Unit,
 ) {
     val spacing = Moshi.spacing
     val pagerState = rememberPagerState(pageCount = { welcomeSlides.size })
+
+    if (state.showEmailSignInRecovery) {
+        MoshiAlertDialog(
+            title = stringResource(R.string.welcome_google_sign_in_failed_title),
+            message = stringResource(R.string.welcome_google_sign_in_failed_message),
+            onDismissRequest = onEmailSignInRecoveryDismissed,
+            confirmAction = MoshiModalAction(
+                label = stringResource(R.string.welcome_continue_with_email),
+                onClick = onEmailSignIn,
+            ),
+            cancelAction = MoshiModalAction(
+                label = stringResource(R.string.welcome_google_sign_in_recovery_dismiss),
+                onClick = onEmailSignInRecoveryDismissed,
+            ),
+        )
+    }
 
     Column(
         modifier = Modifier
@@ -311,6 +332,7 @@ fun WelcomeScreenPreview() {
             onEmailSignIn = {},
             onTermsClick = {},
             onPrivacyClick = {},
+            onEmailSignInRecoveryDismissed = {},
         )
     }
 }
@@ -326,6 +348,7 @@ fun WelcomeScreenTermsAcceptedPreview() {
             onEmailSignIn = {},
             onTermsClick = {},
             onPrivacyClick = {},
+            onEmailSignInRecoveryDismissed = {},
         )
     }
 }
@@ -341,6 +364,23 @@ fun WelcomeScreenSigningInPreview() {
             onEmailSignIn = {},
             onTermsClick = {},
             onPrivacyClick = {},
+            onEmailSignInRecoveryDismissed = {},
+        )
+    }
+}
+
+@ScreenPreview
+@Composable
+fun WelcomeScreenEmailRecoveryPreview() {
+    MoshiTheme {
+        WelcomeContent(
+            state = WelcomeScreenUiState(termsAccepted = true, showEmailSignInRecovery = true),
+            onTermsAcceptedChange = {},
+            onGoogleSignIn = {},
+            onEmailSignIn = {},
+            onTermsClick = {},
+            onPrivacyClick = {},
+            onEmailSignInRecoveryDismissed = {},
         )
     }
 }

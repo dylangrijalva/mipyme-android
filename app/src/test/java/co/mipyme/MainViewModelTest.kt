@@ -6,6 +6,7 @@ import co.mipyme.contract.IdentityPublicMetadata
 import co.mipyme.data.notification.NotificationPermissionRepository
 import co.mipyme.testing.FakeAuthService
 import co.mipyme.testing.FakePreferencesDataStore
+import co.mipyme.testing.FakeSyncEngine
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.StandardTestDispatcher
@@ -96,7 +97,7 @@ class MainViewModelTest {
         val authService = FakeAuthService(AuthState.Authenticated(account(merchantId = "merch_1")))
         val repository = repository(authService, granted = false)
         repository.markAnswered()
-        val viewModel = MainViewModel(authService, repository)
+        val viewModel = MainViewModel(authService, repository, FakeSyncEngine(setOf("merch_1")))
         advanceUntilIdle()
 
         assertEquals(LaunchDestination.Home, viewModel.uiState.launchDestination)
@@ -106,7 +107,7 @@ class MainViewModelTest {
     fun `answering the prompt moves from notification permissions to home`() = runTest(dispatcher) {
         val authService = FakeAuthService(AuthState.Authenticated(account(merchantId = "merch_1")))
         val repository = repository(authService, granted = false)
-        val viewModel = MainViewModel(authService, repository)
+        val viewModel = MainViewModel(authService, repository, FakeSyncEngine(setOf("merch_1")))
         advanceUntilIdle()
         assertEquals(LaunchDestination.AskNotificationPermissions, viewModel.uiState.launchDestination)
 
@@ -121,7 +122,7 @@ class MainViewModelTest {
         val signedIn = AuthState.Authenticated(account(merchantId = "merch_1"))
         val authService = FakeAuthService(signedIn)
         val repository = repository(authService, granted = false)
-        val viewModel = MainViewModel(authService, repository)
+        val viewModel = MainViewModel(authService, repository, FakeSyncEngine(setOf("merch_1")))
         advanceUntilIdle()
         repository.markAnswered()
         advanceUntilIdle()
@@ -137,12 +138,103 @@ class MainViewModelTest {
         assertEquals(LaunchDestination.AskNotificationPermissions, viewModel.uiState.launchDestination)
     }
 
+    @Test
+    fun `merchant without a completed initial sync goes to initial sync`() = runTest(dispatcher) {
+        val viewModel = viewModel(
+            FakeAuthService(AuthState.Authenticated(account(merchantId = "merch_1"))),
+            granted = true,
+            syncEngine = FakeSyncEngine(),
+        )
+        advanceUntilIdle()
+
+        assertEquals(LaunchDestination.InitialSync, viewModel.uiState.launchDestination)
+    }
+
+    @Test
+    fun `completing the initial sync moves on to home`() = runTest(dispatcher) {
+        val syncEngine = FakeSyncEngine()
+        val viewModel = viewModel(
+            FakeAuthService(AuthState.Authenticated(account(merchantId = "merch_1"))),
+            granted = true,
+            syncEngine = syncEngine,
+        )
+        advanceUntilIdle()
+
+        syncEngine.completed.value = setOf("merch_1")
+        advanceUntilIdle()
+
+        assertEquals(LaunchDestination.Home, viewModel.uiState.launchDestination)
+    }
+
+    @Test
+    fun `completing the initial sync asks for notification permissions before home`() = runTest(dispatcher) {
+        val syncEngine = FakeSyncEngine()
+        val viewModel = viewModel(
+            FakeAuthService(AuthState.Authenticated(account(merchantId = "merch_1"))),
+            granted = false,
+            syncEngine = syncEngine,
+        )
+        advanceUntilIdle()
+        assertEquals(LaunchDestination.InitialSync, viewModel.uiState.launchDestination)
+
+        syncEngine.completed.value = setOf("merch_1")
+        advanceUntilIdle()
+
+        assertEquals(LaunchDestination.AskNotificationPermissions, viewModel.uiState.launchDestination)
+    }
+
+    @Test
+    fun `signing out and back in shows the initial sync again`() = runTest(dispatcher) {
+        val signedIn = AuthState.Authenticated(account(merchantId = "merch_1"))
+        val authService = FakeAuthService(signedIn)
+        val syncEngine = FakeSyncEngine(completedMerchants = setOf("merch_1"))
+        val viewModel = viewModel(authService, granted = true, syncEngine = syncEngine)
+        advanceUntilIdle()
+        assertEquals(LaunchDestination.Home, viewModel.uiState.launchDestination)
+
+        authService.authState.value = AuthState.Unauthenticated
+        advanceUntilIdle()
+        syncEngine.completed.value = emptySet()
+        authService.authState.value = signedIn
+        advanceUntilIdle()
+
+        assertEquals(LaunchDestination.InitialSync, viewModel.uiState.launchDestination)
+    }
+
+    @Test
+    fun `a sync completed for another merchant still requires the initial sync`() = runTest(dispatcher) {
+        val viewModel = viewModel(
+            FakeAuthService(AuthState.Authenticated(account(merchantId = "merch_1"))),
+            granted = true,
+            syncEngine = FakeSyncEngine(completedMerchants = setOf("merch_other")),
+        )
+        advanceUntilIdle()
+
+        assertEquals(LaunchDestination.InitialSync, viewModel.uiState.launchDestination)
+    }
+
+    @Test
+    fun `finishing onboarding goes to initial sync instead of home`() = runTest(dispatcher) {
+        val authService = FakeAuthService(AuthState.Authenticated(account(merchantId = null)))
+        val viewModel = viewModel(authService, granted = true, syncEngine = FakeSyncEngine())
+        advanceUntilIdle()
+
+        authService.authState.value = AuthState.Authenticated(account(merchantId = "merch_1"))
+        advanceUntilIdle()
+
+        assertEquals(LaunchDestination.InitialSync, viewModel.uiState.launchDestination)
+    }
+
     private fun TestScope.viewModel(authState: AuthState, granted: Boolean = false): MainViewModel {
         return viewModel(FakeAuthService(authState), granted)
     }
 
-    private fun TestScope.viewModel(authService: FakeAuthService, granted: Boolean = false): MainViewModel {
-        return MainViewModel(authService, repository(authService, granted))
+    private fun TestScope.viewModel(
+        authService: FakeAuthService,
+        granted: Boolean = false,
+        syncEngine: FakeSyncEngine = FakeSyncEngine(completedMerchants = setOf("merch_1")),
+    ): MainViewModel {
+        return MainViewModel(authService, repository(authService, granted), syncEngine)
     }
 
     private fun TestScope.repository(

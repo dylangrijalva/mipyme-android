@@ -5,6 +5,7 @@ import arrow.core.right
 import co.mipyme.auth.AuthError
 import co.mipyme.auth.AuthService
 import co.mipyme.auth.AuthState
+import co.mipyme.auth.SessionReadiness
 import co.mipyme.auth.SignInAttempt
 import co.mipyme.auth.SignInStrategy
 import kotlinx.coroutines.CompletableDeferred
@@ -36,7 +37,10 @@ class FakeAuthService(
 
     val otpCooldownEmail = MutableStateFlow<String?>(null)
 
+    val sessionReadiness = MutableStateFlow<SessionReadiness>(SessionReadiness.Ready)
+
     override val authStateFlow: StateFlow<AuthState> = authState
+    override val sessionReadinessFlow: StateFlow<SessionReadiness> = sessionReadiness
     override val otpCooldownSecondsRemainingFlow: StateFlow<Int> = otpCooldown
     override val otpCooldownEmailFlow: StateFlow<String?> = otpCooldownEmail
 
