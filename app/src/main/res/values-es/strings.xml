@@ -22,11 +22,10 @@
     <string name="sign_in_with_email_blocked_title">No se puede iniciar sesión</string>
     <string name="sign_in_with_email_blocked_action">Entendido</string>
 
-    <string name="verify_otp_code_title">Ingresa tu código</string>
-    <string name="verify_otp_code_description">Enviamos un código a %1$s.</string>
-    <string name="verify_otp_code_use_different_email">Usar otro correo</string>
+    <string name="verify_otp_code_title">Revisa tu correo</string>
+    <string name="verify_otp_code_description">Ingresa el código de %2$d dígitos que enviamos a %1$s.</string>
     <string name="verify_otp_code_label">Código de verificación</string>
-    <string name="verify_otp_code_verify">Verificar</string>
+    <string name="verify_otp_code_go_back">Volver</string>
     <string name="verify_otp_code_guidance">¿No te llegó? Revisa tu carpeta de spam o reenvía el código.</string>
     <string name="verify_otp_code_resend">Reenviar código</string>
     <string name="verify_otp_code_resend_countdown">Reenviar código (%1$ds)</string>

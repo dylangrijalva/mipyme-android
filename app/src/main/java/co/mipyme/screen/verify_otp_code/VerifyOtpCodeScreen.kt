@@ -114,7 +114,7 @@ private fun VerifyOtpCodeContent(
     val focusRequester = remember { FocusRequester() }
     val keyboardController = LocalSoftwareKeyboardController.current
     val error = state.error
-    val template = stringResource(R.string.verify_otp_code_description, "\u0000")
+    val template = stringResource(R.string.verify_otp_code_description, "\u0000", OTP_CODE_LENGTH)
     val description = remember(template, state.email, colors.foreground.primary) {
         val emailIndex = template.indexOf('\u0000')
         buildAnnotatedString {
@@ -166,15 +166,7 @@ private fun VerifyOtpCodeContent(
                 role = MoshiTextRole.Body,
                 color = colors.foreground.secondary,
             )
-            Spacer(Modifier.height(spacing.space1))
-            MoshiButton(
-                onClick = onBack,
-                variant = MoshiButtonVariant.Text,
-                enabled = !state.isVerifying,
-            ) {
-                MoshiText(text = stringResource(R.string.verify_otp_code_use_different_email))
-            }
-            Spacer(Modifier.height(spacing.space4))
+            Spacer(Modifier.height(spacing.space6))
             MoshiCodeField(
                 value = state.code,
                 onValueChange = onCodeChange,
@@ -203,23 +195,9 @@ private fun VerifyOtpCodeContent(
             }
             Spacer(Modifier.height(spacing.space6))
             MoshiButton(
-                onClick = onVerify,
-                modifier = Modifier.fillMaxWidth(),
-                enabled = state.isVerifyEnabled,
-                isLoading = state.isVerifying,
-            ) {
-                MoshiText(text = stringResource(R.string.verify_otp_code_verify))
-            }
-            Spacer(Modifier.height(spacing.space4))
-            MoshiText(
-                text = stringResource(R.string.verify_otp_code_guidance),
-                role = MoshiTextRole.Small,
-                color = colors.foreground.secondary,
-            )
-            Spacer(Modifier.height(spacing.space2))
-            MoshiButton(
                 onClick = onResend,
-                variant = MoshiButtonVariant.Text,
+                modifier = Modifier.fillMaxWidth(),
+                variant = MoshiButtonVariant.Primary,
                 enabled = state.isResendEnabled,
                 isLoading = state.isResending,
             ) {
@@ -230,6 +208,21 @@ private fun VerifyOtpCodeContent(
                 }
                 MoshiText(text = label)
             }
+            Spacer(Modifier.height(spacing.space2))
+            MoshiButton(
+                onClick = onBack,
+                modifier = Modifier.fillMaxWidth(),
+                variant = MoshiButtonVariant.Text,
+                enabled = !state.isVerifying,
+            ) {
+                MoshiText(text = stringResource(R.string.verify_otp_code_go_back))
+            }
+            Spacer(Modifier.height(spacing.space4))
+            MoshiText(
+                text = stringResource(R.string.verify_otp_code_guidance),
+                role = MoshiTextRole.Small,
+                color = colors.foreground.secondary,
+            )
             Spacer(Modifier.height(spacing.space4))
         }
     }

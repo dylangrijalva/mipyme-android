@@ -22,11 +22,10 @@
     <string name="sign_in_with_email_blocked_title">Can\'t sign in</string>
     <string name="sign_in_with_email_blocked_action">OK</string>
 
-    <string name="verify_otp_code_title">Enter your code</string>
-    <string name="verify_otp_code_description">We sent a code to %1$s.</string>
-    <string name="verify_otp_code_use_different_email">Use a different email</string>
+    <string name="verify_otp_code_title">Check your email</string>
+    <string name="verify_otp_code_description">Enter the %2$d-digit code we sent to %1$s.</string>
     <string name="verify_otp_code_label">Verification code</string>
-    <string name="verify_otp_code_verify">Verify</string>
+    <string name="verify_otp_code_go_back">Go back</string>
     <string name="verify_otp_code_guidance">Didn\'t get it? Check your spam folder or resend the code.</string>
     <string name="verify_otp_code_resend">Resend code</string>
     <string name="verify_otp_code_resend_countdown">Resend code (%1$ds)</string>
