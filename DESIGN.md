@@ -258,3 +258,8 @@ are clamped, and the fill animates when the value changes. The bar is one access
 exposes its progress through `ProgressBarRangeInfo`, so assistive technology announces it as a
 percentage. It is not interactive. Use `MoshiStepProgressIndicator` instead when each step should be
 shown as its own segment.
+
+Omit `progress` for the indeterminate variant when the work has no measurable progress, such as a
+single network request. It uses the same track, height, and colors, and loops a fill segment 30% of
+the track wide from the start edge to the end edge. It exposes `ProgressBarRangeInfo.Indeterminate`,
+so assistive technology announces it as in progress without a percentage.

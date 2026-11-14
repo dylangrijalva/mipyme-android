@@ -1,14 +1,22 @@
 package co.mipyme.ui.component
 
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -53,6 +61,43 @@ fun MoshiLinearProgressIndicator(
     }
 }
 
+/** Shows indeterminate progress as a segment sliding across the bar. */
+@Composable
+fun MoshiLinearProgressIndicator(modifier: Modifier = Modifier) {
+    val transition = rememberInfiniteTransition(label = "indeterminateLinearProgress")
+    val position by transition.animateFloat(
+        initialValue = -INDETERMINATE_SEGMENT_FRACTION,
+        targetValue = 1f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(INDETERMINATE_DURATION_MILLIS, easing = FastOutSlowInEasing),
+        ),
+        label = "indeterminatePosition",
+    )
+
+    BoxWithConstraints(
+        modifier = modifier
+            .semantics(mergeDescendants = true) {
+                progressBarRangeInfo = ProgressBarRangeInfo.Indeterminate
+            }
+            .fillMaxWidth()
+            .height(Moshi.spacing.space1)
+            .clip(CircleShape)
+            .background(Moshi.colors.border.default),
+    ) {
+        Box(
+            modifier = Modifier
+                .offset(x = maxWidth * position)
+                .width(maxWidth * INDETERMINATE_SEGMENT_FRACTION)
+                .fillMaxHeight()
+                .clip(CircleShape)
+                .background(Moshi.colors.foreground.primary),
+        )
+    }
+}
+
+private const val INDETERMINATE_SEGMENT_FRACTION = 0.3f
+private const val INDETERMINATE_DURATION_MILLIS = 1400
+
 @MoshiPreview
 @Composable
 private fun MoshiLinearProgressIndicatorPreview() {
@@ -68,6 +113,7 @@ private fun MoshiLinearProgressIndicatorPreview() {
             MoshiLinearProgressIndicator(progress = 0.25f)
             MoshiLinearProgressIndicator(progress = 0.75f)
             MoshiLinearProgressIndicator(progress = 1f)
+            MoshiLinearProgressIndicator()
         }
     }
 }
