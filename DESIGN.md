@@ -7,6 +7,10 @@ components:
         container: background.action.primary.default
         content: foreground.onAction.primary
         hoveredContainer: background.action.primary.hover
+      Secondary:
+        container: background.action.secondary.default
+        content: foreground.primary
+        hoveredContainer: background.action.secondary.hover
       Outline:
         container: transparent
         content: foreground.action.secondary
@@ -80,7 +84,9 @@ has its own callback. It inherits the same theme, responsive layout, and accessi
 ### MoshiButton
 
 Use `Primary` for a prominent labeled action with the Moshi primary action fill.
-Use `Outline` for a secondary action that needs a visible boundary and `Text`
+Use `Secondary` for a filled, lower-emphasis action that sits beside a `Primary` action, such as
+skipping a step; it uses the secondary action fill with the primary foreground, the secondary hover
+fill, and no border. Use `Outline` for a secondary action that needs a visible boundary and `Text`
 for a quieter action. Both use a transparent resting background and secondary
 action colors, with a 1 dp border on `Outline`. Use `Destructive` for the
 prominent, confirming action of an irreversible operation, such as deleting data;
@@ -89,7 +95,8 @@ same disabled and loading behavior as `Primary`. Use `DestructiveOutline` for a
 lower-emphasis action that signs the user out or removes data. It keeps the transparent resting
 background and secondary hover of `Outline` but uses the destructive action
 foreground and the error status border. Disabled and loading states fall back to
-the shared disabled colors and default border.
+the shared disabled colors and default border. `Secondary` follows the same disabled and loading
+behavior as `Primary`.
 
 `Default` has a minimum visible size
 and touch target of 48 × 48 dp. The button grows with the label as needed. Use

@@ -42,6 +42,7 @@ import co.mipyme.ui.R
 
 enum class MoshiButtonVariant {
     Primary,
+    Secondary,
     Outline,
     Destructive,
     DestructiveOutline,
@@ -73,6 +74,8 @@ fun MoshiButton(
         !canActivate -> colors.background.disabled
         variant == MoshiButtonVariant.Primary && hovered -> colors.background.action.primary.hover
         variant == MoshiButtonVariant.Primary -> colors.background.action.primary.default
+        variant == MoshiButtonVariant.Secondary && hovered -> colors.background.action.secondary.hover
+        variant == MoshiButtonVariant.Secondary -> colors.background.action.secondary.default
         variant == MoshiButtonVariant.Destructive && hovered -> colors.background.action.destructive.hover
         variant == MoshiButtonVariant.Destructive -> colors.background.action.destructive.default
         hovered -> colors.background.action.secondary.hover
@@ -81,6 +84,7 @@ fun MoshiButton(
     val foreground = when {
         !canActivate -> colors.foreground.disabled
         variant == MoshiButtonVariant.Primary -> colors.foreground.onAction.primary
+        variant == MoshiButtonVariant.Secondary -> colors.foreground.primary
         variant == MoshiButtonVariant.Destructive -> colors.foreground.onAction.destructive
         variant == MoshiButtonVariant.DestructiveOutline -> colors.foreground.action.destructive
         else -> colors.foreground.action.secondary
@@ -200,6 +204,15 @@ private fun MoshiButtonPreview() {
             }
             MoshiButton(onClick = {}, enabled = false) {
                 MoshiText("Save")
+            }
+            MoshiButton(onClick = {}, variant = MoshiButtonVariant.Secondary) {
+                MoshiText("Skip")
+            }
+            MoshiButton(onClick = {}, variant = MoshiButtonVariant.Secondary, enabled = false) {
+                MoshiText("Skip")
+            }
+            MoshiButton(onClick = {}, variant = MoshiButtonVariant.Secondary, isLoading = true) {
+                MoshiText("Skip")
             }
             MoshiButton(onClick = {}, variant = MoshiButtonVariant.Destructive) {
                 MoshiText("Delete")

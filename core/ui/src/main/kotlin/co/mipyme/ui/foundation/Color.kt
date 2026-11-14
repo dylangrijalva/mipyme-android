@@ -74,6 +74,7 @@ data class MoshiColors(
 
     @Immutable
     data class SecondaryAction(
+        val default: Color,
         val hover: Color,
     )
 
@@ -143,6 +144,7 @@ internal fun lightMoshiColors(): MoshiColors {
                     hover = Color(0xFF002182),
                 ),
                 secondary = MoshiColors.SecondaryAction(
+                    default = Color(0xFFE2E3E8),
                     hover = Color(0xFFE7EAF6),
                 ),
                 destructive = MoshiColors.DestructiveAction(
@@ -211,6 +213,7 @@ internal fun darkMoshiColors(): MoshiColors {
                     hover = Color(0xFF5069C3),
                 ),
                 secondary = MoshiColors.SecondaryAction(
+                    default = Color(0xFF32353F),
                     hover = Color(0xFF213554),
                 ),
                 destructive = MoshiColors.DestructiveAction(

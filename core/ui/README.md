@@ -11,6 +11,9 @@ The Kotlin foundations use
 [Moshi UI v0.1 at `ca215799dcfdc136de3596a23c8993b58db1fd92`](https://github.com/dylangrijalva/moshi-ui/commit/ca215799dcfdc136de3596a23c8993b58db1fd92).
 When adopting upstream changes, update the Kotlin values and this revision together.
 
+`background.action.secondary.default` (light `#E2E3E8`, dark `#32353F`) is a local addition that is
+not present in the pinned upstream Moshi revision. It backs `MoshiButtonVariant.Secondary`.
+
 ## Font
 
 Moshi typography uses all nine bundled Geist Sans upright weights, from Thin
