@@ -263,3 +263,38 @@ Omit `progress` for the indeterminate variant when the work has no measurable pr
 single network request. It uses the same track, height, and colors, and loops a fill segment 30% of
 the track wide from the start edge to the end edge. It exposes `ProgressBarRangeInfo.Indeterminate`,
 so assistive technology announces it as in progress without a percentage.
+
+### MoshiNavigationDrawer
+
+Use for the app's top-level destinations, opened from the `MoshiToolbarNavigation.Menu` action or by
+swiping from the start edge. It wraps the Material 3 modal drawer, so the sheet slides over the
+content on the start edge, dims it with `background.overlay`, and closes on a scrim tap or Back,
+including the predictive back gesture. Back closes the drawer before any handler registered before
+it opened.
+The sheet uses `background.canvas` with square corners, a fixed width of 310 dp, and respects the
+system window insets.
+
+Pass `drawerState` to open and close the drawer, and set `gesturesEnabled` to false while a screen
+should not be dismissed or revealed by swipe. The `header` slot spans the full sheet width, so it
+owns its own padding and any `MoshiDivider`. The `items` slot is inset 12 dp from the sheet edges
+and spaces its `MoshiNavigationDrawerItem` children 16 dp apart as one selectable group, so screen
+readers announce each item's position. The header and items scroll
+together on short screens, while the optional `footer` stays pinned to the bottom. The caller
+closes the drawer in response to an item click.
+
+### MoshiNavigationDrawerItem
+
+Use inside `MoshiNavigationDrawer` for one destination. It shows a 24 dp icon in
+`foreground.primary`, a 12 dp gap, a Body label in `foreground.primary`, and a 16 dp trailing
+chevron in `foreground.secondary`. The selected item fills a 12 dp rounded container with `background.action.secondary.default`;
+other items stay on `background.canvas`. The whole row is the click target, with a minimum height of
+48 dp and native ripple feedback. The row grows and the label wraps at larger font sizes.
+
+Mark exactly one item as `selected`. It exposes `Role.Tab` with its selected state, and the label
+provides the accessible name, so the icon and chevron are decorative. Use sentence case for labels.
+
+### MoshiDivider
+
+Use to separate groups of content, such as the header of a drawer from its items. It is a 1 dp
+horizontal line in `border.default` that fills the available width. It is decorative and hidden
+from accessibility services. Pass a `modifier` to inset it from the edges or to change its width.
