@@ -187,7 +187,7 @@ private fun HomeDrawerHeader(
         ),
     ) {
         if (locationName != null) {
-            MoshiText(text = locationName, role = MoshiTextRole.Body)
+            MoshiText(text = locationName, role = MoshiTextRole.Subheading)
         }
         if (locationName != null && email != null) {
             //Spacer(Modifier.height(Moshi.spacing.space1))
