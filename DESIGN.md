@@ -294,6 +294,25 @@ Mark exactly one item as `selected`. Pass `selectedIcon` (optional, defaults to 
 filled variant of the icon while the item is selected. It exposes `Role.Tab` with its selected state,
 and the label provides the accessible name, so the icon is decorative. Use sentence case for labels.
 
+### MoshiListItem
+
+Use for a tappable row in a list of choices or actions, such as the entries of a settings screen. It
+fills the available width with no outer margins, so the whole row from edge to edge is the click
+target and shows native ripple feedback. Content sits inside a 16 dp horizontal inset
+(`pageGutterNarrow`) within that target. The row has 16 dp vertical padding (`space4`), so a
+single-line row is 56 dp tall, and a 48 dp minimum height, and grows when the label wraps at larger font sizes. The label uses `typography.body` in
+`foreground.primary`.
+
+Pass `leadingIcon` (optional) to show a 24 dp icon before the label, separated by a 12 dp gap. The
+icon is decorative; the label provides the accessible name. Pass `trailing` (optional) to place
+content after the label, such as `MoshiListItemChevron` to signal that the row opens another screen.
+`MoshiListItemChevron` is a decorative 16 dp chevron in `foreground.secondary`. Leave `trailing` empty
+for rows that perform an action in place.
+
+Set `destructive` to true for irreversible or account-level actions, such as signing out. The label
+and leading icon then use `foreground.action.destructive`. The row exposes `Role.Button`. Use
+sentence case for labels. Items have no dividers; stack them directly.
+
 ### MoshiDivider
 
 Use to separate groups of content, such as the header of a drawer from its items. It is a 1 dp
