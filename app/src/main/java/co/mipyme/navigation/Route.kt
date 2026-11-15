@@ -24,5 +24,11 @@ sealed interface Route : NavKey {
     data object AskNotificationPermissions : Route
 
     @Serializable
+    data object SelectLocation : Route
+
+    @Serializable
+    data object NoLocationAccess : Route
+
+    @Serializable
     data object Home : Route
 }

@@ -12,12 +12,21 @@ import co.mipyme.auth.SignInStrategy
 import co.mipyme.auth.toStringResource
 import co.mipyme.contract.IdentityAccount
 import co.mipyme.contract.IdentityPublicMetadata
+import co.mipyme.data.location.LocationSelectionRepository
+import co.mipyme.testing.FakeMipymeCache
+import co.mipyme.testing.FakePreferencesDataStore
+import co.mipyme.testing.location
+import co.mipyme.testing.syncEmployee
 import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.test.StandardTestDispatcher
+import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
@@ -34,6 +43,7 @@ import org.junit.Test
 class HomeViewModelTest {
 
     private val dispatcher = StandardTestDispatcher()
+    private val locationScope = CoroutineScope(dispatcher + SupervisorJob())
 
     @Before
     fun setUp() {
@@ -42,13 +52,14 @@ class HomeViewModelTest {
 
     @After
     fun tearDown() {
+        locationScope.cancel()
         Dispatchers.resetMain()
     }
 
     @Test
     fun `successful sign out shows no toast and clears signing out`() = runTest(dispatcher) {
         val authService = FakeAuthService(result = Unit.right())
-        val viewModel = HomeViewModel(authService)
+        val viewModel = viewModel(authService)
 
         viewModel.onSignOut()
         advanceUntilIdle()
@@ -61,7 +72,7 @@ class HomeViewModelTest {
     @Test
     fun `failed sign out shows the mapped error toast`() = runTest(dispatcher) {
         val authService = FakeAuthService(result = AuthError.Network.left())
-        val viewModel = HomeViewModel(authService)
+        val viewModel = viewModel(authService)
 
         viewModel.onSignOut()
         advanceUntilIdle()
@@ -74,7 +85,7 @@ class HomeViewModelTest {
     fun `double tap while signing out calls sign out once`() = runTest(dispatcher) {
         val gate = CompletableDeferred<Either<AuthError, Unit>>()
         val authService = FakeAuthService(gate = gate)
-        val viewModel = HomeViewModel(authService)
+        val viewModel = viewModel(authService)
 
         viewModel.onSignOut()
         viewModel.onSignOut()
@@ -88,7 +99,7 @@ class HomeViewModelTest {
     @Test
     fun `signing out is true while the call is suspended and false afterwards`() = runTest(dispatcher) {
         val gate = CompletableDeferred<Either<AuthError, Unit>>()
-        val viewModel = HomeViewModel(FakeAuthService(gate = gate))
+        val viewModel = viewModel(FakeAuthService(gate = gate))
 
         viewModel.onSignOut()
         advanceUntilIdle()
@@ -102,7 +113,7 @@ class HomeViewModelTest {
     @Test
     fun `authenticated account email is exposed`() = runTest(dispatcher) {
         val authStateFlow = MutableStateFlow<AuthState>(AuthState.Authenticated(account(email = "ada@example.com")))
-        val viewModel = HomeViewModel(FakeAuthService(result = Unit.right(), authStateFlow = authStateFlow))
+        val viewModel = viewModel(FakeAuthService(result = Unit.right(), authStateFlow = authStateFlow))
 
         advanceUntilIdle()
 
@@ -112,7 +123,7 @@ class HomeViewModelTest {
     @Test
     fun `authenticated account email is available before collection starts`() = runTest(dispatcher) {
         val authStateFlow = MutableStateFlow<AuthState>(AuthState.Authenticated(account(email = "ada@example.com")))
-        val viewModel = HomeViewModel(FakeAuthService(result = Unit.right(), authStateFlow = authStateFlow))
+        val viewModel = viewModel(FakeAuthService(result = Unit.right(), authStateFlow = authStateFlow))
 
         assertEquals("ada@example.com", viewModel.state.email)
     }
@@ -120,7 +131,7 @@ class HomeViewModelTest {
     @Test
     fun `email is cleared when no longer authenticated`() = runTest(dispatcher) {
         val authStateFlow = MutableStateFlow<AuthState>(AuthState.Authenticated(account(email = "ada@example.com")))
-        val viewModel = HomeViewModel(FakeAuthService(result = Unit.right(), authStateFlow = authStateFlow))
+        val viewModel = viewModel(FakeAuthService(result = Unit.right(), authStateFlow = authStateFlow))
         advanceUntilIdle()
 
         authStateFlow.value = AuthState.Unauthenticated
@@ -132,7 +143,7 @@ class HomeViewModelTest {
     @Test
     fun `account without email exposes no email`() = runTest(dispatcher) {
         val authStateFlow = MutableStateFlow<AuthState>(AuthState.Authenticated(account(email = null)))
-        val viewModel = HomeViewModel(FakeAuthService(result = Unit.right(), authStateFlow = authStateFlow))
+        val viewModel = viewModel(FakeAuthService(result = Unit.right(), authStateFlow = authStateFlow))
 
         advanceUntilIdle()
 
@@ -141,7 +152,7 @@ class HomeViewModelTest {
 
     @Test
     fun `toast shown clears the pending toast`() = runTest(dispatcher) {
-        val viewModel = HomeViewModel(FakeAuthService(result = AuthError.Network.left()))
+        val viewModel = viewModel(FakeAuthService(result = AuthError.Network.left()))
 
         viewModel.onSignOut()
         advanceUntilIdle()
@@ -150,13 +161,50 @@ class HomeViewModelTest {
         assertNull(viewModel.state.pendingToastRes)
     }
 
+    @Test
+    fun `the selected location name is exposed`() = runTest(dispatcher) {
+        val authService = FakeAuthService(
+            result = Unit.right(),
+            authStateFlow = MutableStateFlow(AuthState.Authenticated(account(email = null))),
+        )
+        val cache = FakeMipymeCache(
+            locations = listOf(location("loc_1", name = "Downtown"), location("loc_2")),
+            employees = listOf(syncEmployee("emp_1", emptyList(), isOwner = true)),
+        )
+        val repository = locationRepository(authService, cache)
+        val viewModel = HomeViewModel(authService, repository)
+        advanceUntilIdle()
+        assertNull(viewModel.state.locationName)
+
+        repository.select("loc_1")
+        advanceUntilIdle()
+
+        assertEquals("Downtown", viewModel.state.locationName)
+    }
+
+    private fun TestScope.viewModel(authService: FakeAuthService): HomeViewModel {
+        return HomeViewModel(authService, locationRepository(authService, FakeMipymeCache()))
+    }
+
+    private fun TestScope.locationRepository(
+        authService: FakeAuthService,
+        cache: FakeMipymeCache,
+    ): LocationSelectionRepository {
+        return LocationSelectionRepository(
+            dataStore = FakePreferencesDataStore(),
+            authService = authService,
+            cache = cache,
+            scope = locationScope,
+        )
+    }
+
     private fun account(email: String?): IdentityAccount {
         return IdentityAccount(
             id = "user_1",
             name = "Ada Lovelace",
             email = email,
             pictureUrl = "https://img.example.com/ada.png",
-            publicMetadata = IdentityPublicMetadata(),
+            publicMetadata = IdentityPublicMetadata(employeeId = "emp_1"),
         )
     }
 

@@ -81,6 +81,15 @@ private fun HomeContent(
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             MoshiText(text = stringResource(R.string.home_title), role = MoshiTextRole.Heading)
+            val locationName = state.locationName
+            if (locationName != null) {
+                Spacer(Modifier.height(spacing.space2))
+                MoshiText(
+                    text = locationName,
+                    role = MoshiTextRole.Body,
+                    color = Moshi.colors.foreground.secondary,
+                )
+            }
             val email = state.email
             if (email != null) {
                 Spacer(Modifier.height(spacing.space2))
@@ -106,7 +115,7 @@ private fun HomeContent(
 @Composable
 fun HomeScreenPreview() {
     MoshiTheme {
-        HomeContent(state = HomeScreenUiState(email = "ada@example.com"), onSignOut = {})
+        HomeContent(state = HomeScreenUiState(email = "ada@example.com", locationName = "Downtown store"), onSignOut = {})
     }
 }
 

@@ -17,6 +17,7 @@
     <string name="sign_in_with_email_title">What\'s your email?</string>
     <string name="sign_in_with_email_subtitle">We\'ll send you a code to continue.</string>
     <string name="sign_in_with_email_label">Email</string>
+    <string name="sign_in_with_email_placeholder">name@example.com</string>
     <string name="sign_in_with_email_continue">Continue</string>
     <string name="sign_in_with_email_cooldown">You can request a new code in %1$d s.</string>
     <string name="sign_in_with_email_blocked_title">Can\'t sign in</string>
@@ -93,6 +94,28 @@
     <string name="ask_notification_permissions_body">We\'ll let you know when something important happens, like low stock, synced offline sales, or updates to your account.</string>
     <string name="ask_notification_permissions_turn_on">Turn on notifications</string>
     <string name="ask_notification_permissions_skip">Skip for now</string>
+
+    <string name="select_location_title">Select a location</string>
+    <string name="select_location_error">We couldn\'t select that location. Try again.</string>
+    <string name="select_location_sign_out">Sign out</string>
+    <string name="select_location_sign_out_confirm_title">Sign out?</string>
+    <string name="select_location_sign_out_confirm_message">You\'ll need to sign in again to continue.</string>
+    <string name="select_location_sign_out_confirm_action">Sign out</string>
+    <string name="select_location_sign_out_confirm_cancel">Cancel</string>
+
+    <string name="no_location_access_title">You don\'t have access to any location</string>
+    <string name="no_location_access_body">Ask the business owner to assign you a location, then refresh.</string>
+    <string name="no_location_access_refresh">Refresh</string>
+    <string name="no_location_access_sign_out">Sign out</string>
+    <string name="no_location_access_sign_out_confirm_title">Sign out?</string>
+    <string name="no_location_access_sign_out_confirm_message">You\'ll need to sign in again to continue.</string>
+    <string name="no_location_access_sign_out_confirm_action">Sign out</string>
+    <string name="no_location_access_sign_out_confirm_cancel">Cancel</string>
+    <string name="no_location_access_error_network">Check your connection and try again.</string>
+    <string name="no_location_access_error_server">Our servers are busy right now. Try again in a moment.</string>
+    <string name="no_location_access_error_unauthorized">Your session needs to be refreshed. Try again.</string>
+    <string name="no_location_access_error_forbidden">This account can\'t load its business data right now.</string>
+    <string name="no_location_access_error_unknown">Something went wrong. Try again.</string>
 
     <string name="home_title">Home</string>
     <string name="home_sign_out">Sign out</string>

@@ -152,6 +152,7 @@ private fun SignInWithEmailContent(
                 label = stringResource(R.string.sign_in_with_email_label),
                 modifier = Modifier.fillMaxWidth(),
                 enabled = !state.isLoading,
+                placeholder = stringResource(R.string.sign_in_with_email_placeholder),
                 supportingText = supportingText,
                 isError = error != null,
                 keyboardOptions = KeyboardOptions(

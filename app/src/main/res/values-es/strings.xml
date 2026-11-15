@@ -17,6 +17,7 @@
     <string name="sign_in_with_email_title">¿Cuál es tu correo?</string>
     <string name="sign_in_with_email_subtitle">Te enviaremos un código para continuar.</string>
     <string name="sign_in_with_email_label">Correo electrónico</string>
+    <string name="sign_in_with_email_placeholder">nombre@ejemplo.com</string>
     <string name="sign_in_with_email_continue">Continuar</string>
     <string name="sign_in_with_email_cooldown">Podrás pedir un nuevo código en %1$d s.</string>
     <string name="sign_in_with_email_blocked_title">No se puede iniciar sesión</string>
@@ -93,6 +94,28 @@
     <string name="ask_notification_permissions_body">Te avisaremos cuando pase algo importante, como poco inventario, ventas sin conexión sincronizadas o novedades de tu cuenta.</string>
     <string name="ask_notification_permissions_turn_on">Activar notificaciones</string>
     <string name="ask_notification_permissions_skip">Ahora no</string>
+
+    <string name="select_location_title">Selecciona una ubicación</string>
+    <string name="select_location_error">No pudimos seleccionar esa ubicación. Inténtalo de nuevo.</string>
+    <string name="select_location_sign_out">Cerrar sesión</string>
+    <string name="select_location_sign_out_confirm_title">¿Cerrar sesión?</string>
+    <string name="select_location_sign_out_confirm_message">Tendrás que iniciar sesión de nuevo para continuar.</string>
+    <string name="select_location_sign_out_confirm_action">Cerrar sesión</string>
+    <string name="select_location_sign_out_confirm_cancel">Cancelar</string>
+
+    <string name="no_location_access_title">No tienes acceso a ninguna ubicación</string>
+    <string name="no_location_access_body">Pide al dueño del negocio que te asigne una ubicación y luego actualiza.</string>
+    <string name="no_location_access_refresh">Actualizar</string>
+    <string name="no_location_access_sign_out">Cerrar sesión</string>
+    <string name="no_location_access_sign_out_confirm_title">¿Cerrar sesión?</string>
+    <string name="no_location_access_sign_out_confirm_message">Tendrás que iniciar sesión de nuevo para continuar.</string>
+    <string name="no_location_access_sign_out_confirm_action">Cerrar sesión</string>
+    <string name="no_location_access_sign_out_confirm_cancel">Cancelar</string>
+    <string name="no_location_access_error_network">Revisa tu conexión e inténtalo de nuevo.</string>
+    <string name="no_location_access_error_server">Nuestros servidores están ocupados. Inténtalo de nuevo en un momento.</string>
+    <string name="no_location_access_error_unauthorized">Tu sesión necesita actualizarse. Inténtalo de nuevo.</string>
+    <string name="no_location_access_error_forbidden">Esta cuenta no puede cargar los datos de su negocio por ahora.</string>
+    <string name="no_location_access_error_unknown">Algo salió mal. Inténtalo de nuevo.</string>
 
     <string name="home_title">Inicio</string>
     <string name="home_sign_out">Cerrar sesión</string>

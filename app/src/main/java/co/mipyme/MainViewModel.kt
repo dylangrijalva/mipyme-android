@@ -5,6 +5,9 @@ import androidx.lifecycle.viewModelScope
 import co.mipyme.auth.AuthService
 import co.mipyme.auth.AuthState
 import co.mipyme.auth.merchantId
+import co.mipyme.data.location.LocationSelectionRepository
+import co.mipyme.data.location.LocationSelectionState
+import co.mipyme.data.location.locationUserId
 import co.mipyme.data.notification.NotificationPermissionRepository
 import co.mipyme.sync.SyncEngine
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -23,6 +26,7 @@ class MainViewModel(
     private val authService: AuthService,
     private val notificationPermissionRepository: NotificationPermissionRepository,
     private val syncEngine: SyncEngine,
+    private val locationSelectionRepository: LocationSelectionRepository,
 ) : ViewModel() {
     private val _stateFlow = MutableStateFlow(MainScreenUiState())
     val stateFlow = _stateFlow.asStateFlow()
@@ -42,8 +46,9 @@ class MainViewModel(
             authService.authStateFlow,
             notificationPermissionRepository.answeredFlow,
             initialSyncProgressFlow(),
-        ) { authState, answered, initialSync ->
-            authState.toLaunchDestination(answered, initialSync)
+            locationSelectionRepository.locationSelectionFlow,
+        ) { authState, answered, initialSync, locationSelection ->
+            authState.toLaunchDestination(answered, initialSync, locationSelection)
         }.filterNotNull()
     }
 
@@ -64,6 +69,7 @@ class MainViewModel(
     private suspend fun AuthState.toLaunchDestination(
         answered: Boolean,
         initialSync: InitialSyncProgress,
+        locationSelection: LocationSelectionState,
     ): LaunchDestination? {
         return when (this) {
             AuthState.Initializing -> LaunchDestination.Idle
@@ -77,13 +83,25 @@ class MainViewModel(
                     LaunchDestination.InitialSync
                 } else if (!answered && !notificationPermissionRepository.isPermissionGranted()) {
                     LaunchDestination.AskNotificationPermissions
+                } else if (locationUserId == null) {
+                    LaunchDestination.NoLocationAccess
+                } else if (locationSelection.userId != locationUserId || locationSelection.merchantId != merchantId) {
+                    null
                 } else {
-                    LaunchDestination.Home
+                    toLocationDestination(locationSelection)
                 }
             }
             AuthState.Unauthenticated,
             AuthState.SessionExpired,
             AuthState.Blocked -> LaunchDestination.Welcome
+        }
+    }
+
+    private fun toLocationDestination(locationSelection: LocationSelectionState): LaunchDestination {
+        return when {
+            locationSelection.accessibleLocations.isEmpty() -> LaunchDestination.NoLocationAccess
+            locationSelection.selectedLocation != null -> LaunchDestination.Home
+            else -> LaunchDestination.SelectLocation
         }
     }
 

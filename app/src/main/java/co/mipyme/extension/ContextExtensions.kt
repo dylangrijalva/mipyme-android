@@ -13,3 +13,10 @@ val Context.notificationPermissionDataStore: DataStore<Preferences> by preferenc
     name = NOTIFICATION_PERMISSION_FILE_NAME,
     corruptionHandler = ReplaceFileCorruptionHandler { emptyPreferences() },
 )
+
+private const val LOCATION_SELECTION_FILE_NAME = "location_selection"
+
+val Context.locationSelectionDataStore: DataStore<Preferences> by preferencesDataStore(
+    name = LOCATION_SELECTION_FILE_NAME,
+    corruptionHandler = ReplaceFileCorruptionHandler { emptyPreferences() },
+)

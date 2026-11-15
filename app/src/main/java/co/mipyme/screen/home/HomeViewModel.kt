@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import co.mipyme.auth.AuthService
 import co.mipyme.auth.AuthState
 import co.mipyme.auth.toStringResource
+import co.mipyme.data.location.LocationSelectionRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -13,6 +14,7 @@ import kotlinx.coroutines.launch
 
 class HomeViewModel(
     private val authService: AuthService,
+    private val locationSelectionRepository: LocationSelectionRepository,
 ) : ViewModel() {
     private val _stateFlow = MutableStateFlow(
         HomeScreenUiState(email = emailOf(authService.authStateFlow.value)),
@@ -25,6 +27,11 @@ class HomeViewModel(
         viewModelScope.launch {
             authService.authStateFlow.collect { authState ->
                 _stateFlow.update { it.copy(email = emailOf(authState)) }
+            }
+        }
+        viewModelScope.launch {
+            locationSelectionRepository.selectedLocationFlow.collect { location ->
+                _stateFlow.update { it.copy(locationName = location?.name) }
             }
         }
     }

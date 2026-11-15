@@ -4,7 +4,9 @@ import co.mipyme.mainScreenModule
 import co.mipyme.screen.ask_notification_permissions.askNotificationPermissionsScreenModule
 import co.mipyme.screen.home.homeScreenModule
 import co.mipyme.screen.initial_sync.initialSyncScreenModule
+import co.mipyme.screen.no_location_access.noLocationAccessScreenModule
 import co.mipyme.screen.onboarding.onboardingScreenModule
+import co.mipyme.screen.select_location.selectLocationScreenModule
 import co.mipyme.screen.sign_in_with_email.signInWithEmailScreenModule
 import co.mipyme.screen.verify_otp_code.verifyOtpCodeScreenModule
 import co.mipyme.screen.welcome.welcomeScreenModule
@@ -20,6 +22,8 @@ fun screenModule(): Module {
         onboardingScreenModule()
         initialSyncScreenModule()
         askNotificationPermissionsScreenModule()
+        selectLocationScreenModule()
+        noLocationAccessScreenModule()
         homeScreenModule()
     }
 }
