@@ -5,6 +5,7 @@ import co.mipyme.contract.Decimal
 import co.mipyme.contract.EmployeeAccount
 import co.mipyme.contract.EmployeeStatus
 import co.mipyme.contract.Location
+import co.mipyme.contract.PosPermission
 import co.mipyme.contract.SyncEmployee
 import java.time.LocalDateTime
 
@@ -35,13 +36,14 @@ fun syncEmployee(
     locationIds: List<String>,
     status: EmployeeStatus = EmployeeStatus.ENABLED,
     isOwner: Boolean = false,
+    permissions: List<PosPermission> = emptyList(),
 ): SyncEmployee {
     return SyncEmployee(
         id = id,
         name = "Employee $id",
         isOwner = isOwner,
         status = status,
-        permissions = emptyList(),
+        permissions = permissions,
         account = EmployeeAccount(id = "acc_$id", email = "$id@example.com"),
         createdAt = FIXTURE_TIME,
         updatedAt = FIXTURE_TIME,

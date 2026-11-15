@@ -1,10 +1,9 @@
 package co.mipyme.screen.home
 
-import androidx.annotation.StringRes
-
 data class HomeScreenUiState(
     val email: String? = null,
     val locationName: String? = null,
-    val isSigningOut: Boolean = false,
-    @param:StringRes val pendingToastRes: Int? = null,
+    val visibleDestinations: List<HomeDestination> = emptyList(),
+    val backStack: List<HomeDestination> = emptyList(),
+    val pendingLostAccessDestination: HomeDestination? = null,
 )

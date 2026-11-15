@@ -117,8 +117,17 @@
     <string name="no_location_access_error_forbidden">Esta cuenta no puede cargar los datos de su negocio por ahora.</string>
     <string name="no_location_access_error_unknown">Algo salió mal. Inténtalo de nuevo.</string>
 
-    <string name="home_title">Inicio</string>
-    <string name="home_sign_out">Cerrar sesión</string>
+    <string name="home_destination_checkout">Caja</string>
+    <string name="home_destination_inventory">Inventario</string>
+    <string name="home_destination_suppliers">Proveedores</string>
+    <string name="home_destination_customers">Clientes</string>
+    <string name="home_destination_expenses">Gastos</string>
+    <string name="home_destination_transactions">Transacciones</string>
+    <string name="home_destination_reports">Reportes</string>
+    <string name="home_destination_staff">Personal</string>
+    <string name="home_destination_settings">Ajustes</string>
+    <string name="home_access_lost">Ya no tienes acceso a %1$s</string>
+    <string name="settings_sign_out">Cerrar sesión</string>
     <string name="welcome_google_sign_in_failed_title">No se pudo iniciar sesión con Google</string>
     <string name="welcome_google_sign_in_failed_message">Puedes continuar con tu correo electrónico o intentar de nuevo con Google.</string>
     <string name="welcome_google_sign_in_recovery_dismiss">Ahora no</string>
