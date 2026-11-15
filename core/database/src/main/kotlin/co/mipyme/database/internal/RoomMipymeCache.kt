@@ -3,6 +3,7 @@ package co.mipyme.database.internal
 import androidx.room.withTransaction
 import co.mipyme.contract.Collection
 import co.mipyme.contract.Customer
+import co.mipyme.contract.Employee
 import co.mipyme.contract.EmployeeStatus
 import co.mipyme.contract.Location
 import co.mipyme.contract.Merchant
@@ -73,6 +74,10 @@ internal class RoomMipymeCache(
                 )
             }
         }
+    }
+
+    override fun observeEmployee(employeeId: String): Flow<Employee?> {
+        return employeeDao.observe(employeeId).map { it?.toContract() }
     }
 
     override fun observeCustomers(): Flow<List<Customer>> {

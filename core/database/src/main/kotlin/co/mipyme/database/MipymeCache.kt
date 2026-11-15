@@ -2,6 +2,7 @@ package co.mipyme.database
 
 import co.mipyme.contract.Collection
 import co.mipyme.contract.Customer
+import co.mipyme.contract.Employee
 import co.mipyme.contract.Location
 import co.mipyme.contract.Merchant
 import co.mipyme.contract.Product
@@ -18,6 +19,8 @@ interface MipymeCache {
     fun observeLocations(): Flow<List<Location>>
 
     fun observeLocationAccess(employeeId: String): Flow<EmployeeLocationAccess?>
+
+    fun observeEmployee(employeeId: String): Flow<Employee?>
 
     fun observeCustomers(): Flow<List<Customer>>
 

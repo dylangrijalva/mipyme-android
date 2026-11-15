@@ -163,13 +163,14 @@ fun employee(
     status: EmployeeStatus = EmployeeStatus.ENABLED,
     isOwner: Boolean = false,
     account: EmployeeAccount? = EmployeeAccount(id = "acc_$id", email = "$id@example.com"),
+    permissions: List<PosPermission> = listOf(PosPermission.CHECKOUT, PosPermission.REFUND),
 ): SyncEmployee {
     return SyncEmployee(
         id = id,
         name = "Employee $id",
         isOwner = isOwner,
         status = status,
-        permissions = listOf(PosPermission.CHECKOUT, PosPermission.REFUND),
+        permissions = permissions,
         account = account,
         createdAt = FIXTURE_TIME,
         updatedAt = FIXTURE_TIME,

@@ -2,6 +2,7 @@ package co.mipyme.testing
 
 import co.mipyme.contract.Collection
 import co.mipyme.contract.Customer
+import co.mipyme.contract.Employee
 import co.mipyme.contract.EmployeeStatus
 import co.mipyme.contract.Location
 import co.mipyme.contract.Merchant
@@ -67,6 +68,10 @@ class FakeMipymeCache(
 
     override suspend fun findVariantByBarcode(barcode: String): ProductVariantMatch? = null
 
+    override fun observeEmployee(employeeId: String): Flow<Employee?> {
+        return snapshot.map { current -> current.employees.firstOrNull { it.id == employeeId }?.toEmployee() }
+    }
+
     override fun observeCustomers(): Flow<List<Customer>> = emptyFlow()
 
     override fun observeSuppliers(): Flow<List<Supplier>> = emptyFlow()
@@ -74,6 +79,20 @@ class FakeMipymeCache(
     override fun observeCollections(): Flow<List<Collection>> = emptyFlow()
 
     override fun observeSyncState(): Flow<SyncState?> = emptyFlow()
+
+    private fun SyncEmployee.toEmployee(): Employee {
+        return Employee(
+            id = id,
+            name = name,
+            isOwner = isOwner,
+            status = status,
+            permissions = permissions,
+            account = account,
+            createdAt = createdAt,
+            updatedAt = updatedAt,
+            maxDiscountRate = maxDiscountRate,
+        )
+    }
 
     private data class Snapshot(
         val locations: List<Location>,

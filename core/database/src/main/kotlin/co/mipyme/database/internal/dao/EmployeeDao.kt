@@ -35,6 +35,9 @@ internal interface EmployeeDao {
     )
     fun observeLocationRows(employeeId: String, status: EmployeeStatus): Flow<List<EmployeeLocationRow>>
 
+    @Query("SELECT * FROM employees WHERE id = :employeeId")
+    fun observe(employeeId: String): Flow<EmployeeEntity?>
+
     @Query("DELETE FROM employee_locations")
     suspend fun deleteAllLocationLinks()
 

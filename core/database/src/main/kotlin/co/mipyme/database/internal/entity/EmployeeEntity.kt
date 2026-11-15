@@ -4,7 +4,10 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import co.mipyme.contract.Decimal
+import co.mipyme.contract.Employee
+import co.mipyme.contract.EmployeeAccount
 import co.mipyme.contract.EmployeeStatus
+import co.mipyme.contract.PosPermission
 import co.mipyme.contract.SyncEmployee
 import java.time.LocalDateTime
 
@@ -36,5 +39,20 @@ internal fun SyncEmployee.toEntity(): EmployeeEntity {
         createdAt = createdAt,
         updatedAt = updatedAt,
         maxDiscountRate = maxDiscountRate.value,
+    )
+}
+
+internal fun EmployeeEntity.toContract(): Employee {
+    val permissionNames = permissions.split(PERMISSION_SEPARATOR).toSet()
+    return Employee(
+        id = id,
+        name = name,
+        isOwner = isOwner,
+        status = status,
+        permissions = PosPermission.entries.filter { it.name in permissionNames },
+        account = if (accountId != null && accountEmail != null) EmployeeAccount(accountId, accountEmail) else null,
+        createdAt = createdAt,
+        updatedAt = updatedAt,
+        maxDiscountRate = Decimal(maxDiscountRate),
     )
 }

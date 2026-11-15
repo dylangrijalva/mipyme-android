@@ -2,6 +2,7 @@ package co.mipyme.sync.testing
 
 import co.mipyme.contract.Collection
 import co.mipyme.contract.Customer
+import co.mipyme.contract.Employee
 import co.mipyme.contract.Location
 import co.mipyme.contract.Merchant
 import co.mipyme.contract.Product
@@ -28,6 +29,8 @@ class FakeMipymeCache : MipymeCache {
     override fun observeLocations(): Flow<List<Location>> = emptyFlow()
 
     override fun observeLocationAccess(employeeId: String): Flow<EmployeeLocationAccess?> = emptyFlow()
+
+    override fun observeEmployee(employeeId: String): Flow<Employee?> = emptyFlow()
 
     override fun observeCustomers(): Flow<List<Customer>> = emptyFlow()
 

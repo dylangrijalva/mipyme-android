@@ -3,7 +3,11 @@ package co.mipyme.database.internal
 import android.content.Context
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
+import co.mipyme.contract.Decimal
+import co.mipyme.contract.Employee
+import co.mipyme.contract.EmployeeAccount
 import co.mipyme.contract.EmployeeStatus
+import co.mipyme.contract.PosPermission
 import co.mipyme.contract.ProductStatus
 import co.mipyme.contract.SyncResponse
 import co.mipyme.database.EmployeeLocationAccess
@@ -438,6 +442,78 @@ class RoomMipymeCacheTest {
         cache.clearCache()
 
         assertNull(cache.observeLocationAccess("owner").first())
+    }
+
+    @Test
+    fun `an observed employee maps every stored field back to the contract`() = runTest {
+        store(syncResponse(employees = listOf(employee("emp_1", listOf("loc_1")))), "merch_1", FIXTURE_TIME)
+
+        val employee = cache.observeEmployee("emp_1").first()
+
+        assertEquals("emp_1", employee?.id)
+        assertEquals("Employee emp_1", employee?.name)
+        assertEquals(false, employee?.isOwner)
+        assertEquals(EmployeeStatus.ENABLED, employee?.status)
+        assertEquals(listOf(PosPermission.CHECKOUT, PosPermission.REFUND), employee?.permissions)
+        assertEquals(EmployeeAccount(id = "acc_emp_1", email = "emp_1@example.com"), employee?.account)
+        assertEquals(FIXTURE_TIME, employee?.createdAt)
+        assertEquals(FIXTURE_TIME, employee?.updatedAt)
+        assertEquals(Decimal("10.00"), employee?.maxDiscountRate)
+    }
+
+    @Test
+    fun `an observed employee without an account or permissions has no account and no permissions`() = runTest {
+        store(
+            syncResponse(employees = listOf(employee("emp_1", status = EmployeeStatus.INVITED, account = null, permissions = emptyList()))),
+            "merch_1",
+            FIXTURE_TIME,
+        )
+
+        val employee = cache.observeEmployee("emp_1").first()
+
+        assertEquals(EmployeeStatus.INVITED, employee?.status)
+        assertNull(employee?.account)
+        assertEquals(emptyList<PosPermission>(), employee?.permissions)
+    }
+
+    @Test
+    fun `an observed employee ignores unknown stored permissions`() = runTest {
+        store(syncResponse(employees = listOf(employee("emp_1"))), "merch_1", FIXTURE_TIME)
+        database.openHelper.writableDatabase.execSQL(
+            "UPDATE employees SET permissions = 'CHECKOUT,RETIRED_PERMISSION,,REFUND' WHERE id = 'emp_1'",
+        )
+
+        assertEquals(
+            listOf(PosPermission.CHECKOUT, PosPermission.REFUND),
+            cache.observeEmployee("emp_1").first()?.permissions,
+        )
+    }
+
+    @Test
+    fun `an unknown employee or an empty cache observes no employee`() = runTest {
+        assertNull(cache.observeEmployee("emp_1").first())
+
+        store(syncResponse(employees = listOf(employee("emp_1"))), "merch_1", FIXTURE_TIME)
+
+        assertNull(cache.observeEmployee("missing").first())
+    }
+
+    @Test
+    fun `an observed employee is emitted again when it changes and is null once cleared`() = runTest {
+        store(syncResponse(employees = listOf(employee("emp_1"))), "merch_1", FIXTURE_TIME)
+        val emissions = Channel<Employee?>(Channel.UNLIMITED)
+        backgroundScope.launch { cache.observeEmployee("emp_1").collect { emissions.send(it) } }
+        assertEquals(EmployeeStatus.ENABLED, emissions.receive()?.status)
+
+        store(
+            syncResponse(fullSync = false, merchant = null, employees = listOf(employee("emp_1", status = EmployeeStatus.DISABLED))),
+            "merch_1",
+            FIXTURE_TIME,
+        )
+        assertEquals(EmployeeStatus.DISABLED, emissions.receive()?.status)
+
+        cache.clearCache()
+        assertNull(emissions.receive())
     }
 
     @Test
