@@ -313,6 +313,33 @@ Set `destructive` to true for irreversible or account-level actions, such as sig
 and leading icon then use `foreground.action.destructive`. The row exposes `Role.Button`. Use
 sentence case for labels. Items have no dividers; stack them directly.
 
+### MoshiBottomSheet
+
+Use for a short, focused choice that slides up from the bottom edge, such as picking one option from a
+small list. It wraps the Material 3 modal bottom sheet. The elevated surface uses
+`background.elevated` with 12 dp top corners, a `background.overlay` scrim, and a drag handle in
+`border.strong`. Content sits inside a 16 dp horizontal inset (`pageGutterNarrow`), with 24 dp below
+it. Material's default window insets keep the content clear of the navigation bar.
+
+Pass `title` (optional) to show a left-aligned `typography.heading` title in `foreground.primary`,
+exposed as a heading and followed by a 16 dp gap before the content. Swiping down, tapping the scrim,
+and Back all call `onDismissRequest`. The caller owns visibility and must stop composing the sheet in
+response. The sheet opens fully expanded; pass `sheetState` to change that.
+
+### MoshiSelectableItem
+
+Use for a row in a single-choice list inside a surface such as `MoshiBottomSheet`. Wrap the rows in a
+parent with `Modifier.selectableGroup()`. It fills the available width with a 12 dp corner radius and
+a 48 dp minimum height, with 16 dp horizontal and 12 dp vertical padding. The whole row is the
+selectable target with a rounded native ripple and exposes `Role.RadioButton`.
+
+The label uses `typography.body` in `foreground.primary`, or `foreground.disabled` when disabled.
+Pass `supportingText` (optional) for a `typography.small` description in `foreground.secondary`
+below the label; both texts use `foreground.disabled` when disabled. Text wraps at larger font
+sizes. Selected rows fill with `background.action.secondary.hover` and show a decorative 24 dp
+checkmark in `foreground.action.secondary` at the end; unselected rows are transparent with no
+border.
+
 ### MoshiDivider
 
 Use to separate groups of content, such as the header of a drawer from its items. It is a 1 dp
