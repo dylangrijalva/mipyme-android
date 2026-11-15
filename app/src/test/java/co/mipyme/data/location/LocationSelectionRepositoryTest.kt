@@ -184,6 +184,45 @@ class LocationSelectionRepositoryTest {
     }
 
     @Test
+    fun `clearing the selection leaves no location selected`() = runTest {
+        val repository = repository(authenticated(), FakeMipymeCache(listOf(downtown, airport), listOf(owner)))
+        assertTrue(repository.select("loc_2").isRight())
+        runCurrent()
+        assertEquals(airport, repository.selectedLocationFlow.first())
+
+        val result = repository.clearSelection()
+        runCurrent()
+
+        assertTrue(result.isRight())
+        assertNull(repository.selectedLocationFlow.first())
+        assertEquals(listOf(downtown, airport), repository.accessibleLocationsFlow.first())
+    }
+
+    @Test
+    fun `clearing an owner selection with one location does not auto select it again`() = runTest {
+        val repository = repository(authenticated(), FakeMipymeCache(listOf(downtown), listOf(owner)))
+        assertTrue(repository.select("loc_1").isRight())
+        runCurrent()
+        assertEquals(downtown, repository.selectedLocationFlow.first())
+
+        repository.clearSelection()
+        runCurrent()
+
+        assertNull(repository.selectedLocationFlow.first())
+    }
+
+    @Test
+    fun `clearing reports a failure when the selection cannot be persisted`() = runTest {
+        val repository = repository(
+            authenticated(),
+            FakeMipymeCache(listOf(downtown, airport), listOf(owner)),
+            FakePreferencesDataStore(failWrites = true),
+        )
+
+        assertEquals(Either.Left(LocationSelectionError.PersistFailed), repository.clearSelection())
+    }
+
+    @Test
     fun `a selection is not shared with another employee`() = runTest {
         val dataStore = FakePreferencesDataStore()
         val cache = FakeMipymeCache(

@@ -133,6 +133,8 @@
     <string name="settings_business_information">Business information</string>
     <string name="settings_printers_and_devices">Printers &amp; devices</string>
     <string name="settings_tickets">Tickets</string>
+    <string name="settings_switch_location">Switch location</string>
+    <string name="settings_switch_location_error">We couldn\'t switch locations. Try again.</string>
     <string name="settings_help">Help</string>
     <string name="settings_rate_us">Rate us on Google Play</string>
     <string name="settings_app_version">Version %1$s</string>
@@ -140,6 +142,12 @@
     <string name="settings_sign_out_confirm_message">You\'ll need to sign in again to continue.</string>
     <string name="settings_sign_out_confirm_action">Sign out</string>
     <string name="settings_sign_out_confirm_cancel">Cancel</string>
+    <string name="settings_theme_title">Choose a theme</string>
+    <string name="settings_theme_system">Follow system</string>
+    <string name="settings_theme_light">Light</string>
+    <string name="settings_theme_dark">Dark</string>
+    <string name="settings_theme_action">Change theme</string>
+    <string name="settings_theme_error">We couldn\'t change the theme. Try again.</string>
     <string name="welcome_google_sign_in_failed_title">Google sign-in failed</string>
     <string name="welcome_google_sign_in_failed_message">We couldn\'t complete Google sign-in. You can continue with email or try Google again.</string>
     <string name="welcome_google_sign_in_recovery_dismiss">Not now</string>

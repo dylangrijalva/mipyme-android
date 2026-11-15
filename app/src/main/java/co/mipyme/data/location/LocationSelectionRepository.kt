@@ -184,13 +184,16 @@ class LocationSelectionRepository(
         }.onLeft { error -> Timber.w(error, "Could not clear the selected location") }
     }
 
-    private suspend fun clearSelection() {
-        Either.catch {
+    suspend fun clearSelection(): Either<LocationSelectionError, Unit> {
+        return Either.catch {
             dataStore.edit { preferences ->
                 preferences.remove(SELECTED_EMPLOYEE_ID_KEY)
                 preferences.remove(SELECTED_LOCATION_ID_KEY)
             }
-        }.onLeft { error -> Timber.w(error, "Could not clear the selected location") }
+        }
+            .onLeft { error -> Timber.w(error, "Could not clear the selected location") }
+            .mapLeft<LocationSelectionError> { LocationSelectionError.PersistFailed }
+            .map { }
     }
 
     private data class StoredSelection(val userId: String, val locationId: String)
