@@ -7,6 +7,8 @@ import co.mipyme.contract.IdentityPublicMetadata
 import co.mipyme.contract.Location
 import co.mipyme.data.location.LocationSelectionRepository
 import co.mipyme.data.notification.NotificationPermissionRepository
+import co.mipyme.data.theme.ThemeMode
+import co.mipyme.data.theme.ThemeRepository
 import co.mipyme.testing.FakeAuthService
 import co.mipyme.testing.FakeMipymeCache
 import co.mipyme.testing.FakePreferencesDataStore
@@ -29,6 +31,7 @@ import kotlinx.coroutines.test.setMain
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
+import org.junit.Assert.assertNull
 import org.junit.Before
 import org.junit.Test
 
@@ -55,6 +58,56 @@ class MainViewModelTest {
         advanceUntilIdle()
 
         assertEquals(LaunchDestination.Idle, viewModel.uiState.launchDestination)
+    }
+
+    @Test
+    fun `theme mode is unknown until the stored preference loads`() = runTest(dispatcher) {
+        val viewModel = viewModel(AuthState.Initializing)
+
+        assertNull(viewModel.uiState.themeMode)
+
+        advanceUntilIdle()
+
+        assertEquals(ThemeMode.SYSTEM, viewModel.uiState.themeMode)
+    }
+
+    @Test
+    fun `a failed theme read still resolves to the system theme`() = runTest(dispatcher) {
+        val authService = FakeAuthService(AuthState.Unauthenticated)
+        val viewModel = MainViewModel(
+            authService,
+            repository(authService, granted = true),
+            FakeSyncEngine(),
+            locationRepository(authService),
+            ThemeRepository(FakePreferencesDataStore(failReads = true)),
+        )
+        assertNull(viewModel.uiState.themeMode)
+
+        advanceUntilIdle()
+
+        assertEquals(ThemeMode.SYSTEM, viewModel.uiState.themeMode)
+    }
+
+    @Test
+    fun `exposes the stored theme mode`() = runTest(dispatcher) {
+        val authService = FakeAuthService(AuthState.Unauthenticated)
+        val themeRepository = ThemeRepository(FakePreferencesDataStore())
+        themeRepository.setThemeMode(ThemeMode.DARK)
+        val viewModel = MainViewModel(
+            authService,
+            repository(authService, granted = true),
+            FakeSyncEngine(),
+            locationRepository(authService),
+            themeRepository,
+        )
+        advanceUntilIdle()
+
+        assertEquals(ThemeMode.DARK, viewModel.uiState.themeMode)
+
+        themeRepository.setThemeMode(ThemeMode.LIGHT)
+        advanceUntilIdle()
+
+        assertEquals(ThemeMode.LIGHT, viewModel.uiState.themeMode)
     }
 
     @Test
@@ -110,7 +163,7 @@ class MainViewModelTest {
         val authService = FakeAuthService(AuthState.Authenticated(account(merchantId = "merch_1")))
         val repository = repository(authService, granted = false)
         repository.markAnswered()
-        val viewModel = MainViewModel(authService, repository, FakeSyncEngine(setOf("merch_1")), locationRepository(authService))
+        val viewModel = MainViewModel(authService, repository, FakeSyncEngine(setOf("merch_1")), locationRepository(authService), ThemeRepository(FakePreferencesDataStore()))
         advanceUntilIdle()
 
         assertEquals(LaunchDestination.Home, viewModel.uiState.launchDestination)
@@ -120,7 +173,7 @@ class MainViewModelTest {
     fun `answering the prompt moves from notification permissions to home`() = runTest(dispatcher) {
         val authService = FakeAuthService(AuthState.Authenticated(account(merchantId = "merch_1")))
         val repository = repository(authService, granted = false)
-        val viewModel = MainViewModel(authService, repository, FakeSyncEngine(setOf("merch_1")), locationRepository(authService))
+        val viewModel = MainViewModel(authService, repository, FakeSyncEngine(setOf("merch_1")), locationRepository(authService), ThemeRepository(FakePreferencesDataStore()))
         advanceUntilIdle()
         assertEquals(LaunchDestination.AskNotificationPermissions, viewModel.uiState.launchDestination)
 
@@ -135,7 +188,7 @@ class MainViewModelTest {
         val signedIn = AuthState.Authenticated(account(merchantId = "merch_1"))
         val authService = FakeAuthService(signedIn)
         val repository = repository(authService, granted = false)
-        val viewModel = MainViewModel(authService, repository, FakeSyncEngine(setOf("merch_1")), locationRepository(authService))
+        val viewModel = MainViewModel(authService, repository, FakeSyncEngine(setOf("merch_1")), locationRepository(authService), ThemeRepository(FakePreferencesDataStore()))
         advanceUntilIdle()
         repository.markAnswered()
         advanceUntilIdle()
@@ -290,6 +343,7 @@ class MainViewModelTest {
             repository(authService, granted = true),
             FakeSyncEngine(setOf("merch_1")),
             locationRepository,
+            ThemeRepository(FakePreferencesDataStore()),
         )
         advanceUntilIdle()
         assertEquals(LaunchDestination.SelectLocation, viewModel.uiState.launchDestination)
@@ -313,6 +367,7 @@ class MainViewModelTest {
             repository(authService, granted = true),
             FakeSyncEngine(setOf("merch_1")),
             locationRepository(authService, cache, dataStore),
+            ThemeRepository(FakePreferencesDataStore()),
         )
         advanceUntilIdle()
 
@@ -408,6 +463,7 @@ class MainViewModelTest {
             repository(authService, granted = true),
             FakeSyncEngine(setOf("merch_1")),
             locationRepository,
+            ThemeRepository(FakePreferencesDataStore()),
         )
         advanceUntilIdle()
         locationRepository.select("loc_1")
@@ -543,7 +599,7 @@ class MainViewModelTest {
             cache = defaultCache(),
             scope = locationScope,
         )
-        val viewModel = MainViewModel(authService, repository(authService, granted = true), FakeSyncEngine(setOf("merch_1")), repository)
+        val viewModel = MainViewModel(authService, repository(authService, granted = true), FakeSyncEngine(setOf("merch_1")), repository, ThemeRepository(FakePreferencesDataStore()))
         advanceUntilIdle()
 
         assertEquals(LaunchDestination.Home, viewModel.uiState.launchDestination)
@@ -604,7 +660,7 @@ class MainViewModelTest {
         syncEngine: FakeSyncEngine = FakeSyncEngine(completedMerchants = setOf("merch_1")),
         cache: FakeMipymeCache = defaultCache(),
     ): MainViewModel {
-        return MainViewModel(authService, repository(authService, granted), syncEngine, locationRepository(authService, cache))
+        return MainViewModel(authService, repository(authService, granted), syncEngine, locationRepository(authService, cache), ThemeRepository(FakePreferencesDataStore()))
     }
 
     private fun TestScope.locationRepository(

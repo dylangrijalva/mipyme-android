@@ -20,3 +20,10 @@ val Context.locationSelectionDataStore: DataStore<Preferences> by preferencesDat
     name = LOCATION_SELECTION_FILE_NAME,
     corruptionHandler = ReplaceFileCorruptionHandler { emptyPreferences() },
 )
+
+private const val THEME_PREFERENCE_FILE_NAME = "theme_preference"
+
+val Context.themePreferenceDataStore: DataStore<Preferences> by preferencesDataStore(
+    name = THEME_PREFERENCE_FILE_NAME,
+    corruptionHandler = ReplaceFileCorruptionHandler { emptyPreferences() },
+)

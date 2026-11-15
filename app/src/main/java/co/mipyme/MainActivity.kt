@@ -1,17 +1,25 @@
 package co.mipyme
 
 import android.animation.ValueAnimator
+import android.content.Context
+import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.view.animation.PathInterpolator
 import androidx.activity.ComponentActivity
+import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.splashscreen.SplashScreenViewProvider
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
+import co.mipyme.data.theme.ThemeRepository
+import co.mipyme.data.theme.isDark
+import co.mipyme.extension.themePreferenceDataStore
 import co.mipyme.navigation.NavigationRoot
 import co.mipyme.ui.MoshiTheme
 import kotlinx.coroutines.delay
@@ -23,6 +31,7 @@ import org.koin.core.module.dsl.viewModelOf
 import kotlin.time.Duration.Companion.milliseconds
 
 fun Module.mainScreenModule(): Module {
+    single { ThemeRepository(get<Context>().themePreferenceDataStore) }
     viewModelOf(::MainViewModel)
     return this
 }
@@ -32,7 +41,9 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         installSplashScreen().apply {
-            setKeepOnScreenCondition { viewModel.uiState.launchDestination == LaunchDestination.Idle }
+            setKeepOnScreenCondition {
+                viewModel.uiState.launchDestination == LaunchDestination.Idle || viewModel.uiState.themeMode == null
+            }
             setOnExitAnimationListener { provider -> playSplashExitAnimation(provider) }
         }
         super.onCreate(savedInstanceState)
@@ -42,7 +53,18 @@ class MainActivity : ComponentActivity() {
             val state by viewModel.stateFlow.collectAsStateWithLifecycle()
             val startRoute = state.launchDestination.toRoute()
 
-            MoshiTheme {
+            val isSystemDark = isSystemInDarkTheme()
+            val isDark = state.themeMode?.isDark(isSystemDark) ?: isSystemDark
+
+            DisposableEffect(isDark) {
+                enableEdgeToEdge(
+                    statusBarStyle = SystemBarStyle.auto(Color.TRANSPARENT, Color.TRANSPARENT) { isDark },
+                    navigationBarStyle = SystemBarStyle.auto(LIGHT_SCRIM, DARK_SCRIM) { isDark },
+                )
+                onDispose {}
+            }
+
+            MoshiTheme(darkTheme = isDark) {
                 if (startRoute != null) {
                     NavigationRoot(startRoute = startRoute)
                 }
@@ -88,5 +110,7 @@ class MainActivity : ComponentActivity() {
     private companion object {
         const val SPLASH_EXIT_DURATION_MILLIS = 300L
         const val SPLASH_EXIT_ICON_SCALE = 1.15f
+        val LIGHT_SCRIM = Color.argb(0xe6, 0xFF, 0xFF, 0xFF)
+        val DARK_SCRIM = Color.argb(0x80, 0x1b, 0x1b, 0x1b)
     }
 }

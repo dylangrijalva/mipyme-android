@@ -1,0 +1,15 @@
+package co.mipyme.data.theme
+
+enum class ThemeMode {
+    SYSTEM,
+    LIGHT,
+    DARK,
+}
+
+fun ThemeMode.isDark(isSystemDark: Boolean): Boolean {
+    return when (this) {
+        ThemeMode.SYSTEM -> isSystemDark
+        ThemeMode.LIGHT -> false
+        ThemeMode.DARK -> true
+    }
+}

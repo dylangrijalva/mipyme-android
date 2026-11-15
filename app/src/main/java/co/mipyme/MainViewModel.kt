@@ -9,6 +9,7 @@ import co.mipyme.data.location.LocationSelectionRepository
 import co.mipyme.data.location.LocationSelectionState
 import co.mipyme.data.location.locationUserId
 import co.mipyme.data.notification.NotificationPermissionRepository
+import co.mipyme.data.theme.ThemeRepository
 import co.mipyme.sync.SyncEngine
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
@@ -27,6 +28,7 @@ class MainViewModel(
     private val notificationPermissionRepository: NotificationPermissionRepository,
     private val syncEngine: SyncEngine,
     private val locationSelectionRepository: LocationSelectionRepository,
+    private val themeRepository: ThemeRepository,
 ) : ViewModel() {
     private val _stateFlow = MutableStateFlow(MainScreenUiState())
     val stateFlow = _stateFlow.asStateFlow()
@@ -37,6 +39,11 @@ class MainViewModel(
         viewModelScope.launch {
             launchDestinationFlow().collect { destination ->
                 _stateFlow.update { it.copy(launchDestination = destination) }
+            }
+        }
+        viewModelScope.launch {
+            themeRepository.themeModeFlow.collect { mode ->
+                _stateFlow.update { it.copy(themeMode = mode) }
             }
         }
     }
