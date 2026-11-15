@@ -117,7 +117,7 @@
     <string name="no_location_access_error_forbidden">Esta cuenta no puede cargar los datos de su negocio por ahora.</string>
     <string name="no_location_access_error_unknown">Algo salió mal. Inténtalo de nuevo.</string>
 
-    <string name="home_destination_checkout">Caja</string>
+    <string name="home_destination_checkout">Facturación</string>
     <string name="home_destination_inventory">Inventario</string>
     <string name="home_destination_suppliers">Proveedores</string>
     <string name="home_destination_customers">Clientes</string>
