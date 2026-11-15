@@ -285,13 +285,14 @@ closes the drawer in response to an item click.
 ### MoshiNavigationDrawerItem
 
 Use inside `MoshiNavigationDrawer` for one destination. It shows a 24 dp icon in
-`foreground.primary`, a 12 dp gap, a Body label in `foreground.primary`, and a 16 dp trailing
-chevron in `foreground.secondary`. The selected item fills a 12 dp rounded container with `background.action.secondary.default`;
+`foreground.primary`, a 12 dp gap, and a Body label in `foreground.primary`, with no trailing
+chevron. The selected item fills a 12 dp rounded container with `background.action.secondary.default`;
 other items stay on `background.canvas`. The whole row is the click target, with a minimum height of
 48 dp and native ripple feedback. The row grows and the label wraps at larger font sizes.
 
-Mark exactly one item as `selected`. It exposes `Role.Tab` with its selected state, and the label
-provides the accessible name, so the icon and chevron are decorative. Use sentence case for labels.
+Mark exactly one item as `selected`. Pass `selectedIcon` (optional, defaults to `icon`) to show the
+filled variant of the icon while the item is selected. It exposes `Role.Tab` with its selected state,
+and the label provides the accessible name, so the icon is decorative. Use sentence case for labels.
 
 ### MoshiDivider
 

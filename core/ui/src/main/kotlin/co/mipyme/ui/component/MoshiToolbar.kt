@@ -151,7 +151,7 @@ private fun ToolbarNavigationButton(navigation: MoshiToolbarNavigation) {
         }
         is MoshiToolbarNavigation.Menu -> {
             ToolbarIconButton(
-                iconRes = R.drawable.ic_fluent_text_bullet_list_ltr_24_regular,
+                iconRes = R.drawable.ic_fluent_navigation_24_regular,
                 contentDescription = stringResource(R.string.moshi_toolbar_menu),
                 onClick = navigation.onClick,
             )

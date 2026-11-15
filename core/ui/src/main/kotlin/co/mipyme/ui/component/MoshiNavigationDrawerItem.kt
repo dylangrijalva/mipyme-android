@@ -26,10 +26,6 @@ import co.mipyme.ui.MoshiPreview
 import co.mipyme.ui.MoshiTheme
 import co.mipyme.ui.R
 
-/**
- * A destination row for [MoshiNavigationDrawer] with a 24 dp [icon], a wrapping [label], and a trailing chevron.
- * The [selected] item is highlighted and exposed to accessibility services as the selected tab.
- */
 @Composable
 fun MoshiNavigationDrawerItem(
     label: String,
@@ -37,6 +33,7 @@ fun MoshiNavigationDrawerItem(
     selected: Boolean,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
+    @DrawableRes selectedIcon: Int = icon,
 ) {
     val colors = Moshi.colors
     val spacing = Moshi.spacing
@@ -60,7 +57,7 @@ fun MoshiNavigationDrawerItem(
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Icon(
-            painter = painterResource(icon),
+            painter = painterResource(if (selected) selectedIcon else icon),
             contentDescription = null,
             modifier = Modifier.size(spacing.space6),
             tint = colors.foreground.primary,
@@ -71,13 +68,6 @@ fun MoshiNavigationDrawerItem(
             modifier = Modifier.weight(1f),
             role = MoshiTextRole.Body,
             color = colors.foreground.primary,
-        )
-        Spacer(Modifier.width(spacing.space3))
-        Icon(
-            painter = painterResource(R.drawable.ic_fluent_chevron_right_24_regular),
-            contentDescription = null,
-            modifier = Modifier.size(spacing.space4),
-            tint = colors.foreground.secondary,
         )
     }
 }

@@ -31,13 +31,6 @@ import co.mipyme.ui.R
 
 private val DRAWER_WIDTH = 310.dp
 
-/**
- * A modal navigation drawer on the start edge that slides over [content].
- *
- * [header] and [footer] span the full sheet width, and [items] is inset and spaced for
- * [MoshiNavigationDrawerItem]. The header and items scroll together while the footer stays pinned
- * to the bottom. Control it through [drawerState]; [gesturesEnabled] allows opening and closing by swipe.
- */
 @Composable
 fun MoshiNavigationDrawer(
     drawerState: DrawerState,
@@ -73,7 +66,7 @@ fun MoshiNavigationDrawer(
                                 modifier = Modifier
                                     .padding(spacing.space3)
                                     .selectableGroup(),
-                                verticalArrangement = Arrangement.spacedBy(spacing.space4),
+                                verticalArrangement = Arrangement.spacedBy(spacing.space3),
                                 content = items,
                             )
                         }

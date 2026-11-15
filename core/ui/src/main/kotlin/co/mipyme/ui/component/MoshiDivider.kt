@@ -13,7 +13,6 @@ import co.mipyme.ui.Moshi
 import co.mipyme.ui.MoshiPreview
 import co.mipyme.ui.MoshiTheme
 
-/** A decorative 1 dp horizontal line in `border.default` that separates groups of content. */
 @Composable
 fun MoshiDivider(modifier: Modifier = Modifier) {
     Spacer(
