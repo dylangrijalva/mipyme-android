@@ -51,6 +51,21 @@ fun HomeDestination.iconRes(): Int {
     }
 }
 
+@DrawableRes
+fun HomeDestination.selectedIconRes(): Int {
+    return when (this) {
+        HomeDestination.CHECKOUT -> R.drawable.ic_fluent_cart_24_filled
+        HomeDestination.INVENTORY -> R.drawable.ic_fluent_box_24_filled
+        HomeDestination.SUPPLIERS -> R.drawable.ic_fluent_vehicle_truck_cube_24_filled
+        HomeDestination.CUSTOMERS -> R.drawable.ic_fluent_people_24_filled
+        HomeDestination.EXPENSES -> R.drawable.ic_fluent_wallet_24_filled
+        HomeDestination.TRANSACTIONS -> R.drawable.ic_fluent_receipt_24_filled
+        HomeDestination.REPORTS -> R.drawable.ic_fluent_data_bar_vertical_24_filled
+        HomeDestination.STAFF -> R.drawable.ic_fluent_people_team_24_filled
+        HomeDestination.SETTINGS -> R.drawable.ic_fluent_settings_24_filled
+    }
+}
+
 fun Employee?.visibleHomeDestinations(): List<HomeDestination> {
     if (this == null || (!isOwner && status != EmployeeStatus.ENABLED)) {
         return listOf(HomeDestination.SETTINGS)
