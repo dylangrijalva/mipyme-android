@@ -31,4 +31,19 @@ sealed interface Route : NavKey {
 
     @Serializable
     data object Home : Route
+
+    @Serializable
+    data object GeneralSettings : Route
+
+    @Serializable
+    data object ProfileSettings : Route
+
+    @Serializable
+    data object BusinessInformationSettings : Route
+
+    @Serializable
+    data object PrintersAndDevicesSettings : Route
+
+    @Serializable
+    data object TicketsSettings : Route
 }

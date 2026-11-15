@@ -1,0 +1,3 @@
+package co.mipyme.screen.printers_and_devices_settings
+
+data object PrintersAndDevicesSettingsScreenUiState

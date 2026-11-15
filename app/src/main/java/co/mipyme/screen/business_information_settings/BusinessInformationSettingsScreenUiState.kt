@@ -1,0 +1,3 @@
+package co.mipyme.screen.business_information_settings
+
+data object BusinessInformationSettingsScreenUiState
