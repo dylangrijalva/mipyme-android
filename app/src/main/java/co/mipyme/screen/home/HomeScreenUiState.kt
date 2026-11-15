@@ -6,4 +6,5 @@ data class HomeScreenUiState(
     val visibleDestinations: List<HomeDestination> = emptyList(),
     val backStack: List<HomeDestination> = emptyList(),
     val pendingLostAccessDestination: HomeDestination? = null,
+    val canEditBusinessInformation: Boolean = false,
 )

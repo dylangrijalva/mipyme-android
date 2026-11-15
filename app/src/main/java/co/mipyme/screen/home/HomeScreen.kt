@@ -8,11 +8,13 @@ import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -21,6 +23,7 @@ import androidx.compose.material3.DrawerState
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.Icon
 import androidx.compose.material3.rememberDrawerState
+import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
@@ -32,6 +35,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
 import androidx.navigation3.runtime.NavEntry
@@ -39,6 +43,7 @@ import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
 import co.mipyme.R
 import co.mipyme.data.employee.CurrentEmployeeRepository
+import co.mipyme.navigation.LocalNavBackStack
 import co.mipyme.navigation.Route
 import co.mipyme.preview.ScreenPreview
 import co.mipyme.screen.checkout.CheckoutScreen
@@ -87,6 +92,7 @@ internal fun HomeScreen(viewModel: HomeViewModel = koinViewModel()) {
     val context = LocalContext.current
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val scope = rememberCoroutineScope()
+    val backStack = LocalNavBackStack.current
     val drawer = remember(drawerState, scope) {
         HomeDrawer { scope.launch { drawerState.open() } }
     }
@@ -110,6 +116,14 @@ internal fun HomeScreen(viewModel: HomeViewModel = koinViewModel()) {
                 viewModel.onDestinationSelected(destination)
                 scope.launch { drawerState.close() }
             },
+            onHeaderClick = {
+                scope.launch {
+                    drawerState.snapTo(DrawerValue.Closed)
+                    if (backStack.lastOrNull() != Route.BusinessInformationSettings) {
+                        backStack.add(Route.BusinessInformationSettings)
+                    }
+                }
+            },
             onBack = viewModel::onBack,
             destinationContent = { destination -> HomeDestinationScreen(destination) },
         )
@@ -121,6 +135,7 @@ private fun HomeContent(
     state: HomeScreenUiState,
     drawerState: DrawerState,
     onDestinationSelected: (HomeDestination) -> Unit,
+    onHeaderClick: () -> Unit,
     onBack: () -> Unit,
     destinationContent: @Composable (HomeDestination) -> Unit,
 ) {
@@ -131,7 +146,11 @@ private fun HomeContent(
         drawerState = drawerState,
         gesturesEnabled = state.visibleDestinations.isNotEmpty(),
         header = {
-            HomeDrawerHeader(locationName = state.locationName, email = state.email)
+            HomeDrawerHeader(
+                locationName = state.locationName,
+                email = state.email,
+                onClick = onHeaderClick.takeIf { state.canEditBusinessInformation },
+            )
             if (state.locationName != null || state.email != null) {
                 MoshiDivider()
             }
@@ -184,14 +203,29 @@ private fun HomeContent(
 private fun HomeDrawerHeader(
     locationName: String?,
     email: String?,
+    onClick: (() -> Unit)?,
 ) {
     if (locationName == null && email == null) return
 
+    val clickModifier = if (onClick != null) {
+        Modifier.clickable(
+            interactionSource = null,
+            indication = ripple(),
+            role = Role.Button,
+            onClick = onClick,
+        )
+    } else {
+        Modifier
+    }
+
     Column(
-        modifier = Modifier.padding(
-            horizontal = Moshi.spacing.pageGutterNarrow,
-            vertical = Moshi.spacing.space4,
-        ),
+        modifier = Modifier
+            .fillMaxWidth()
+            .then(clickModifier)
+            .padding(
+                horizontal = Moshi.spacing.pageGutterNarrow,
+                vertical = Moshi.spacing.space4,
+            ),
     ) {
         if (locationName != null) {
             Row(verticalAlignment = Alignment.CenterVertically) {
@@ -200,13 +234,15 @@ private fun HomeDrawerHeader(
                     modifier = Modifier.weight(1f, fill = false),
                     role = MoshiTextRole.Subheading,
                 )
-                Spacer(Modifier.width(Moshi.spacing.space1))
-                Icon(
-                    painter = painterResource(R.drawable.ic_fluent_chevron_right_24_regular),
-                    contentDescription = null,
-                    modifier = Modifier.size(Moshi.spacing.space4),
-                    tint = Moshi.colors.foreground.secondary,
-                )
+                if (onClick != null) {
+                    Spacer(Modifier.width(Moshi.spacing.space1))
+                    Icon(
+                        painter = painterResource(R.drawable.ic_fluent_chevron_right_24_regular),
+                        contentDescription = null,
+                        modifier = Modifier.size(Moshi.spacing.space4),
+                        tint = Moshi.colors.foreground.secondary,
+                    )
+                }
             }
         }
         if (locationName != null && email != null) {
@@ -258,9 +294,11 @@ fun HomeScreenPreview() {
                 locationName = "Downtown store",
                 visibleDestinations = HomeDestination.entries,
                 backStack = listOf(HomeDestination.CHECKOUT),
+                canEditBusinessInformation = true,
             ),
             drawerState = rememberDrawerState(DrawerValue.Open),
             onDestinationSelected = {},
+            onHeaderClick = {},
             onBack = {},
             destinationContent = {},
         )

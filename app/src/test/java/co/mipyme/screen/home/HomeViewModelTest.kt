@@ -27,7 +27,9 @@ import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import org.junit.After
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNull
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 
@@ -427,6 +429,57 @@ class HomeViewModelTest {
         advanceUntilIdle()
 
         assertNull(viewModel.state.pendingLostAccessDestination)
+    }
+
+    @Test
+    fun `an owner can edit the business information`() = runTest(dispatcher) {
+        val viewModel = viewModel(employees = listOf(owner))
+
+        advanceUntilIdle()
+
+        assertTrue(viewModel.state.canEditBusinessInformation)
+    }
+
+    @Test
+    fun `a non owner cannot edit the business information`() = runTest(dispatcher) {
+        val viewModel = viewModel(employees = listOf(manager))
+
+        advanceUntilIdle()
+
+        assertFalse(viewModel.state.canEditBusinessInformation)
+    }
+
+    @Test
+    fun `a missing employee cannot edit the business information`() = runTest(dispatcher) {
+        val viewModel = viewModel(employees = emptyList())
+
+        advanceUntilIdle()
+
+        assertFalse(viewModel.state.canEditBusinessInformation)
+    }
+
+    @Test
+    fun `losing ownership revokes business information editing`() = runTest(dispatcher) {
+        val cache = FakeMipymeCache(employees = listOf(owner))
+        val viewModel = viewModel(cache = cache)
+        advanceUntilIdle()
+
+        cache.employees = listOf(cashier)
+        advanceUntilIdle()
+
+        assertFalse(viewModel.state.canEditBusinessInformation)
+    }
+
+    @Test
+    fun `losing the session keeps business information editing`() = runTest(dispatcher) {
+        val authService = authService()
+        val viewModel = viewModel(employees = listOf(owner), authService = authService)
+        advanceUntilIdle()
+
+        authService.authState.value = AuthState.SessionExpired
+        advanceUntilIdle()
+
+        assertTrue(viewModel.state.canEditBusinessInformation)
     }
 
     private fun TestScope.viewModel(

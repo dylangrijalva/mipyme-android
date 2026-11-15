@@ -5,8 +5,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import co.mipyme.auth.AuthService
 import co.mipyme.auth.AuthState
+import co.mipyme.contract.Employee
 import co.mipyme.data.employee.CurrentEmployeeRepository
 import co.mipyme.data.location.LocationSelectionRepository
+import co.mipyme.screen.settings.SettingsItem
+import co.mipyme.screen.settings.visibleSettingsItems
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -52,6 +55,11 @@ class HomeViewModel(
         viewModelScope.launch {
             visibleDestinationsFlow().collect { visible -> onVisibleDestinationsChanged(visible) }
         }
+        viewModelScope.launch {
+            canEditBusinessInformationFlow().collect { canEdit ->
+                _stateFlow.update { it.copy(canEditBusinessInformation = canEdit) }
+            }
+        }
     }
 
     fun onDestinationSelected(destination: HomeDestination) {
@@ -72,14 +80,24 @@ class HomeViewModel(
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    private fun visibleDestinationsFlow(): Flow<List<HomeDestination>> {
+    private fun authenticatedEmployeeFlow(): Flow<Employee?> {
         return authService.authStateFlow
             .map { it is AuthState.Authenticated }
             .distinctUntilChanged()
             .flatMapLatest { isAuthenticated ->
                 if (isAuthenticated) currentEmployeeRepository.currentEmployeeFlow else emptyFlow()
             }
+    }
+
+    private fun visibleDestinationsFlow(): Flow<List<HomeDestination>> {
+        return authenticatedEmployeeFlow()
             .map { it.visibleHomeDestinations() }
+            .distinctUntilChanged()
+    }
+
+    private fun canEditBusinessInformationFlow(): Flow<Boolean> {
+        return authenticatedEmployeeFlow()
+            .map { SettingsItem.BUSINESS_INFORMATION in it.visibleSettingsItems() }
             .distinctUntilChanged()
     }
 
