@@ -5,8 +5,8 @@ import android.content.Context
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -65,7 +65,8 @@ fun Module.askNotificationPermissionsScreenModule(): Module {
     viewModelOf(::AskNotificationPermissionsViewModel)
     navigation<Route.AskNotificationPermissions>(
         metadata = NavDisplay.transitionSpec {
-            fadeIn() togetherWith fadeOut()
+            slideInHorizontally(initialOffsetX = { it }) togetherWith
+                slideOutHorizontally(targetOffsetX = { -it })
         },
     ) { AskNotificationPermissionsScreen() }
     return this

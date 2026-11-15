@@ -199,7 +199,7 @@ private fun WelcomeContent(
         )
 
         Column(
-            modifier = Modifier.padding(top = spacing.space4, bottom = spacing.space4),
+            modifier = Modifier.padding(vertical = spacing.space4),
             verticalArrangement = Arrangement.spacedBy(spacing.space3),
         ) {
             MoshiButton(

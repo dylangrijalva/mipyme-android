@@ -2,8 +2,8 @@ package co.mipyme.screen.select_location
 
 import android.content.Context
 import android.widget.Toast
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -66,7 +66,8 @@ fun Module.selectLocationScreenModule(): Module {
     viewModelOf(::SelectLocationViewModel)
     navigation<Route.SelectLocation>(
         metadata = NavDisplay.transitionSpec {
-            fadeIn() togetherWith fadeOut()
+            slideInHorizontally(initialOffsetX = { it }) togetherWith
+                slideOutHorizontally(targetOffsetX = { -it })
         },
     ) { SelectLocationScreen() }
     return this
