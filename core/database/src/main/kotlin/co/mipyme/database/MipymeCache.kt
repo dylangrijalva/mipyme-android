@@ -17,6 +17,8 @@ interface MipymeCache {
 
     fun observeLocations(): Flow<List<Location>>
 
+    fun observeLocationAccess(employeeId: String): Flow<EmployeeLocationAccess?>
+
     fun observeCustomers(): Flow<List<Customer>>
 
     fun observeSuppliers(): Flow<List<Supplier>>

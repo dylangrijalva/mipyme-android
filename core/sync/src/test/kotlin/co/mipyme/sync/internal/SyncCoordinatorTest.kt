@@ -136,14 +136,14 @@ class SyncCoordinatorTest {
     }
 
     @Test
-    fun `employee changes are ignored`() = runTest {
+    fun `an employee change triggers a sync`() = runTest {
         val fixture = armed()
 
         fixture.realtime.emit("employee")
         advanceTimeBy(1.seconds)
         runCurrent()
 
-        assertEquals(1, fixture.requester.calls)
+        assertEquals(2, fixture.requester.calls)
     }
 
     @Test

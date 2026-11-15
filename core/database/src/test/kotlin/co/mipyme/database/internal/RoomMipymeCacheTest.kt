@@ -3,12 +3,15 @@ package co.mipyme.database.internal
 import android.content.Context
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
+import co.mipyme.contract.EmployeeStatus
 import co.mipyme.contract.ProductStatus
 import co.mipyme.contract.SyncResponse
+import co.mipyme.database.EmployeeLocationAccess
 import co.mipyme.database.FIXTURE_TIME
 import co.mipyme.database.SyncState
 import co.mipyme.database.collection
 import co.mipyme.database.customer
+import co.mipyme.database.employee
 import co.mipyme.database.location
 import co.mipyme.database.merchant
 import co.mipyme.database.optionGroup
@@ -18,7 +21,9 @@ import co.mipyme.database.productVariant
 import co.mipyme.database.supplier
 import co.mipyme.database.syncResponse
 import java.time.LocalDateTime
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Assert.assertEquals
@@ -235,6 +240,237 @@ class RoomMipymeCacheTest {
         assertEquals(0, countRows("inventory_levels"))
         assertEquals(0, countRows("option_groups"))
         assertEquals(0, countRows("product_options"))
+    }
+
+    @Test
+    fun `a full sync stores employees and their location ids`() = runTest {
+        store(
+            syncResponse(
+                employees = listOf(
+                    employee("emp_1", listOf("loc_1", "loc_2"), isOwner = true),
+                    employee("emp_2", status = EmployeeStatus.INVITED, account = null),
+                ),
+            ),
+            "merch_1",
+            FIXTURE_TIME,
+        )
+
+        assertEquals(2, countRows("employees"))
+        assertEquals(1, countRows("employees WHERE id = 'emp_2' AND account_id IS NULL AND status = 'INVITED'"))
+        assertEquals(1, countRows("employees WHERE id = 'emp_1' AND permissions = 'CHECKOUT,REFUND' AND is_owner = 1"))
+        assertEquals(2, countRows("employee_locations WHERE employee_id = 'emp_1'"))
+    }
+
+    @Test
+    fun `a full sync removes employees missing from the response`() = runTest {
+        store(syncResponse(employees = listOf(employee("old", listOf("loc_1")))), "merch_1", FIXTURE_TIME)
+
+        store(syncResponse(employees = listOf(employee("new", listOf("loc_2")))), "merch_1", FIXTURE_TIME)
+
+        assertEquals(0, countRows("employees WHERE id = 'old'"))
+        assertEquals(0, countRows("employee_locations WHERE employee_id = 'old'"))
+        assertEquals(1, countRows("employee_locations WHERE employee_id = 'new' AND location_id = 'loc_2'"))
+    }
+
+    @Test
+    fun `an incremental sync replaces the location ids of the sent employee only`() = runTest {
+        store(
+            syncResponse(
+                employees = listOf(
+                    employee("emp_1", listOf("loc_1", "loc_2")),
+                    employee("emp_2", listOf("loc_3")),
+                ),
+            ),
+            "merch_1",
+            FIXTURE_TIME,
+        )
+
+        store(
+            syncResponse(fullSync = false, merchant = null, employees = listOf(employee("emp_1", listOf("loc_2", "loc_4")))),
+            "merch_1",
+            FIXTURE_TIME,
+        )
+
+        assertEquals(2, countRows("employee_locations WHERE employee_id = 'emp_1'"))
+        assertEquals(0, countRows("employee_locations WHERE employee_id = 'emp_1' AND location_id = 'loc_1'"))
+        assertEquals(1, countRows("employee_locations WHERE employee_id = 'emp_1' AND location_id = 'loc_4'"))
+        assertEquals(1, countRows("employee_locations WHERE employee_id = 'emp_2' AND location_id = 'loc_3'"))
+    }
+
+    @Test
+    fun `an incremental sync can remove every location id of an employee`() = runTest {
+        store(syncResponse(employees = listOf(employee("emp_1", listOf("loc_1")))), "merch_1", FIXTURE_TIME)
+
+        store(
+            syncResponse(fullSync = false, merchant = null, employees = listOf(employee("emp_1", emptyList()))),
+            "merch_1",
+            FIXTURE_TIME,
+        )
+
+        assertEquals(0, countRows("employee_locations"))
+        assertEquals(1, countRows("employees"))
+    }
+
+    @Test
+    fun `clearing the cache removes employees and their location ids`() = runTest {
+        store(syncResponse(employees = listOf(employee("emp_1", listOf("loc_1")))), "merch_1", FIXTURE_TIME)
+
+        cache.clearCache()
+
+        assertEquals(0, countRows("employees"))
+        assertEquals(0, countRows("employee_locations"))
+    }
+
+    @Test
+    fun `clearing for another merchant removes employees`() = runTest {
+        store(syncResponse(employees = listOf(employee("emp_1", listOf("loc_1")))), "merch_1", FIXTURE_TIME)
+
+        cache.clearCacheUnlessMerchant("merch_2")
+
+        assertEquals(0, countRows("employees"))
+        assertEquals(0, countRows("employee_locations"))
+    }
+
+    @Test
+    fun `a non owner observes only the locations assigned to them`() = runTest {
+        store(
+            syncResponse(
+                locations = listOf(location("loc_1"), location("loc_2"), location("loc_3")),
+                employees = listOf(employee("emp_1", listOf("loc_3", "loc_1")), employee("emp_2", listOf("loc_2"))),
+            ),
+            "merch_1",
+            FIXTURE_TIME,
+        )
+
+        val first = cache.observeLocationAccess("emp_1").first()
+        assertEquals("merch_1", first?.merchantId)
+        assertEquals(false, first?.isOwner)
+        assertEquals(listOf("loc_1", "loc_3"), first?.locations?.map { it.id })
+        assertEquals(listOf("loc_2"), cache.observeLocationAccess("emp_2").first()?.locations?.map { it.id })
+    }
+
+    @Test
+    fun `an owner observes every cached location`() = runTest {
+        store(
+            syncResponse(
+                locations = listOf(location("loc_2"), location("loc_1")),
+                employees = listOf(employee("owner", isOwner = true)),
+            ),
+            "merch_1",
+            FIXTURE_TIME,
+        )
+
+        val access = cache.observeLocationAccess("owner").first()
+
+        assertEquals(true, access?.isOwner)
+        assertEquals(listOf("loc_1", "loc_2"), access?.locations?.map { it.id })
+    }
+
+    @Test
+    fun `an enabled non owner without assignments observes an empty list`() = runTest {
+        store(
+            syncResponse(locations = listOf(location("loc_1")), employees = listOf(employee("emp_1", emptyList()))),
+            "merch_1",
+            FIXTURE_TIME,
+        )
+
+        assertEquals(EmployeeLocationAccess("merch_1", false, emptyList()), cache.observeLocationAccess("emp_1").first())
+    }
+
+    @Test
+    fun `an enabled owner without cached locations observes an empty list`() = runTest {
+        store(syncResponse(employees = listOf(employee("owner", isOwner = true))), "merch_1", FIXTURE_TIME)
+
+        assertEquals(EmployeeLocationAccess("merch_1", true, emptyList()), cache.observeLocationAccess("owner").first())
+    }
+
+    @Test
+    fun `a non owner that is not enabled or an unknown employee observes an empty synced access`() = runTest {
+        store(
+            syncResponse(
+                locations = listOf(location("loc_1")),
+                employees = listOf(
+                    employee("disabled", listOf("loc_1"), EmployeeStatus.DISABLED),
+                    employee("invited", listOf("loc_1"), EmployeeStatus.INVITED),
+                ),
+            ),
+            "merch_1",
+            FIXTURE_TIME,
+        )
+        val empty = EmployeeLocationAccess("merch_1", false, emptyList())
+
+        assertEquals(empty, cache.observeLocationAccess("disabled").first())
+        assertEquals(empty, cache.observeLocationAccess("invited").first())
+        assertEquals(empty, cache.observeLocationAccess("missing").first())
+    }
+
+    @Test
+    fun `an owner observes every cached location whatever their status`() = runTest {
+        store(
+            syncResponse(
+                locations = listOf(location("loc_2"), location("loc_1")),
+                employees = listOf(
+                    employee("disabled_owner", status = EmployeeStatus.DISABLED, isOwner = true),
+                    employee("invited_owner", status = EmployeeStatus.INVITED, isOwner = true),
+                ),
+            ),
+            "merch_1",
+            FIXTURE_TIME,
+        )
+
+        listOf("disabled_owner", "invited_owner").forEach { id ->
+            val access = cache.observeLocationAccess(id).first()
+
+            assertEquals(id, true, access?.isOwner)
+            assertEquals(id, listOf("loc_1", "loc_2"), access?.locations?.map { it.id })
+        }
+    }
+
+    @Test
+    fun `location access is unavailable before any sync`() = runTest {
+        assertNull(cache.observeLocationAccess("emp_1").first())
+    }
+
+    @Test
+    fun `location access is unavailable again after the cache is cleared`() = runTest {
+        store(syncResponse(employees = listOf(employee("owner", isOwner = true))), "merch_1", FIXTURE_TIME)
+
+        cache.clearCache()
+
+        assertNull(cache.observeLocationAccess("owner").first())
+    }
+
+    @Test
+    fun `assigned locations ignore ids of locations that are not cached`() = runTest {
+        store(
+            syncResponse(locations = listOf(location("loc_1")), employees = listOf(employee("emp_1", listOf("loc_1", "gone")))),
+            "merch_1",
+            FIXTURE_TIME,
+        )
+
+        assertEquals(listOf("loc_1"), cache.observeLocationAccess("emp_1").first()?.locations?.map { it.id })
+    }
+
+    @Test
+    fun `location access updates when the employee or the locations change`() = runTest {
+        store(
+            syncResponse(locations = listOf(location("loc_1")), employees = listOf(employee("emp_1", listOf("loc_1", "loc_2")))),
+            "merch_1",
+            FIXTURE_TIME,
+        )
+        val emissions = Channel<EmployeeLocationAccess?>(Channel.UNLIMITED)
+        backgroundScope.launch { cache.observeLocationAccess("emp_1").collect { emissions.send(it) } }
+        assertEquals(listOf("loc_1"), emissions.receive()?.locations?.map { it.id })
+
+        store(syncResponse(fullSync = false, merchant = null, locations = listOf(location("loc_2"))), "merch_1", FIXTURE_TIME)
+        assertEquals(listOf("loc_1", "loc_2"), emissions.receive()?.locations?.map { it.id })
+
+        store(
+            syncResponse(fullSync = false, merchant = null, employees = listOf(employee("emp_1", listOf("loc_2")))),
+            "merch_1",
+            FIXTURE_TIME,
+        )
+        assertEquals(listOf("loc_2"), emissions.receive()?.locations?.map { it.id })
     }
 
     @Test

@@ -5,9 +5,12 @@ import co.mipyme.contract.Collection
 import co.mipyme.contract.CountryIsoCode
 import co.mipyme.contract.Customer
 import co.mipyme.contract.Decimal
+import co.mipyme.contract.EmployeeAccount
+import co.mipyme.contract.EmployeeStatus
 import co.mipyme.contract.InventoryLevel
 import co.mipyme.contract.Location
 import co.mipyme.contract.Merchant
+import co.mipyme.contract.PosPermission
 import co.mipyme.contract.Product
 import co.mipyme.contract.ProductCollection
 import co.mipyme.contract.ProductImage
@@ -17,6 +20,7 @@ import co.mipyme.contract.ProductStatus
 import co.mipyme.contract.ProductType
 import co.mipyme.contract.ProductVariant
 import co.mipyme.contract.Supplier
+import co.mipyme.contract.SyncEmployee
 import co.mipyme.contract.SyncResponse
 import java.time.LocalDateTime
 
@@ -153,6 +157,27 @@ fun location(id: String): Location {
     )
 }
 
+fun employee(
+    id: String,
+    locationIds: List<String> = emptyList(),
+    status: EmployeeStatus = EmployeeStatus.ENABLED,
+    isOwner: Boolean = false,
+    account: EmployeeAccount? = EmployeeAccount(id = "acc_$id", email = "$id@example.com"),
+): SyncEmployee {
+    return SyncEmployee(
+        id = id,
+        name = "Employee $id",
+        isOwner = isOwner,
+        status = status,
+        permissions = listOf(PosPermission.CHECKOUT, PosPermission.REFUND),
+        account = account,
+        createdAt = FIXTURE_TIME,
+        updatedAt = FIXTURE_TIME,
+        maxDiscountRate = Decimal("10.00"),
+        locationIds = locationIds,
+    )
+}
+
 fun syncResponse(
     fullSync: Boolean = true,
     syncToken: String = "token_1",
@@ -162,6 +187,7 @@ fun syncResponse(
     customers: List<Customer> = emptyList(),
     suppliers: List<Supplier> = emptyList(),
     locations: List<Location> = emptyList(),
+    employees: List<SyncEmployee> = emptyList(),
 ): SyncResponse {
     return SyncResponse(
         merchant = merchant,
@@ -172,5 +198,6 @@ fun syncResponse(
         customers = customers,
         suppliers = suppliers,
         locations = locations,
+        employees = employees,
     )
 }

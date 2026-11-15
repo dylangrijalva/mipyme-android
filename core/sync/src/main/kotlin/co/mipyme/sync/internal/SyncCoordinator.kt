@@ -23,7 +23,6 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -98,7 +97,6 @@ internal class SyncCoordinator(
 
             launch {
                 realtimeClient.changesFlow(merchantId)
-                    .filter { it != EMPLOYEE_TYPE }
                     .debounce(realtimeDebounce)
                     .catch { Timber.w(it, "The realtime stream stopped") }
                     .collect { triggers.trySend(Unit) }
@@ -149,7 +147,6 @@ internal class SyncCoordinator(
     }
 
     private companion object {
-        private const val EMPLOYEE_TYPE = "employee"
         private val DEFAULT_REALTIME_DEBOUNCE = 500.milliseconds
         private val DEFAULT_RETRY_DELAYS = listOf(5.seconds, 15.seconds, 60.seconds)
     }

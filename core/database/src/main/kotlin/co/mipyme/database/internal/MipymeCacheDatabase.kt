@@ -5,6 +5,7 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import co.mipyme.database.internal.dao.CollectionDao
 import co.mipyme.database.internal.dao.CustomerDao
+import co.mipyme.database.internal.dao.EmployeeDao
 import co.mipyme.database.internal.dao.LocationDao
 import co.mipyme.database.internal.dao.MerchantDao
 import co.mipyme.database.internal.dao.ProductDao
@@ -12,6 +13,8 @@ import co.mipyme.database.internal.dao.SupplierDao
 import co.mipyme.database.internal.dao.SyncStateDao
 import co.mipyme.database.internal.entity.CollectionEntity
 import co.mipyme.database.internal.entity.CustomerEntity
+import co.mipyme.database.internal.entity.EmployeeEntity
+import co.mipyme.database.internal.entity.EmployeeLocationEntity
 import co.mipyme.database.internal.entity.InventoryLevelEntity
 import co.mipyme.database.internal.entity.LocationEntity
 import co.mipyme.database.internal.entity.MerchantEntity
@@ -31,6 +34,8 @@ import co.mipyme.database.internal.entity.VariantOptionEntity
         CustomerEntity::class,
         SupplierEntity::class,
         LocationEntity::class,
+        EmployeeEntity::class,
+        EmployeeLocationEntity::class,
         ProductEntity::class,
         OptionGroupEntity::class,
         ProductOptionGroupEntity::class,
@@ -40,7 +45,7 @@ import co.mipyme.database.internal.entity.VariantOptionEntity
         InventoryLevelEntity::class,
         SyncStateEntity::class,
     ],
-    version = 1,
+    version = 2,
     exportSchema = true,
 )
 @TypeConverters(DatabaseTypeConverters::class)
@@ -54,6 +59,8 @@ internal abstract class MipymeCacheDatabase : RoomDatabase() {
     abstract fun supplierDao(): SupplierDao
 
     abstract fun locationDao(): LocationDao
+
+    abstract fun employeeDao(): EmployeeDao
 
     abstract fun productDao(): ProductDao
 

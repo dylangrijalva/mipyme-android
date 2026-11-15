@@ -36,5 +36,6 @@ fun syncResponse(syncToken: String = "token_1", fullSync: Boolean = true): SyncR
         customers = emptyList(),
         suppliers = emptyList(),
         locations = emptyList(),
+        employees = emptyList(),
     )
 }

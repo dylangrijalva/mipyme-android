@@ -12,4 +12,5 @@ data class SyncResponse(
     val customers: List<Customer>,
     val suppliers: List<Supplier>,
     val locations: List<Location>,
+    val employees: List<SyncEmployee>,
 )

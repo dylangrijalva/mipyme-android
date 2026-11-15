@@ -3,15 +3,19 @@ package co.mipyme.database.internal
 import androidx.room.withTransaction
 import co.mipyme.contract.Collection
 import co.mipyme.contract.Customer
+import co.mipyme.contract.EmployeeStatus
 import co.mipyme.contract.Location
 import co.mipyme.contract.Merchant
 import co.mipyme.contract.Product
 import co.mipyme.contract.Supplier
+import co.mipyme.contract.SyncEmployee
 import co.mipyme.contract.SyncResponse
+import co.mipyme.database.EmployeeLocationAccess
 import co.mipyme.database.MipymeCache
 import co.mipyme.database.ProductVariantMatch
 import co.mipyme.database.SyncCacheWriter
 import co.mipyme.database.SyncState
+import co.mipyme.database.internal.entity.EmployeeLocationEntity
 import co.mipyme.database.internal.entity.SyncStateEntity
 import co.mipyme.database.internal.entity.toContract
 import co.mipyme.database.internal.entity.toEntity
@@ -31,6 +35,7 @@ internal class RoomMipymeCache(
     private val customerDao = database.customerDao()
     private val supplierDao = database.supplierDao()
     private val locationDao = database.locationDao()
+    private val employeeDao = database.employeeDao()
     private val productDao = database.productDao()
     private val syncStateDao = database.syncStateDao()
 
@@ -52,6 +57,22 @@ internal class RoomMipymeCache(
 
     override fun observeLocations(): Flow<List<Location>> {
         return locationDao.observeAll().map { items -> items.map { it.toContract() } }
+    }
+
+    override fun observeLocationAccess(employeeId: String): Flow<EmployeeLocationAccess?> {
+        return employeeDao.observeLocationRows(employeeId, EmployeeStatus.ENABLED).map { rows ->
+            val first = rows.firstOrNull()
+            val merchantId = first?.merchantId
+            if (first == null || merchantId == null) {
+                null
+            } else {
+                EmployeeLocationAccess(
+                    merchantId = merchantId,
+                    isOwner = first.isOwner ?: false,
+                    locations = rows.mapNotNull { it.location?.toContract() },
+                )
+            }
+        }
     }
 
     override fun observeCustomers(): Flow<List<Customer>> {
@@ -100,6 +121,9 @@ internal class RoomMipymeCache(
             response.locations.chunked(BATCH_SIZE).forEach { batch ->
                 locationDao.upsertAll(batch.map { it.toEntity() })
             }
+            response.employees.chunked(BATCH_SIZE).forEach { batch ->
+                replaceEmployees(batch)
+            }
             response.products.chunked(BATCH_SIZE).forEach { batch ->
                 replaceProducts(batch)
             }
@@ -146,7 +170,19 @@ internal class RoomMipymeCache(
         productDao.upsertInventoryLevels(rows.flatMap { it.inventoryLevels })
     }
 
+    private suspend fun replaceEmployees(employees: List<SyncEmployee>) {
+        employeeDao.upsertAll(employees.map { it.toEntity() })
+        employeeDao.deleteLocationLinksOf(employees.map { it.id })
+        employeeDao.insertLocationLinks(
+            employees.flatMap { employee ->
+                employee.locationIds.distinct().map { EmployeeLocationEntity(employee.id, it) }
+            },
+        )
+    }
+
     private suspend fun deleteAllRows() {
+        employeeDao.deleteAllLocationLinks()
+        employeeDao.deleteAll()
         productDao.deleteAll()
         productDao.deleteAllOptions()
         productDao.deleteAllOptionGroups()

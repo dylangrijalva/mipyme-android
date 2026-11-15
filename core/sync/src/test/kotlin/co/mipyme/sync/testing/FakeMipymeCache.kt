@@ -6,6 +6,7 @@ import co.mipyme.contract.Location
 import co.mipyme.contract.Merchant
 import co.mipyme.contract.Product
 import co.mipyme.contract.Supplier
+import co.mipyme.database.EmployeeLocationAccess
 import co.mipyme.database.MipymeCache
 import co.mipyme.database.ProductVariantMatch
 import co.mipyme.database.SyncState
@@ -25,6 +26,8 @@ class FakeMipymeCache : MipymeCache {
     override suspend fun findVariantByBarcode(barcode: String): ProductVariantMatch? = null
 
     override fun observeLocations(): Flow<List<Location>> = emptyFlow()
+
+    override fun observeLocationAccess(employeeId: String): Flow<EmployeeLocationAccess?> = emptyFlow()
 
     override fun observeCustomers(): Flow<List<Customer>> = emptyFlow()
 
