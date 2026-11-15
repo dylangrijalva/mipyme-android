@@ -12,9 +12,6 @@ value class Decimal(val value: String)
 @JvmInline
 value class PositiveDecimal(val value: String)
 
-private const val DECIMAL_SCALE = 2
-private val DECIMAL_ROUNDING_MODE = RoundingMode.HALF_UP
-
 infix operator fun Decimal.plus(other: Decimal): Decimal {
     return Decimal(BigDecimal(value).add(BigDecimal(other.value)).toPlainString())
 }
@@ -32,7 +29,7 @@ operator fun Decimal.times(other: Decimal): Decimal {
 }
 
 infix fun Decimal.divide(other: Decimal): Decimal {
-    return Decimal(BigDecimal(value).divide(BigDecimal(other.value), DECIMAL_SCALE, DECIMAL_ROUNDING_MODE).toPlainString())
+    return Decimal(BigDecimal(value).divide(BigDecimal(other.value), 2, RoundingMode.HALF_UP).toPlainString())
 }
 
 operator fun Decimal.div(other: Decimal): Decimal {

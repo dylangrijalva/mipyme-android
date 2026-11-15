@@ -7,10 +7,6 @@ import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.contentOrNull
 
-private const val KEY_MERCHANT_ID = "merchant_id"
-private const val KEY_EMPLOYEE_ID = "employee_id"
-private const val KEY_ACCOUNT_TYPE = "account_type"
-
 internal fun identityAccountOf(
     id: String,
     email: String?,
@@ -25,9 +21,9 @@ internal fun identityAccountOf(
         email = email,
         pictureUrl = imageUrl,
         publicMetadata = IdentityPublicMetadata(
-            merchantId = publicMetadata.stringValue(KEY_MERCHANT_ID),
-            employeeId = publicMetadata.stringValue(KEY_EMPLOYEE_ID),
-            type = publicMetadata.stringValue(KEY_ACCOUNT_TYPE).toAccountType(),
+            merchantId = publicMetadata.stringValue("merchant_id"),
+            employeeId = publicMetadata.stringValue("employee_id"),
+            type = publicMetadata.stringValue("account_type").toAccountType(),
         ),
     )
 }

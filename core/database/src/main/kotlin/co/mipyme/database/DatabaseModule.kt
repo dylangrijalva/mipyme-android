@@ -14,7 +14,7 @@ fun databaseModule(): Module {
             Room.databaseBuilder(
                 androidContext(),
                 MipymeCacheDatabase::class.java,
-                MipymeCacheDatabase.FILE_NAME,
+                "mipyme_cache.db",
             )
                 .fallbackToDestructiveMigration(dropAllTables = true)
                 .build()

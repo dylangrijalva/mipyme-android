@@ -58,9 +58,9 @@ class MipymeApi(
         }
 
         install(HttpTimeout) {
-            socketTimeoutMillis = SOCKET_TIMEOUT_MILLIS
-            requestTimeoutMillis = REQUEST_TIMEOUT_MILLIS
-            connectTimeoutMillis = CONNECT_TIMEOUT_MILLIS
+            socketTimeoutMillis = 30_000L
+            requestTimeoutMillis = 30_000L
+            connectTimeoutMillis = 10_000L
         }
 
         install(Logging) {
@@ -91,11 +91,5 @@ class MipymeApi(
 
     override fun close() {
         client.close()
-    }
-
-    private companion object {
-        private const val SOCKET_TIMEOUT_MILLIS = 30_000L
-        private const val REQUEST_TIMEOUT_MILLIS = 30_000L
-        private const val CONNECT_TIMEOUT_MILLIS = 10_000L
     }
 }

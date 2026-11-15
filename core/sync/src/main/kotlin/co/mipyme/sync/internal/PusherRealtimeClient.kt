@@ -61,7 +61,7 @@ internal class PusherRealtimeClient(
                         trySend(event?.data.resourceType())
                     }
                 },
-                CHANGE_EVENT_NAME,
+                "mipyme.changes",
             )
 
             awaitClose {
@@ -80,7 +80,6 @@ internal class PusherRealtimeClient(
     }
 
     private companion object {
-        private const val CHANGE_EVENT_NAME = "mipyme.changes"
         private const val UNKNOWN_TYPE = "unknown"
     }
 }

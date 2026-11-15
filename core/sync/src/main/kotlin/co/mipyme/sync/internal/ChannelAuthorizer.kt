@@ -13,7 +13,7 @@ import kotlin.time.Duration.Companion.seconds
 internal class ChannelAuthorizer(private val api: MipymeApi) : Authorizer {
     override fun authorize(channelName: String, socketId: String): String {
         val result = runBlocking {
-            withTimeoutOrNull(AUTHORIZATION_TIMEOUT) {
+            withTimeoutOrNull(10.seconds) {
                 api.realtime.authorizeChannel(AuthorizeRealtimeChannelRequest(socketId, channelName))
             }
         } ?: throw AuthorizationFailureException("Channel authorization timed out")
@@ -21,9 +21,5 @@ internal class ChannelAuthorizer(private val api: MipymeApi) : Authorizer {
             ifLeft = { error -> throw AuthorizationFailureException("Channel authorization failed: $error") },
             ifRight = { authorization -> buildJsonObject { put("auth", authorization.auth) }.toString() },
         )
-    }
-
-    private companion object {
-        private val AUTHORIZATION_TIMEOUT = 10.seconds
     }
 }

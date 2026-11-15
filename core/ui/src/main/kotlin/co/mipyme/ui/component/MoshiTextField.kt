@@ -140,7 +140,7 @@ fun MoshiTextField(
         focused -> colors.border.focus
         else -> colors.border.default
     }
-    val fieldShape = RoundedCornerShape(FIELD_CORNER_RADIUS)
+    val fieldShape = RoundedCornerShape(6.dp)
     val containerClickModifier = if (enabled) {
         Modifier.clickable(
             interactionSource = containerInteractionSource,
@@ -398,4 +398,3 @@ private fun MoshiTextFieldPreview() {
 }
 
 private const val FIELD_LABEL_DURATION_MILLIS = 150
-private val FIELD_CORNER_RADIUS = 6.dp

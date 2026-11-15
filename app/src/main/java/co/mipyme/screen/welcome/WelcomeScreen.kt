@@ -62,8 +62,6 @@ import org.koin.core.module.Module
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.navigation3.navigation
 
-private const val ILLUSTRATION_ASPECT_RATIO = 4f / 3f
-
 private val welcomeSlides = listOf(
     WelcomeSlide(
         imageRes = R.drawable.illustration_welcome_sell,
@@ -251,7 +249,7 @@ private fun WelcomeSlidePage(slide: WelcomeSlide) {
             contentDescription = null,
             modifier = Modifier
                 .weight(1f, fill = false)
-                .aspectRatio(ILLUSTRATION_ASPECT_RATIO),
+                .aspectRatio(4f / 3f),
             contentScale = ContentScale.Fit,
         )
         MoshiText(

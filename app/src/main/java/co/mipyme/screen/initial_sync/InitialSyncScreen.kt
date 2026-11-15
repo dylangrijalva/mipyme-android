@@ -63,17 +63,7 @@ import org.koin.core.module.Module
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.navigation3.navigation
 
-private val LogoSize = 144.dp
-private val LogoVisibleHalfHeight = 24.dp
 private const val LOGO_DRAW_MILLIS = 1300
-private const val LOGO_HOLD_MILLIS = 400L
-private const val LOGO_PAUSE_MILLIS = 300L
-private const val LEFT_ARCH_START_MILLIS = 0
-private const val LEFT_ARCH_DURATION_MILLIS = 550
-private const val RIGHT_ARCH_START_MILLIS = 550
-private const val RIGHT_ARCH_DURATION_MILLIS = 520
-private const val PILLAR_START_MILLIS = 1040
-private const val PILLAR_DURATION_MILLIS = 260
 
 private val LeftArchClip: List<PathNode> =
     addPathNodes("M5,20H38A33,33 0 0 1 71,53V100H49V53A11,11 0 0 0 27,53V100H5Z")
@@ -133,14 +123,14 @@ private fun InitialSyncContent(
             .fillMaxSize()
             .background(Moshi.colors.background.canvas),
     ) {
-        InitialSyncLogo(modifier = Modifier.align(Alignment.Center).size(LogoSize))
+        InitialSyncLogo(modifier = Modifier.align(Alignment.Center).size(144.dp))
 
         Column(
             modifier = Modifier
                 .align(Alignment.TopCenter)
                 .fillMaxWidth()
                 .padding(
-                    top = maxHeight / 2 + LogoVisibleHalfHeight + spacing.space6,
+                    top = maxHeight / 2 + 24.dp + spacing.space6,
                     start = spacing.pageGutterNarrow,
                     end = spacing.pageGutterNarrow,
                 ),
@@ -233,9 +223,9 @@ private fun InitialSyncLogo(modifier: Modifier) {
         LaunchedEffect(Unit) {
             while (true) {
                 progress.animateTo(1f, tween(LOGO_DRAW_MILLIS, easing = LinearEasing))
-                delay(LOGO_HOLD_MILLIS)
+                delay(400L)
                 progress.animateTo(0f, tween(LOGO_DRAW_MILLIS, easing = LinearEasing))
-                delay(LOGO_PAUSE_MILLIS)
+                delay(300L)
             }
         }
     }
@@ -256,8 +246,8 @@ private fun InitialSyncLogo(modifier: Modifier) {
                     strokeLineJoin = StrokeJoin.Miter,
                     trimPathEnd = segment(
                         progress.value,
-                        LEFT_ARCH_START_MILLIS,
-                        LEFT_ARCH_DURATION_MILLIS,
+                        0,
+                        550,
                         FastOutLinearInEasing,
                     ),
                 )
@@ -269,8 +259,8 @@ private fun InitialSyncLogo(modifier: Modifier) {
                     strokeLineWidth = 24f,
                     trimPathEnd = segment(
                         progress.value,
-                        RIGHT_ARCH_START_MILLIS,
-                        RIGHT_ARCH_DURATION_MILLIS,
+                        550,
+                        520,
                         LinearOutSlowInEasing,
                     ),
                 )
@@ -282,8 +272,8 @@ private fun InitialSyncLogo(modifier: Modifier) {
                     strokeLineWidth = 24f,
                     trimPathEnd = segment(
                         progress.value,
-                        PILLAR_START_MILLIS,
-                        PILLAR_DURATION_MILLIS,
+                        1040,
+                        260,
                         FastOutSlowInEasing,
                     ),
                 )

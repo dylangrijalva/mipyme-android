@@ -69,7 +69,7 @@ fun MoshiLinearProgressIndicator(modifier: Modifier = Modifier) {
         initialValue = -INDETERMINATE_SEGMENT_FRACTION,
         targetValue = 1f,
         animationSpec = infiniteRepeatable(
-            animation = tween(INDETERMINATE_DURATION_MILLIS, easing = FastOutSlowInEasing),
+            animation = tween(1400, easing = FastOutSlowInEasing),
         ),
         label = "indeterminatePosition",
     )
@@ -96,7 +96,6 @@ fun MoshiLinearProgressIndicator(modifier: Modifier = Modifier) {
 }
 
 private const val INDETERMINATE_SEGMENT_FRACTION = 0.3f
-private const val INDETERMINATE_DURATION_MILLIS = 1400
 
 @MoshiPreview
 @Composable

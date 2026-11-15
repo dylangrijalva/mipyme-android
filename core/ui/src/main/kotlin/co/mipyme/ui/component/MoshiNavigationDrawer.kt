@@ -29,8 +29,6 @@ import co.mipyme.ui.MoshiPreview
 import co.mipyme.ui.MoshiTheme
 import co.mipyme.ui.R
 
-private val DRAWER_WIDTH = 310.dp
-
 @Composable
 fun MoshiNavigationDrawer(
     drawerState: DrawerState,
@@ -50,7 +48,7 @@ fun MoshiNavigationDrawer(
             key(drawerState.isOpen) {
                 ModalDrawerSheet(
                     drawerState = drawerState,
-                    modifier = Modifier.width(DRAWER_WIDTH),
+                    modifier = Modifier.width(310.dp),
                     drawerShape = RectangleShape,
                     drawerContainerColor = colors.background.canvas,
                     drawerContentColor = colors.foreground.primary,

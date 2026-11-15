@@ -10,8 +10,6 @@ import io.ktor.http.contentType
 import java.time.LocalDateTime
 import kotlinx.serialization.serializer
 
-private const val IDEMPOTENCY_KEY_HEADER = "Idempotency-Key"
-
 internal inline fun <reified T> HttpRequestBuilder.jsonBody(body: T) {
     contentType(ContentType.Application.Json)
     setBody(body)
@@ -19,7 +17,7 @@ internal inline fun <reified T> HttpRequestBuilder.jsonBody(body: T) {
 
 internal fun HttpRequestBuilder.idempotencyKey(key: String?) {
     if (key != null) {
-        header(IDEMPOTENCY_KEY_HEADER, key)
+        header("Idempotency-Key", key)
     }
 }
 

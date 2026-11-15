@@ -43,16 +43,13 @@ import co.mipyme.ui.Moshi
 import co.mipyme.ui.MoshiPreview
 import co.mipyme.ui.MoshiTheme
 
-private const val DEFAULT_CODE_LENGTH = 6
-private val CODE_CELL_CORNER_RADIUS = 6.dp
-
 @Composable
 fun MoshiCodeField(
     value: String,
     onValueChange: (String) -> Unit,
     label: String,
     modifier: Modifier = Modifier,
-    length: Int = DEFAULT_CODE_LENGTH,
+    length: Int = 6,
     enabled: Boolean = true,
     isError: Boolean = false,
     supportingText: String? = null,
@@ -161,7 +158,7 @@ private fun CodeCell(
     modifier: Modifier = Modifier,
 ) {
     val colors = Moshi.colors
-    val shape = RoundedCornerShape(CODE_CELL_CORNER_RADIUS)
+    val shape = RoundedCornerShape(6.dp)
     val borderColor = when {
         !enabled -> colors.border.default
         isError -> colors.border.status.error

@@ -37,8 +37,8 @@ internal class SyncCoordinator(
     private val connectivityMonitor: ConnectivityMonitor,
     private val realtimeClient: RealtimeClient,
     private val scope: CoroutineScope,
-    private val realtimeDebounce: Duration = DEFAULT_REALTIME_DEBOUNCE,
-    private val retryDelays: List<Duration> = DEFAULT_RETRY_DELAYS,
+    private val realtimeDebounce: Duration = 500.milliseconds,
+    private val retryDelays: List<Duration> = listOf(5.seconds, 15.seconds, 60.seconds),
 ) : SyncLauncher {
     override fun start() {
         scope.launch {
@@ -144,10 +144,5 @@ internal class SyncCoordinator(
     private class ForbiddenState {
         @Volatile
         var isSet = false
-    }
-
-    private companion object {
-        private val DEFAULT_REALTIME_DEBOUNCE = 500.milliseconds
-        private val DEFAULT_RETRY_DELAYS = listOf(5.seconds, 15.seconds, 60.seconds)
     }
 }

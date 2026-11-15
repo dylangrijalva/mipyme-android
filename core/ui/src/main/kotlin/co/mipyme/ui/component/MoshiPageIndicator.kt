@@ -28,7 +28,6 @@ import co.mipyme.ui.MoshiTheme
 import co.mipyme.ui.R
 
 private val IndicatorHeight = 8.dp
-private val SelectedIndicatorWidth = 24.dp
 
 @Composable
 fun MoshiPageIndicator(
@@ -54,7 +53,7 @@ fun MoshiPageIndicator(
 @Composable
 private fun PageIndicatorMark(selected: Boolean) {
     val width: Dp by animateDpAsState(
-        targetValue = if (selected) SelectedIndicatorWidth else IndicatorHeight,
+        targetValue = if (selected) 24.dp else IndicatorHeight,
         label = "pageIndicatorWidth",
     )
     val color by animateColorAsState(

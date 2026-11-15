@@ -11,12 +11,10 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.serialization.json.Json
 
-private const val IDENTITY_ACCOUNT_FILE_NAME = "identity_account.json"
-
 private val identityAccountJson = Json { ignoreUnknownKeys = true }
 
 private val Context.storedAccountDataStore: DataStore<StoredAccount> by dataStore(
-    fileName = IDENTITY_ACCOUNT_FILE_NAME,
+    fileName = "identity_account.json",
     serializer = IdentityAccountSerializer,
 )
 

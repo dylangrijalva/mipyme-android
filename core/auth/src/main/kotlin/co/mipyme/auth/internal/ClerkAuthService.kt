@@ -46,14 +46,6 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
-private const val OTP_COOLDOWN_SECONDS = 60
-private const val ONE_SECOND_MILLIS = 1_000L
-private const val GOOGLE_CANCELLED_MESSAGE = "Authentication cancelled"
-private const val MFA_NOT_SUPPORTED_MESSAGE = "Second factor is not supported"
-private const val FORM_IDENTIFIER_NOT_FOUND = "form_identifier_not_found"
-private const val LEGAL_ACCEPTED_FIELD = "legal_accepted"
-private const val TOKEN_TEMPLATE = "mipyme-pos"
-
 internal class ClerkAuthService(
     private val applicationScope: CoroutineScope,
     private val accountCache: AccountCache,
@@ -169,7 +161,7 @@ internal class ClerkAuthService(
         if (session == null || session.status != Session.SessionStatus.ACTIVE) {
             return AuthError.NotAuthenticated.left()
         }
-        return when (val result = session.fetchToken(GetTokenOptions(template = TOKEN_TEMPLATE))) {
+        return when (val result = session.fetchToken(GetTokenOptions(template = "mipyme-pos"))) {
             is ClerkResult.Failure -> result.toAuthError(missingDetailsMeansNetwork = true).left()
             is ClerkResult.Success -> result.value.jwt.right()
         }
@@ -190,7 +182,7 @@ internal class ClerkAuthService(
     private suspend fun signInWithEmailCode(email: String): Either<AuthError, SignInAttempt> {
         return when (val signInResult = Clerk.auth.signIn { this.email = email }) {
             is ClerkResult.Failure -> {
-                if (signInResult.errorCode() == FORM_IDENTIFIER_NOT_FOUND) {
+                if (signInResult.errorCode() == "form_identifier_not_found") {
                     signUpWithEmailCode(email)
                 } else {
                     signInResult.toAuthError().left()
@@ -227,7 +219,7 @@ internal class ClerkAuthService(
         return when (val result = Clerk.auth.signInWithOAuth(OAuthProvider.GOOGLE)) {
             is ClerkResult.Failure -> {
                 if (result.shouldSuppressCredentialFlowError ||
-                    result.throwable?.message == GOOGLE_CANCELLED_MESSAGE
+                    result.throwable?.message == "Authentication cancelled"
                 ) {
                     AuthError.OAuthCancelled.left()
                 } else {
@@ -267,7 +259,7 @@ internal class ClerkAuthService(
             return SignInAttempt.Completed.right()
         }
         val onlyLegalAcceptanceMissing = signUp.status == SignUp.Status.MISSING_REQUIREMENTS &&
-            signUp.missingFields.toSet() == setOf(LEGAL_ACCEPTED_FIELD)
+            signUp.missingFields.toSet() == setOf("legal_accepted")
         if (!onlyLegalAcceptanceMissing) {
             return AuthError.Unknown("Missing sign-up requirements: ${signUp.missingFields}").left()
         }
@@ -287,7 +279,7 @@ internal class ClerkAuthService(
     private fun handlePostSignIn(signIn: SignIn): Either<AuthError, SignInAttempt> {
         return when (signIn.status) {
             SignIn.Status.COMPLETE -> SignInAttempt.Completed.right()
-            SignIn.Status.NEEDS_SECOND_FACTOR -> AuthError.Unknown(MFA_NOT_SUPPORTED_MESSAGE).left()
+            SignIn.Status.NEEDS_SECOND_FACTOR -> AuthError.Unknown("Second factor is not supported").left()
             else -> AuthError.Unknown("This error should never happen").left()
         }
     }
@@ -317,10 +309,10 @@ internal class ClerkAuthService(
     private fun startOtpCooldown(email: String) {
         otpCooldownJob?.cancel()
         otpCooldownEmail.update { email.trim() }
-        otpCooldownSecondsRemaining.update { OTP_COOLDOWN_SECONDS }
+        otpCooldownSecondsRemaining.update { 60 }
         otpCooldownJob = applicationScope.launch {
             while (otpCooldownSecondsRemaining.value > 0) {
-                delay(ONE_SECOND_MILLIS)
+                delay(1_000L)
                 otpCooldownSecondsRemaining.update { (it - 1).coerceAtLeast(0) }
             }
         }

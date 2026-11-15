@@ -27,8 +27,6 @@ import co.mipyme.ui.Moshi
 import co.mipyme.ui.MoshiPreview
 import co.mipyme.ui.MoshiTheme
 
-private val RadioDotSize = 10.dp
-
 @Composable
 fun MoshiRadioOption(
     label: String,
@@ -101,7 +99,7 @@ private fun RadioIndicator(selected: Boolean, enabled: Boolean) {
         if (selected) {
             Box(
                 modifier = Modifier
-                    .size(RadioDotSize)
+                    .size(10.dp)
                     .background(color = dot, shape = CircleShape),
             )
         }

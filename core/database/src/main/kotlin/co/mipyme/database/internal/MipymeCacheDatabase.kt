@@ -65,8 +65,4 @@ internal abstract class MipymeCacheDatabase : RoomDatabase() {
     abstract fun productDao(): ProductDao
 
     abstract fun syncStateDao(): SyncStateDao
-
-    companion object {
-        const val FILE_NAME = "mipyme_cache.db"
-    }
 }

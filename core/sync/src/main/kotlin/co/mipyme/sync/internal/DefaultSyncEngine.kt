@@ -46,7 +46,7 @@ internal class DefaultSyncEngine(
     private val scope: CoroutineScope,
     private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO,
     private val clock: Clock = Clock.systemUTC(),
-    private val fullSyncOnLaunch: Boolean = FULL_SYNC_ON_LAUNCH,
+    private val fullSyncOnLaunch: Boolean = true,
 ) : SyncEngine, SyncRequester {
     private val _syncStatusFlow = MutableStateFlow<SyncStatus>(SyncStatus.Idle)
     override val syncStatusFlow: StateFlow<SyncStatus> = _syncStatusFlow.asStateFlow()
@@ -261,6 +261,5 @@ internal class DefaultSyncEngine(
 
     private companion object {
         private const val FULL_SYNC_TOKEN = "*"
-        private const val FULL_SYNC_ON_LAUNCH = true
     }
 }
