@@ -94,8 +94,28 @@ class SelectLocationViewModelTest {
         advanceUntilIdle()
 
         assertEquals("loc_2", repository.selectedLocationFlow.first()?.id)
+        assertTrue(viewModel.state.isSelectionComplete)
         assertFalse(viewModel.state.isSelecting)
         assertNull(viewModel.state.pendingToastRes)
+    }
+
+    @Test
+    fun `choosing the only business again completes selection`() = runTest(dispatcher) {
+        cache.locations = listOf(location("loc_1"))
+        val authService = FakeAuthService(ownerState())
+        val repository = repository(authService)
+        advanceUntilIdle()
+        repository.select("loc_1")
+        advanceUntilIdle()
+        val viewModel = SelectLocationViewModel(repository, authService)
+        advanceUntilIdle()
+        assertFalse(viewModel.state.isSelectionComplete)
+
+        viewModel.onLocationClick("loc_1")
+        advanceUntilIdle()
+
+        assertTrue(viewModel.state.isSelectionComplete)
+        assertEquals("loc_1", repository.selectedLocationFlow.first()?.id)
     }
 
     @Test
@@ -109,6 +129,7 @@ class SelectLocationViewModelTest {
         advanceUntilIdle()
 
         assertEquals(R.string.select_location_error, viewModel.state.pendingToastRes)
+        assertFalse(viewModel.state.isSelectionComplete)
         assertNull(repository.selectedLocationFlow.first())
         assertFalse(viewModel.state.isSelecting)
     }

@@ -8,8 +8,6 @@ import co.mipyme.auth.AuthState
 import co.mipyme.contract.Employee
 import co.mipyme.data.employee.CurrentEmployeeRepository
 import co.mipyme.data.location.LocationSelectionRepository
-import co.mipyme.screen.settings.SettingsItem
-import co.mipyme.screen.settings.visibleSettingsItems
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -55,11 +53,14 @@ class HomeViewModel(
         viewModelScope.launch {
             visibleDestinationsFlow().collect { visible -> onVisibleDestinationsChanged(visible) }
         }
-        viewModelScope.launch {
-            canEditBusinessInformationFlow().collect { canEdit ->
-                _stateFlow.update { it.copy(canEditBusinessInformation = canEdit) }
-            }
-        }
+    }
+
+    fun onChangeBusinessClick() {
+        _stateFlow.update { it.copy(isChangeBusinessConfirmationVisible = true) }
+    }
+
+    fun onChangeBusinessDismissed() {
+        _stateFlow.update { it.copy(isChangeBusinessConfirmationVisible = false) }
     }
 
     fun onDestinationSelected(destination: HomeDestination) {
@@ -92,12 +93,6 @@ class HomeViewModel(
     private fun visibleDestinationsFlow(): Flow<List<HomeDestination>> {
         return authenticatedEmployeeFlow()
             .map { it.visibleHomeDestinations() }
-            .distinctUntilChanged()
-    }
-
-    private fun canEditBusinessInformationFlow(): Flow<Boolean> {
-        return authenticatedEmployeeFlow()
-            .map { SettingsItem.BUSINESS_INFORMATION in it.visibleSettingsItems() }
             .distinctUntilChanged()
     }
 

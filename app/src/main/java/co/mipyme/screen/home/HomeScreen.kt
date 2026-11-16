@@ -16,12 +16,13 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.sizeIn
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.DrawerState
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.Icon
 import androidx.compose.material3.rememberDrawerState
-import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
@@ -56,6 +57,8 @@ import co.mipyme.screen.suppliers.SuppliersScreen
 import co.mipyme.screen.transactions.TransactionsScreen
 import co.mipyme.ui.Moshi
 import co.mipyme.ui.MoshiTheme
+import co.mipyme.ui.component.MoshiModal
+import co.mipyme.ui.component.MoshiModalAction
 import co.mipyme.ui.component.MoshiDivider
 import co.mipyme.ui.component.MoshiNavigationDrawer
 import co.mipyme.ui.component.MoshiNavigationDrawerItem
@@ -112,11 +115,14 @@ internal fun HomeScreen(viewModel: HomeViewModel = koinViewModel()) {
                 viewModel.onDestinationSelected(destination)
                 scope.launch { drawerState.close() }
             },
-            onHeaderClick = {
+            onHeaderClick = viewModel::onChangeBusinessClick,
+            onChangeBusinessDismissed = viewModel::onChangeBusinessDismissed,
+            onChangeBusinessConfirmed = {
+                viewModel.onChangeBusinessDismissed()
                 scope.launch {
                     drawerState.snapTo(DrawerValue.Closed)
-                    if (backStack.lastOrNull() != Route.BusinessInformationSettings) {
-                        backStack.add(Route.BusinessInformationSettings)
+                    if (backStack.lastOrNull() == Route.Home) {
+                        backStack.add(Route.SelectLocation)
                     }
                 }
             },
@@ -132,6 +138,8 @@ private fun HomeContent(
     drawerState: DrawerState,
     onDestinationSelected: (HomeDestination) -> Unit,
     onHeaderClick: () -> Unit,
+    onChangeBusinessDismissed: () -> Unit,
+    onChangeBusinessConfirmed: () -> Unit,
     onBack: () -> Unit,
     destinationContent: @Composable (HomeDestination) -> Unit,
 ) {
@@ -145,7 +153,7 @@ private fun HomeContent(
             HomeDrawerHeader(
                 locationName = state.locationName,
                 email = state.email,
-                onClick = onHeaderClick.takeIf { state.canEditBusinessInformation },
+                onClick = onHeaderClick,
             )
             if (state.locationName != null || state.email != null) {
                 MoshiDivider()
@@ -193,64 +201,84 @@ private fun HomeContent(
             )
         }
     }
+    if (state.isChangeBusinessConfirmationVisible) {
+        MoshiModal(
+            title = stringResource(R.string.home_change_business_title),
+            onDismissRequest = onChangeBusinessDismissed,
+            primaryAction = MoshiModalAction(
+                label = stringResource(R.string.home_change_business_continue),
+                onClick = onChangeBusinessConfirmed,
+            ),
+            secondaryAction = MoshiModalAction(
+                label = stringResource(R.string.home_change_business_cancel),
+                onClick = onChangeBusinessDismissed,
+            ),
+            icon = {
+                Icon(
+                    painter = painterResource(R.drawable.ic_fluent_building_retail_24_regular),
+                    contentDescription = null,
+                    modifier = Modifier.size(Moshi.spacing.space12),
+                    tint = Moshi.colors.gray1000,
+                )
+            },
+        )
+    }
 }
 
 @Composable
 private fun HomeDrawerHeader(
     locationName: String?,
     email: String?,
-    onClick: (() -> Unit)?,
+    onClick: () -> Unit,
 ) {
-    if (locationName == null && email == null) return
-
-    val clickModifier = if (onClick != null) {
-        Modifier.clickable(
-            interactionSource = null,
-            indication = ripple(),
-            role = Role.Button,
-            onClick = onClick,
-        )
-    } else {
-        Modifier
-    }
-
-    Column(
+    val spacing = Moshi.spacing
+    Row(
         modifier = Modifier
             .fillMaxWidth()
-            .then(clickModifier)
-            .padding(
-                horizontal = Moshi.spacing.pageGutterNarrow,
-                vertical = Moshi.spacing.space4,
-            ),
+            .clickable(
+                role = Role.Button,
+                onClickLabel = stringResource(R.string.home_change_business_action),
+                onClick = onClick,
+            )
+            .sizeIn(minHeight = spacing.space12)
+            .padding(horizontal = spacing.pageGutterNarrow, vertical = spacing.space4),
+        verticalAlignment = Alignment.CenterVertically,
     ) {
-        if (locationName != null) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                MoshiText(
-                    text = locationName,
-                    modifier = Modifier.weight(1f, fill = false),
-                    role = MoshiTextRole.Heading20,
-                )
-                if (onClick != null) {
-                    Spacer(Modifier.width(Moshi.spacing.space1))
-                    Icon(
-                        painter = painterResource(R.drawable.ic_fluent_chevron_right_24_regular),
-                        contentDescription = null,
-                        modifier = Modifier.size(Moshi.spacing.space4),
-                        tint = Moshi.colors.gray900,
-                    )
-                }
-            }
-        }
-        if (locationName != null && email != null) {
-            //Spacer(Modifier.height(Moshi.spacing.space1))
-        }
-        if (email != null) {
-            MoshiText(
-                text = email,
-                role = MoshiTextRole.Copy14,
-                color = Moshi.colors.gray900,
+        Box(
+            modifier = Modifier
+                .size(spacing.space12)
+                .background(Moshi.colors.blue900, RoundedCornerShape(spacing.space3)),
+            contentAlignment = Alignment.Center,
+        ) {
+            Icon(
+                painter = painterResource(R.drawable.ic_fluent_building_retail_24_regular),
+                contentDescription = null,
+                modifier = Modifier.size(spacing.space6),
+                tint = Moshi.colors.background100,
             )
         }
+        Spacer(Modifier.width(spacing.space3))
+        Column(modifier = Modifier.weight(1f)) {
+            MoshiText(
+                text = locationName ?: stringResource(R.string.home_change_business_action),
+                role = MoshiTextRole.Heading20,
+            )
+            if (email != null) {
+                Spacer(Modifier.height(spacing.space1))
+                MoshiText(
+                    text = email,
+                    role = MoshiTextRole.Copy14,
+                    color = Moshi.colors.gray900,
+                )
+            }
+        }
+        Spacer(Modifier.width(spacing.space2))
+        Icon(
+            painter = painterResource(R.drawable.ic_fluent_chevron_up_down_24_regular),
+            contentDescription = null,
+            modifier = Modifier.size(spacing.space6),
+            tint = Moshi.colors.gray1000,
+        )
     }
 }
 
@@ -290,11 +318,12 @@ fun HomeScreenPreview() {
                 locationName = "Downtown store",
                 visibleDestinations = HomeDestination.entries,
                 backStack = listOf(HomeDestination.CHECKOUT),
-                canEditBusinessInformation = true,
             ),
             drawerState = rememberDrawerState(DrawerValue.Open),
             onDestinationSelected = {},
             onHeaderClick = {},
+            onChangeBusinessDismissed = {},
+            onChangeBusinessConfirmed = {},
             onBack = {},
             destinationContent = {},
         )

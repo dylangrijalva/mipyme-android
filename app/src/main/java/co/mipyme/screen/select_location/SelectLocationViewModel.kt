@@ -32,11 +32,11 @@ class SelectLocationViewModel(
     }
 
     fun onLocationClick(locationId: String) {
-        if (state.isSelecting || state.isSigningOut) return
+        if (state.isSelecting || state.isSigningOut || state.isSelectionComplete) return
         _stateFlow.update { it.copy(isSelecting = true) }
         viewModelScope.launch {
             val result = locationSelectionRepository.select(locationId)
-            _stateFlow.update { it.copy(isSelecting = false) }
+            _stateFlow.update { it.copy(isSelecting = false, isSelectionComplete = result.isRight()) }
             result.onLeft {
                 _stateFlow.update { current -> current.copy(pendingToastRes = R.string.select_location_error) }
             }

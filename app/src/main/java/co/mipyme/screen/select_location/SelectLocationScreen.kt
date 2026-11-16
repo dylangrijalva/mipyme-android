@@ -33,6 +33,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import co.mipyme.R
 import co.mipyme.data.location.LocationSelectionRepository
 import co.mipyme.extension.locationSelectionDataStore
+import co.mipyme.navigation.LocalNavBackStack
 import co.mipyme.navigation.NavigationTransitions
 import co.mipyme.navigation.Route
 import co.mipyme.preview.ScreenPreview
@@ -71,6 +72,13 @@ fun Module.selectLocationScreenModule(): Module {
 internal fun SelectLocationScreen(viewModel: SelectLocationViewModel = koinViewModel()) {
     val state by viewModel.stateFlow.collectAsStateWithLifecycle()
     val context = LocalContext.current
+    val backStack = LocalNavBackStack.current
+    LaunchedEffect(state.isSelectionComplete) {
+        if (state.isSelectionComplete && backStack.lastOrNull() == Route.SelectLocation) {
+            backStack.clear()
+            backStack.add(Route.Home)
+        }
+    }
     val pendingToastRes = state.pendingToastRes
     val toastText = pendingToastRes?.let { stringResource(it) }
 

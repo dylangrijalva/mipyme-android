@@ -432,54 +432,30 @@ class HomeViewModelTest {
     }
 
     @Test
-    fun `an owner can edit the business information`() = runTest(dispatcher) {
+    fun `changing business asks for confirmation for owners and employees`() = runTest(dispatcher) {
+        listOf(owner, manager).forEach { employee ->
+            val viewModel = viewModel(employees = listOf(employee))
+            advanceUntilIdle()
+            val backStack = viewModel.state.backStack
+
+            viewModel.onChangeBusinessClick()
+
+            assertTrue(viewModel.state.isChangeBusinessConfirmationVisible)
+            assertEquals(backStack, viewModel.state.backStack)
+        }
+    }
+
+    @Test
+    fun `dismissing change business preserves the current destination`() = runTest(dispatcher) {
         val viewModel = viewModel(employees = listOf(owner))
-
         advanceUntilIdle()
+        viewModel.onDestinationSelected(HomeDestination.REPORTS)
+        viewModel.onChangeBusinessClick()
 
-        assertTrue(viewModel.state.canEditBusinessInformation)
-    }
+        viewModel.onChangeBusinessDismissed()
 
-    @Test
-    fun `a non owner cannot edit the business information`() = runTest(dispatcher) {
-        val viewModel = viewModel(employees = listOf(manager))
-
-        advanceUntilIdle()
-
-        assertFalse(viewModel.state.canEditBusinessInformation)
-    }
-
-    @Test
-    fun `a missing employee cannot edit the business information`() = runTest(dispatcher) {
-        val viewModel = viewModel(employees = emptyList())
-
-        advanceUntilIdle()
-
-        assertFalse(viewModel.state.canEditBusinessInformation)
-    }
-
-    @Test
-    fun `losing ownership revokes business information editing`() = runTest(dispatcher) {
-        val cache = FakeMipymeCache(employees = listOf(owner))
-        val viewModel = viewModel(cache = cache)
-        advanceUntilIdle()
-
-        cache.employees = listOf(cashier)
-        advanceUntilIdle()
-
-        assertFalse(viewModel.state.canEditBusinessInformation)
-    }
-
-    @Test
-    fun `losing the session keeps business information editing`() = runTest(dispatcher) {
-        val authService = authService()
-        val viewModel = viewModel(employees = listOf(owner), authService = authService)
-        advanceUntilIdle()
-
-        authService.authState.value = AuthState.SessionExpired
-        advanceUntilIdle()
-
-        assertTrue(viewModel.state.canEditBusinessInformation)
+        assertFalse(viewModel.state.isChangeBusinessConfirmationVisible)
+        assertEquals(listOf(HomeDestination.CHECKOUT, HomeDestination.REPORTS), viewModel.state.backStack)
     }
 
     private fun TestScope.viewModel(
