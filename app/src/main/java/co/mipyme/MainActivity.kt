@@ -1,6 +1,7 @@
 package co.mipyme
 
 import android.animation.ValueAnimator
+import android.app.UiModeManager
 import android.content.Context
 import android.graphics.Color
 import android.os.Build
@@ -12,6 +13,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
@@ -19,6 +21,7 @@ import androidx.core.splashscreen.SplashScreenViewProvider
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import co.mipyme.data.theme.ThemeRepository
+import co.mipyme.data.theme.ThemeMode
 import co.mipyme.data.theme.isDark
 import co.mipyme.extension.themePreferenceDataStore
 import co.mipyme.navigation.NavigationRoot
@@ -56,6 +59,18 @@ class MainActivity : ComponentActivity() {
 
             val isSystemDark = isSystemInDarkTheme()
             val isDark = state.themeMode?.isDark(isSystemDark) ?: isSystemDark
+
+            LaunchedEffect(state.themeMode) {
+                val mode = state.themeMode ?: return@LaunchedEffect
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                    val nightMode = when (mode) {
+                        ThemeMode.SYSTEM -> UiModeManager.MODE_NIGHT_AUTO
+                        ThemeMode.LIGHT -> UiModeManager.MODE_NIGHT_NO
+                        ThemeMode.DARK -> UiModeManager.MODE_NIGHT_YES
+                    }
+                    getSystemService(UiModeManager::class.java).setApplicationNightMode(nightMode)
+                }
+            }
 
             DisposableEffect(isDark) {
                 enableEdgeToEdge(

@@ -1,11 +1,16 @@
 package co.mipyme.ui
 
+import android.content.res.Configuration
+import android.view.ContextThemeWrapper
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.staticCompositionLocalOf
+import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalResources
 import co.mipyme.ui.foundation.MoshiColors
 import co.mipyme.ui.foundation.MoshiSpacing
 import co.mipyme.ui.foundation.MoshiTypography
@@ -35,8 +40,24 @@ fun MoshiTheme(
         if (darkTheme) darkMoshiColors() else lightMoshiColors()
     }
     val typography = remember { MoshiTypography() }
+    val configuration = LocalConfiguration.current
+    val themedConfiguration = remember(configuration, darkTheme) {
+        Configuration(configuration).apply {
+            val nightMode = if (darkTheme) Configuration.UI_MODE_NIGHT_YES else Configuration.UI_MODE_NIGHT_NO
+            uiMode = (uiMode and Configuration.UI_MODE_NIGHT_MASK.inv()) or nightMode
+        }
+    }
+    val context = LocalContext.current
+    val themedContext = remember(context, themedConfiguration) {
+        ContextThemeWrapper(context.createConfigurationContext(themedConfiguration), 0).apply {
+            theme.setTo(context.theme)
+        }
+    }
 
     CompositionLocalProvider(
+        LocalConfiguration provides themedConfiguration,
+        LocalContext provides themedContext,
+        LocalResources provides themedContext.resources,
         LocalMoshiColors provides colors,
         LocalMoshiTypography provides typography,
         LocalMoshiSpacing provides MoshiSpacing(),
