@@ -335,7 +335,8 @@ so assistive technology announces it as in progress without a percentage.
 
 Use for the app's top-level destinations, opened from the `MoshiToolbarNavigation.Menu` action or by
 swiping from the start edge. It wraps the Material 3 modal drawer, so the sheet slides over the
-content on the start edge, dims it with `grayAlpha700`, and closes on a scrim tap or Back,
+content on the start edge, dims it with the light palette's black `grayAlpha700` in both themes,
+and closes on a scrim tap or Back,
 including the predictive back gesture. Back closes the drawer before any handler registered before
 it opened.
 The sheet uses `background100` with square corners, a fixed width of 310 dp, and respects the

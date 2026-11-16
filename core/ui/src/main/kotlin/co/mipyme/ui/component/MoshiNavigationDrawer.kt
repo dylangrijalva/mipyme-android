@@ -28,6 +28,7 @@ import co.mipyme.ui.Moshi
 import co.mipyme.ui.MoshiPreview
 import co.mipyme.ui.MoshiTheme
 import co.mipyme.ui.R
+import co.mipyme.ui.foundation.lightMoshiColors
 
 @Composable
 fun MoshiNavigationDrawer(
@@ -50,7 +51,7 @@ fun MoshiNavigationDrawer(
                     drawerState = drawerState,
                     modifier = Modifier.width(310.dp),
                     drawerShape = RectangleShape,
-                    drawerContainerColor = colors.background100,
+                    drawerContainerColor = colors.gray100,
                     drawerContentColor = colors.gray1000,
                 ) {
                     Column(modifier = Modifier.fillMaxSize()) {
@@ -76,7 +77,7 @@ fun MoshiNavigationDrawer(
         modifier = modifier.clipToBounds(),
         drawerState = drawerState,
         gesturesEnabled = gesturesEnabled,
-        scrimColor = colors.grayAlpha700,
+        scrimColor = lightMoshiColors().grayAlpha700,
         content = content,
     )
 }

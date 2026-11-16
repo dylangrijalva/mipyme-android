@@ -197,6 +197,7 @@
         <item quantity="other">%d filters</item>
     </plurals>
     <string name="home_change_business_title">Change business?</string>
+    <string name="home_change_business_message">Choose another business to continue working.</string>
     <string name="home_change_business_continue">Continue</string>
     <string name="home_change_business_cancel">Cancel</string>
     <string name="home_change_business_action">Change business</string>

@@ -35,6 +35,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
 import androidx.navigation3.runtime.NavEntry
@@ -64,6 +65,7 @@ import co.mipyme.ui.component.MoshiNavigationDrawer
 import co.mipyme.ui.component.MoshiNavigationDrawerItem
 import co.mipyme.ui.component.MoshiText
 import co.mipyme.ui.component.MoshiTextRole
+import co.mipyme.ui.util.initials
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.module.Module
@@ -204,6 +206,7 @@ private fun HomeContent(
     if (state.isChangeBusinessConfirmationVisible) {
         MoshiModal(
             title = stringResource(R.string.home_change_business_title),
+            supportingText = stringResource(R.string.home_change_business_message),
             onDismissRequest = onChangeBusinessDismissed,
             primaryAction = MoshiModalAction(
                 label = stringResource(R.string.home_change_business_continue),
@@ -213,14 +216,6 @@ private fun HomeContent(
                 label = stringResource(R.string.home_change_business_cancel),
                 onClick = onChangeBusinessDismissed,
             ),
-            icon = {
-                Icon(
-                    painter = painterResource(R.drawable.ic_fluent_building_retail_24_regular),
-                    contentDescription = null,
-                    modifier = Modifier.size(Moshi.spacing.space12),
-                    tint = Moshi.colors.gray1000,
-                )
-            },
         )
     }
 }
@@ -250,11 +245,11 @@ private fun HomeDrawerHeader(
                 .background(Moshi.colors.blue900, RoundedCornerShape(spacing.space3)),
             contentAlignment = Alignment.Center,
         ) {
-            Icon(
-                painter = painterResource(R.drawable.ic_fluent_building_retail_24_regular),
-                contentDescription = null,
-                modifier = Modifier.size(spacing.space6),
-                tint = Moshi.colors.background100,
+            MoshiText(
+                text = locationName.orEmpty().initials(),
+                role = MoshiTextRole.Heading20,
+                color = Moshi.colors.background100,
+                modifier = Modifier.clearAndSetSemantics {},
             )
         }
         Spacer(Modifier.width(spacing.space3))
@@ -276,7 +271,7 @@ private fun HomeDrawerHeader(
         Icon(
             painter = painterResource(R.drawable.ic_fluent_chevron_up_down_24_regular),
             contentDescription = null,
-            modifier = Modifier.size(spacing.space6),
+            modifier = Modifier.size(spacing.space4),
             tint = Moshi.colors.gray1000,
         )
     }

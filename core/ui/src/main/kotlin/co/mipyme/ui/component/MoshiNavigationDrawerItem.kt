@@ -19,6 +19,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.Role
 import co.mipyme.ui.Moshi
@@ -38,7 +39,7 @@ fun MoshiNavigationDrawerItem(
     val colors = Moshi.colors
     val spacing = Moshi.spacing
     val shape = RoundedCornerShape(spacing.space3)
-    val containerColor = if (selected) colors.gray100 else colors.background100
+    val containerColor = if (selected) colors.gray300 else Color.Transparent
 
     Row(
         modifier = modifier
@@ -78,7 +79,7 @@ private fun MoshiNavigationDrawerItemPreview() {
     MoshiTheme {
         Column(
             modifier = Modifier
-                .background(Moshi.colors.background100)
+                .background(Moshi.colors.gray100)
                 .padding(Moshi.spacing.space4),
             verticalArrangement = Arrangement.spacedBy(Moshi.spacing.space4),
         ) {

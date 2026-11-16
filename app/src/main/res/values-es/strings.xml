@@ -197,6 +197,7 @@
         <item quantity="other">%d filtros</item>
     </plurals>
     <string name="home_change_business_title">¿Cambiar de negocio?</string>
+    <string name="home_change_business_message">Elige otro negocio para seguir trabajando.</string>
     <string name="home_change_business_continue">Continuar</string>
     <string name="home_change_business_cancel">Cancelar</string>
     <string name="home_change_business_action">Cambiar de negocio</string>
