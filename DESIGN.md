@@ -442,3 +442,27 @@ authored sRGB fallbacks, as approved after inspecting Compose UI 1.11's solid-co
 path. Full P3 data and tested conversion remain available in the retained snapshot and reference
 for a future renderer that supports it. Browser and Android glyph rasterization can differ.
 
+### MoshiChoicebox
+
+Use `MoshiChoicebox` for a small set of choices that need descriptions and a larger tap target.
+It follows [Geist Choicebox](https://vercel.com/geist/choicebox): 12 dp padding and tile gaps,
+6 dp corners, a gray400 border, and blue100 / blue600 / blue900 selected treatments. Titles
+use Label14 with Strong emphasis; descriptions use Copy14. Radio dots and checkbox checkmarks
+make selection visible without relying on color.
+
+Pass a localized `label` for the accessible group name and `MoshiChoiceboxOption` entries with
+unique `value` keys, localized titles, and optional descriptions. The single-select overload
+accepts `selectedValue: String?` and `onValueChange`; the multi-select overload accepts
+`selectedValues: Set<String>` and `onValuesChange`. Both are controlled: the caller owns state.
+Use `enabled = false` on the group or an individual option to prevent changes. Supply a localized
+`disabledReason` to explain unavailable choices; it is shown and announced within the disabled
+tile. A group reason takes precedence while the group is disabled.
+
+The default horizontal layout gives tiles equal widths and lets their height fit the content. Use
+`orientation = Orientation.Vertical` for narrow screens or longer descriptions. Text wraps and
+scales with Android font preferences, and each tile has a minimum 48 × 48 dp touch target.
+The entire tile is one radio or checkbox target; indicators add no separate actions. Native
+Compose focus and activation behavior is retained. An option's `selectedContent` slot appears
+below a separator only while selected. Keep this content descriptive, with no nested buttons,
+links, or other interactive controls. Prefer four to six choices; use a list or picker for more.
+

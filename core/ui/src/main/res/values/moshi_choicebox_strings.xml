@@ -1,0 +1,9 @@
+<resources>
+    <string name="moshi_choicebox_preview_group">Choose a destination</string>
+    <string name="moshi_choicebox_preview_water_seven">Water 7</string>
+    <string name="moshi_choicebox_preview_shipwrights">Visit the shipwrights.</string>
+    <string name="moshi_choicebox_preview_alabasta">Alabasta</string>
+    <string name="moshi_choicebox_preview_desert">Explore the desert kingdom.</string>
+    <string name="moshi_choicebox_preview_selected_content">Destination selected.</string>
+    <string name="moshi_choicebox_preview_disabled_reason">This route is temporarily unavailable.</string>
+</resources>
