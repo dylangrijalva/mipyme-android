@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="moshi_project_banner_preview_default">Revisa el acceso al proyecto Water 7.</string>
+    <string name="moshi_project_banner_preview_success">La protección adicional está activada para el proyecto Water 7.</string>
+    <string name="moshi_project_banner_preview_warning">Nami revirtió el proyecto Water 7 a una versión anterior.</string>
+    <string name="moshi_project_banner_preview_error">Falló el pago del proyecto Water 7. Actualiza tu método de pago para mantenerlo activo.</string>
+    <string name="moshi_project_banner_preview_review">Revisar acceso</string>
+    <string name="moshi_project_banner_preview_disable">Desactivar protección</string>
+    <string name="moshi_project_banner_preview_restore">Deshacer reversión</string>
+    <string name="moshi_project_banner_preview_payment">Actualizar método de pago</string>
+</resources>

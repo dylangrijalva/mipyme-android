@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="moshi_project_banner_preview_default">Review access to the Water 7 project.</string>
+    <string name="moshi_project_banner_preview_success">Extra protection is enabled for the Water 7 project.</string>
+    <string name="moshi_project_banner_preview_warning">The Water 7 project was rolled back by Nami.</string>
+    <string name="moshi_project_banner_preview_error">Payment failed for the Water 7 project. Update your payment method to keep it active.</string>
+    <string name="moshi_project_banner_preview_review">Review access</string>
+    <string name="moshi_project_banner_preview_disable">Disable protection</string>
+    <string name="moshi_project_banner_preview_restore">Undo rollback</string>
+    <string name="moshi_project_banner_preview_payment">Update payment method</string>
+</resources>

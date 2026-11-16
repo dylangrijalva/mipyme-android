@@ -466,3 +466,28 @@ Compose focus and activation behavior is retained. An option's `selectedContent`
 below a separator only while selected. Keep this content descriptive, with no nested buttons,
 links, or other interactive controls. Prefer four to six choices; use a list or picker for more.
 
+### MoshiProjectBanner
+
+Use for a temporary, project-wide state that remains visible until the user resolves it. It follows
+[Geist Project Banner](https://vercel.com/geist/project-banner). Place it across the project area,
+below its navigation. Pass a localized `message`, a localized `actionLabel`, and `onAction` to open
+or perform the resolving action. The caller owns visibility. There is no dismiss action.
+
+`MoshiProjectBannerVariant` provides `Default`, `Success`, `Warning`, and `Error`. The deployed Geist
+success treatment is blue: it indicates a protective mitigation that can be turned off, rather than
+a completed task. The other variants use gray, amber, and red. Each uses its family's 100 background,
+400 top and bottom borders, 900 message and icon, and 1000 action text. The default action focus uses
+blue600; success uses blue600, warning amber700, and error red700. These focus colors mirror the
+source and have a known contrast limitation in the light theme: blue600 against gray100 is about
+2.12:1, blue600 against blue100 about 2.19:1, and amber700 against amber100 about 1.68:1. These
+fall below the 3:1 non-text contrast target. Keep this limitation in mind for keyboard-focused
+workflows; the source palette is preserved here.
+
+The square-edged banner uses Copy14, a 16 dp optional decorative Fluent `icon`, 8 dp gaps, 24 dp
+horizontal insets, and 8 dp vertical insets. Its transparent, underlined action uses Label14 with
+Strong emphasis. Android adapts the web action to a minimum 48 × 48 dp target with native ripple,
+focus, and activation behavior. Native text underlines follow the font metrics. At widths below
+768 dp, the action sits beneath the message, aligned with its text; wider banners center the message
+and action in one row. Both texts wrap and scale with font preferences. The banner is an accessibility
+traversal group with a polite live region; its action remains a separate button target.
+
