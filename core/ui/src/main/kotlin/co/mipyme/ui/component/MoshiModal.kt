@@ -53,14 +53,17 @@ fun MoshiModal(
     secondaryAction: MoshiModalAction? = null,
     icon: (@Composable () -> Unit)? = null,
     primaryActionVariant: MoshiButtonVariant = MoshiButtonVariant.Primary,
-    properties: DialogProperties = DialogProperties(),
+    properties: DialogProperties? = null,
     tertiaryAction: MoshiModalAction? = null,
 ) {
-    Dialog(onDismissRequest = onDismissRequest, properties = properties) {
+    Dialog(
+        onDismissRequest = onDismissRequest,
+        properties = properties ?: DialogProperties(usePlatformDefaultWidth = false),
+    ) {
         MoshiModalContent(
             title = title,
             primaryAction = primaryAction,
-            modifier = modifier,
+            modifier = modifier.padding(horizontal = Moshi.spacing.space6),
             supportingText = supportingText,
             secondaryAction = secondaryAction,
             tertiaryAction = tertiaryAction,

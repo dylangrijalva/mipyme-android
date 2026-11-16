@@ -18,7 +18,7 @@ fun MoshiAlertDialog(
     modifier: Modifier = Modifier,
     icon: (@Composable () -> Unit)? = null,
     confirmActionVariant: MoshiButtonVariant = MoshiButtonVariant.Primary,
-    properties: DialogProperties = DialogProperties(),
+    properties: DialogProperties? = null,
 ) {
     MoshiModal(
         title = title,

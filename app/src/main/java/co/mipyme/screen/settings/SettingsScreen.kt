@@ -29,7 +29,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.window.DialogProperties
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import co.mipyme.BuildConfig
 import co.mipyme.R
@@ -208,8 +207,6 @@ private fun SettingsContent(
 
     if (state.isSignOutConfirmationVisible) {
         MoshiAlertDialog(
-            modifier = Modifier.padding(horizontal = spacing.space6),
-            properties = DialogProperties(usePlatformDefaultWidth = false),
             title = stringResource(R.string.settings_sign_out_confirm_title),
             message = stringResource(R.string.settings_sign_out_confirm_message),
             onDismissRequest = onSignOutDismissed,

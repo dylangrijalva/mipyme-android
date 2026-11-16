@@ -115,7 +115,8 @@ Use for a focused message or decision that interrupts the current screen. It has
 title, optional supporting text, an optional 80 dp icon slot, and up to three actions. The elevated
 surface has a 12 dp corner radius and a maximum width of 720 dp. It uses the active Moshi theme,
 with `background100` in light mode and `gray100` in dark mode to separate the dialog from the backdrop.
-Side insets are 12 dp, the bottom inset is 24 dp, and top padding is 24 dp without an icon and
+The modal owns 24 dp horizontal spacing from the window edges and disables platform default width.
+Internal side insets are 12 dp, the bottom inset is 24 dp, and top padding is 24 dp without an icon and
 16 dp with one. Text
 uses Heading20 and Copy16 roles, with primary and secondary foreground colors. Two actions sit side
 by side when the content is at least 260 dp wide. Three actions use a horizontal row at 480 dp or

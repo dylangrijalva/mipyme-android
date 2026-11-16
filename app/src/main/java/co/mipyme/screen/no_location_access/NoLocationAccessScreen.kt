@@ -28,7 +28,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.DialogProperties
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation3.ui.NavDisplay
 import co.mipyme.R
@@ -168,8 +167,6 @@ private fun SignOutConfirmationDialog(
     onDismiss: () -> Unit,
 ) {
     MoshiAlertDialog(
-        modifier = Modifier.padding(horizontal = Moshi.spacing.space6),
-        properties = DialogProperties(usePlatformDefaultWidth = false),
         title = stringResource(R.string.no_location_access_sign_out_confirm_title),
         message = stringResource(R.string.no_location_access_sign_out_confirm_message),
         onDismissRequest = onDismiss,
