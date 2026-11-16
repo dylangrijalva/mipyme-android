@@ -10,6 +10,9 @@ import co.mipyme.contract.Product
 import co.mipyme.contract.Supplier
 import co.mipyme.contract.SyncEmployee
 import co.mipyme.database.EmployeeLocationAccess
+import androidx.paging.PagingData
+import co.mipyme.database.CatalogQuery
+import kotlinx.coroutines.flow.flowOf
 import co.mipyme.database.MipymeCache
 import co.mipyme.database.ProductVariantMatch
 import co.mipyme.database.SyncState
@@ -65,6 +68,14 @@ class FakeMipymeCache(
     override fun observeMerchant(): Flow<Merchant?> = emptyFlow()
 
     override fun observeProducts(): Flow<List<Product>> = emptyFlow()
+
+    override fun observeCatalog(query: CatalogQuery): Flow<PagingData<Product>> {
+        return flowOf(PagingData.empty())
+    }
+
+    override fun observeCatalogCount(query: CatalogQuery): Flow<Int> {
+        return flowOf(0)
+    }
 
     override suspend fun findVariantByBarcode(barcode: String): ProductVariantMatch? = null
 

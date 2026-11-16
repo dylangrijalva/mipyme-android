@@ -1,5 +1,9 @@
 package co.mipyme.database.internal.dao
 
+import androidx.paging.PagingSource
+import androidx.sqlite.db.SupportSQLiteQuery
+import androidx.room.RawQuery
+import co.mipyme.database.internal.entity.CollectionEntity
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
@@ -60,6 +64,15 @@ internal interface ProductDao {
 
     @Query("DELETE FROM product_options")
     suspend fun deleteAllOptions()
+
+    @Transaction
+    @RawQuery(observedEntities = [ProductEntity::class, ProductVariantEntity::class, CollectionEntity::class,
+        InventoryLevelEntity::class, OptionGroupEntity::class, ProductOptionEntity::class,
+        ProductOptionGroupEntity::class, VariantOptionEntity::class])
+    fun pageCatalog(query: SupportSQLiteQuery): PagingSource<Int, ProductWithDetails>
+
+    @RawQuery(observedEntities = [ProductEntity::class, ProductVariantEntity::class, CollectionEntity::class])
+    fun observeCatalogCount(query: SupportSQLiteQuery): Flow<Int>
 
     @Transaction
     @Query("SELECT * FROM products ORDER BY name COLLATE NOCASE, id")

@@ -12,4 +12,12 @@
     <string name="moshi_toolbar_back">Atrás</string>
     <string name="moshi_toolbar_menu">Abrir menú</string>
     <string name="moshi_toolbar_more_actions">Más acciones</string>
+    <string name="moshi_search_clear">Borrar búsqueda</string>
+    <string name="moshi_search_preview_label">Buscar artículos</string>
+    <string name="moshi_empty_preview_title">Sin resultados</string>
+    <string name="moshi_empty_preview_description">Prueba otra búsqueda para encontrar un artículo.</string>
+    <string name="moshi_monogram_preview_name">Piratas del Sombrero de Paja</string>
+    <string name="moshi_pill_preview_label">Todos los artículos</string>
+    <string name="moshi_badge_preview_label">Borrador</string>
+    <string name="moshi_pull_refresh_preview_label">Desliza hacia abajo para actualizar</string>
 </resources>

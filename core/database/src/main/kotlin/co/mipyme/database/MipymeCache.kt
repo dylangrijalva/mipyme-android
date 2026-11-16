@@ -1,5 +1,6 @@
 package co.mipyme.database
 
+import androidx.paging.PagingData
 import co.mipyme.contract.Collection
 import co.mipyme.contract.Customer
 import co.mipyme.contract.Employee
@@ -13,6 +14,10 @@ interface MipymeCache {
     fun observeMerchant(): Flow<Merchant?>
 
     fun observeProducts(): Flow<List<Product>>
+
+    fun observeCatalog(query: CatalogQuery): Flow<PagingData<Product>>
+
+    fun observeCatalogCount(query: CatalogQuery = CatalogQuery()): Flow<Int>
 
     suspend fun findVariantByBarcode(barcode: String): ProductVariantMatch?
 

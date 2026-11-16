@@ -34,9 +34,11 @@ dependencies {
     api(project(":core:contract"))
     api(libs.koin.core)
     api(libs.kotlinx.coroutines.core)
+    api(libs.androidx.paging.runtime)
 
     implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.room.ktx)
+    implementation(libs.androidx.room.paging)
     implementation(libs.koin.android)
     ksp(libs.androidx.room.compiler)
 

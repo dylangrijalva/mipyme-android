@@ -46,6 +46,69 @@ The Android token implementations and component code define the behavior shipped
 
 ## Components
 
+### MoshiSearchField
+
+Use for a single-line search query. The rounded field has a decorative leading Fluent search icon,
+a label shown when empty, and a trailing clear button only while the value is nonempty. The label
+also supplies the accessible name when a query is entered. `onClear` resets the value through
+`onValueChange` by default; override it when the caller owns a larger search transition. The default
+clear label is localized, and `clearLabel` can describe a more specific action.
+
+The field uses Copy16 typography, `background100`, and `gray400`, with a 2 dp
+`blue900` when focused. Disabled fields and their clear actions use disabled colors and ignore
+input. The minimum height and clear touch target are 48 dp. The Search keyboard action dismisses
+the keyboard. Compose adjacent filter or scan actions outside this field.
+
+### MoshiEmptyState
+
+Use when a section has no content or a search has no matches. Content appears in this order: a
+24 dp icon slot, title, description, optional primary outline button, optional secondary text button.
+Pass `MoshiEmptyStateAction` values with a label, callback, and enabled state. Either action may be
+omitted independently. Buttons stack vertically and labels wrap at larger font sizes.
+
+The title uses Heading20 typography and heading semantics. The description uses Copy16 typography
+and `gray900`. Icon content inherits `gray1000`, matching the title; keep its accessible
+description null when the title already explains the state. The caller supplies localized copy,
+controls visibility, and provides scrolling when the available height is limited.
+
+### MoshiMonogram
+
+Use as a decorative image fallback beside a full visible name. It displays the first two words of
+`name`, adds an ellipsis when more words exist, and truncates within its available width. Its default
+size is 64 dp; a caller can set the required image dimensions through `modifier`. The 8 dp rounded
+container uses the secondary action background and Label12 text. It has no accessibility node
+because the adjacent label should expose the full name.
+
+### MoshiPill
+
+Use for compact tab choices or filter actions. Selected pills use the inverse background and
+foreground; unselected pills use the surface background and default border. Pass `count` as an
+optional formatted string displayed after the label. Text wraps and the pill grows vertically.
+All pills have a minimum 48 × 48 dp touch target and expose their selected and disabled state.
+Pass `Role.Tab` and put sibling tabs in a selectable group for navigation between sections;
+the default role is Button. Callers own selection and click behavior.
+
+### MoshiStatusBadge
+
+Use for a noninteractive, labeled status. `Neutral` uses gray100 background and gray900 foreground
+colors. `Warning`, `Error`, and `Success` use the matching Geist scale steps 100 and 900. The Label12 label
+wraps, so status information remains available at larger font sizes. Always include a label rather
+than communicating status through color alone. Keep domain-specific status selection in the caller.
+
+### MoshiIconButton
+
+Use for an icon-only action. Pass a vendored Fluent drawable and a localized `label` for its
+accessible name. The circular button has a 24 dp icon, a minimum 48 × 48 dp touch target, ripple
+feedback, and disabled foreground styling. Disabled buttons ignore clicks.
+
+### MoshiLoadingIndicator and MoshiPullToRefreshBox
+
+Use `MoshiLoadingIndicator` for indeterminate local loading. It uses a 32 dp spinner, semantic Moshi
+colors, and a localized loading label. `MoshiPullToRefreshBox` wraps scrollable content with the
+native pull gesture and a Moshi-colored refresh indicator. Its `isRefreshing` state and `onRefresh`
+callback belong to the caller. Keep a vertically scrollable child even for empty content so the
+gesture can start. The wrapper does not replace cached content or trigger data access itself.
+
 ### MoshiModal
 
 Use for a focused message or decision that interrupts the current screen. It has a left-aligned
@@ -378,3 +441,4 @@ specified line boxes while preserving Android font scaling and wrapping. Static 
 authored sRGB fallbacks, as approved after inspecting Compose UI 1.11's solid-color rendering
 path. Full P3 data and tested conversion remain available in the retained snapshot and reference
 for a future renderer that supports it. Browser and Android glyph rasterization can differ.
+

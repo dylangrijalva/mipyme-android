@@ -12,4 +12,12 @@
     <string name="moshi_toolbar_back">Back</string>
     <string name="moshi_toolbar_menu">Open menu</string>
     <string name="moshi_toolbar_more_actions">More actions</string>
+    <string name="moshi_search_clear">Clear search</string>
+    <string name="moshi_search_preview_label">Search items</string>
+    <string name="moshi_empty_preview_title">No matches</string>
+    <string name="moshi_empty_preview_description">Try another search to find an item.</string>
+    <string name="moshi_monogram_preview_name">Straw Hat Pirates</string>
+    <string name="moshi_pill_preview_label">All items</string>
+    <string name="moshi_badge_preview_label">Draft</string>
+    <string name="moshi_pull_refresh_preview_label">Pull down to refresh</string>
 </resources>

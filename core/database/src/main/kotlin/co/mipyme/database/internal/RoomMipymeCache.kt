@@ -1,5 +1,10 @@
 package co.mipyme.database.internal
 
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
+import androidx.paging.map
+import co.mipyme.database.CatalogQuery
 import androidx.room.withTransaction
 import co.mipyme.contract.Collection
 import co.mipyme.contract.Customer
@@ -25,6 +30,8 @@ import co.mipyme.database.internal.relation.toContract
 import java.time.LocalDateTime
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.emitAll
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 
@@ -48,6 +55,17 @@ internal class RoomMipymeCache(
         return productDao.observeAll()
             .map { products -> products.map { it.toContract() } }
             .flowOn(Dispatchers.Default)
+    }
+
+    override fun observeCatalog(query: CatalogQuery): Flow<PagingData<Product>> {
+        return Pager(
+            config = PagingConfig(pageSize = 50, initialLoadSize = 50, prefetchDistance = 10, enablePlaceholders = false),
+            pagingSourceFactory = { productDao.pageCatalog(query.toSqlQuery()) },
+        ).flow.map { page -> page.map { it.toContract() } }.flowOn(Dispatchers.Default)
+    }
+
+    override fun observeCatalogCount(query: CatalogQuery): Flow<Int> {
+        return flow { emitAll(productDao.observeCatalogCount(query.toSqlQuery(count = true))) }.flowOn(Dispatchers.Default)
     }
 
     override suspend fun findVariantByBarcode(barcode: String): ProductVariantMatch? {
