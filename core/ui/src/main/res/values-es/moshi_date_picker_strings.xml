@@ -1,0 +1,41 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="moshi_date_choose">Elegir fecha</string>
+    <string name="moshi_date_range_choose">Elegir intervalo de fechas</string>
+    <string name="moshi_date_birth_choose">Elegir fecha de nacimiento</string>
+    <string name="moshi_date_time_choose">Elegir fecha y hora</string>
+    <string name="moshi_date_apply">Aplicar</string>
+    <string name="moshi_date_cancel">Cancelar</string>
+    <string name="moshi_date_clear">Borrar</string>
+    <string name="moshi_date_empty">Sin fecha seleccionada</string>
+    <string name="moshi_date_range_empty">Elige una fecha inicial y final</string>
+    <string name="moshi_date_start">Inicio: %1$s</string>
+    <string name="moshi_date_end">Fin: %1$s</string>
+    <string name="moshi_date_range_value">%1$s a %2$s</string>
+    <string name="moshi_date_previous_month">Mes anterior</string>
+    <string name="moshi_date_next_month">Mes siguiente</string>
+    <string name="moshi_date_month">Mes</string>
+    <string name="moshi_date_year">Año</string>
+    <string name="moshi_date_select_month">Elegir mes</string>
+    <string name="moshi_date_select_year">Elegir año</string>
+    <string name="moshi_date_input">Fecha</string>
+    <string name="moshi_date_natural_input">Fecha en palabras</string>
+    <string name="moshi_date_format">Formato: %1$s</string>
+    <string name="moshi_date_input_error">Escribe una fecha válida con el formato %1$s.</string>
+    <string name="moshi_date_unavailable">Esta fecha no está disponible. Elige otra fecha.</string>
+    <string name="moshi_date_range_unavailable">El intervalo incluye fechas no disponibles. Elige otro intervalo.</string>
+    <string name="moshi_date_natural_help">Prueba «hoy», «mañana», «próximo lunes» o «en 2 semanas».</string>
+    <string name="moshi_date_natural_unsupported">Usa frases en inglés o español, o elige un día en el calendario.</string>
+    <string name="moshi_date_resolved">Fecha seleccionada: %1$s</string>
+    <string name="moshi_date_hour">Hora</string>
+    <string name="moshi_date_minute">Minuto</string>
+    <string name="moshi_date_increase_hour">Hora siguiente</string>
+    <string name="moshi_date_decrease_hour">Hora anterior</string>
+    <string name="moshi_date_increase_minute">Minuto siguiente</string>
+    <string name="moshi_date_decrease_minute">Minuto anterior</string>
+    <string name="moshi_date_time_value">%1$s a las %2$s</string>
+    <string name="moshi_date_selected">Seleccionado</string>
+    <string name="moshi_date_today">Hoy</string>
+    <string name="moshi_date_in_range">En el intervalo seleccionado</string>
+    <string name="moshi_date_narrow_hint">Desliza horizontalmente para ver todos los días.</string>
+</resources>

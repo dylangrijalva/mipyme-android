@@ -491,3 +491,82 @@ focus, and activation behavior. Native text underlines follow the font metrics. 
 and action in one row. Both texts wrap and scale with font preferences. The banner is an accessibility
 traversal group with a polite live region; its action remains a separate button target.
 
+## Date pickers
+
+Use `MoshiDatePicker`, `MoshiDateRangePicker`, `MoshiBirthDatePicker`,
+`MoshiDateInputPicker`, `MoshiDateTimePicker`, or `MoshiNaturalDatePicker` for date
+selection. Each renders a Moshi outline button and opens a dialog. For a custom
+trigger, use `MoshiDatePickerDialog` or `MoshiDateRangePickerDialog` and control
+visibility yourself. These are library components; they do not require a ViewModel.
+
+Values belong to the caller. Dates use `java.time.LocalDate`, ranges use
+`MoshiDateRange(start, endInclusive)`, and date/time values use `LocalDateTime`.
+Date/time values have local wall-clock meaning, with no time zone or UTC conversion.
+Apply returns minute precision with seconds and nanoseconds set to zero. The time
+controls follow the device's 12/24-hour preference and let users change hours and
+minutes independently.
+
+```kotlin
+MoshiDatePicker(
+    value = state.deliveryDate,
+    onValueChange = viewModel::setDeliveryDate,
+    label = stringResource(R.string.delivery_date),
+    allowClear = true,
+    constraints = MoshiDateConstraints(
+        earliestDate = today,
+        latestDate = today.plusMonths(3),
+        isDateDisabled = { it.dayOfWeek == DayOfWeek.SUNDAY },
+    ),
+    presets = listOf(
+        MoshiDatePreset(stringResource(R.string.tomorrow), today.plusDays(1)),
+    ),
+)
+```
+
+The dialog owns a saved draft. Choosing a day, a preset, a time, or typing changes
+that draft. Apply emits a valid selection. Cancel, Back, and tapping outside dismiss
+without emitting. Drafts survive saved-state restoration, including rotation.
+`allowClear` adds Clear, which empties the draft; Apply then emits `null`. An initially
+empty picker requires a date, or an explicit Clear when clearing is allowed.
+Disabling a trigger closes its dialog without applying. External value updates remain
+caller-owned; reopening starts from the latest committed value.
+
+`MoshiDateConstraints` defaults to Gregorian years 1 through 9999. The earliest and
+latest dates are inclusive. `isDateDisabled` applies to calendar days, typed and
+natural-language input, and presets. Keep it pure, inexpensive, and safe to call from
+a worker thread. A range includes both endpoints and every day between them; one
+disabled day makes the range invalid. Range and range-preset validation run off the
+main thread and cancel when the draft changes. Caller-provided preset labels must
+be localized, and presets outside the constraints remain disabled.
+
+Ranges display one month at narrow widths and two when both fit. Calendar days have
+at least 48 dp touch targets. At widths too small for seven targets, the calendar
+scrolls horizontally with a visible hint. Larger font sizes increase the cell width.
+All variants provide month and year selectors; birth dates also cap the latest date
+at today, without imposing a minimum age. Pass stricter bounds as needed.
+
+Only `MoshiDateInputPicker` and `MoshiNaturalDatePicker` allow typing, inside their
+dialogs. Typed dates use the app locale's date order and separators with a four-digit
+Gregorian year. A visible format hint and strict validation prevent dates such as
+February 30 from being silently adjusted. The resolved date appears before Apply.
+
+Natural input accepts these defined phrases, ignoring case, repeated spaces, and
+Spanish accents:
+
+| English locale | Spanish locale |
+| --- | --- |
+| `today`, `tomorrow` | `hoy`, `mañana` |
+| `next monday` through `next sunday` | `próximo lunes` through `próximo domingo`, optionally prefixed with `el` |
+| `in N days`, `in N weeks`, including singular forms | `en N días`, `en N semanas`, including singular forms |
+
+`N` is a nonnegative whole number. Next weekday always means strictly after today,
+even when today is that weekday. English and Spanish locales use their own grammar;
+other locales accept either grammar and show fallback guidance. Unsupported phrases
+show supported examples or direct the user to the calendar. Callers can pass `today`
+to the birth and natural variants for deterministic relative-date behavior.
+
+Labels and validation have English and Spanish resources in `:core:ui`. Month names,
+weekday names, date formatting, digits, and the first weekday follow the app locale.
+RTL mirrors the Gregorian calendar's layout and navigation. Alternative calendars
+and Arabic translations are outside this component's scope. The module uses the
+repository's existing core-library desugaring dependency for Android API 24.
