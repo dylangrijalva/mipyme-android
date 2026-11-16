@@ -47,12 +47,12 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.DialogProperties
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation3.ui.NavDisplay
 import co.mipyme.R
 import co.mipyme.contract.BusinessType
 import co.mipyme.contract.CountryIsoCode
 import co.mipyme.contract.displayName
 import co.mipyme.data.onboarding.OnboardingRepository
+import co.mipyme.navigation.NavigationTransitions
 import co.mipyme.navigation.Route
 import co.mipyme.preview.ScreenPreview
 import co.mipyme.ui.Moshi
@@ -80,10 +80,7 @@ fun Module.onboardingScreenModule(): Module {
     singleOf(::OnboardingRepository)
     viewModelOf(::OnboardingViewModel)
     navigation<Route.Onboarding>(
-        metadata = NavDisplay.transitionSpec {
-            slideInHorizontally(initialOffsetX = { it }) togetherWith
-                slideOutHorizontally(targetOffsetX = { -it })
-        },
+        metadata = NavigationTransitions.forward,
     ) { OnboardingScreen() }
     return this
 }

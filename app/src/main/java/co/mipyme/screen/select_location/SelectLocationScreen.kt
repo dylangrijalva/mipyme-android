@@ -2,9 +2,6 @@ package co.mipyme.screen.select_location
 
 import android.content.Context
 import android.widget.Toast
-import androidx.compose.animation.slideInHorizontally
-import androidx.compose.animation.slideOutHorizontally
-import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -33,10 +30,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.window.DialogProperties
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation3.ui.NavDisplay
 import co.mipyme.R
 import co.mipyme.data.location.LocationSelectionRepository
 import co.mipyme.extension.locationSelectionDataStore
+import co.mipyme.navigation.NavigationTransitions
 import co.mipyme.navigation.Route
 import co.mipyme.preview.ScreenPreview
 import co.mipyme.ui.Moshi
@@ -65,10 +62,7 @@ fun Module.selectLocationScreenModule(): Module {
     }
     viewModelOf(::SelectLocationViewModel)
     navigation<Route.SelectLocation>(
-        metadata = NavDisplay.transitionSpec {
-            slideInHorizontally(initialOffsetX = { it }) togetherWith
-                slideOutHorizontally(targetOffsetX = { -it })
-        },
+        metadata = NavigationTransitions.forward,
     ) { SelectLocationScreen() }
     return this
 }

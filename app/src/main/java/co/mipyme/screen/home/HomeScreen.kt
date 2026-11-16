@@ -3,8 +3,6 @@ package co.mipyme.screen.home
 import android.widget.Toast
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
-import androidx.compose.animation.slideInHorizontally
-import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -44,6 +42,7 @@ import androidx.navigation3.ui.NavDisplay
 import co.mipyme.R
 import co.mipyme.data.employee.CurrentEmployeeRepository
 import co.mipyme.navigation.LocalNavBackStack
+import co.mipyme.navigation.NavigationTransitions
 import co.mipyme.navigation.Route
 import co.mipyme.preview.ScreenPreview
 import co.mipyme.screen.checkout.CheckoutScreen
@@ -78,10 +77,7 @@ fun Module.homeScreenModule(): Module {
     }
     viewModelOf(::HomeViewModel)
     navigation<Route.Home>(
-        metadata = NavDisplay.transitionSpec {
-            slideInHorizontally(initialOffsetX = { it }) togetherWith
-                slideOutHorizontally(targetOffsetX = { -it })
-        },
+        metadata = NavigationTransitions.forward,
     ) { HomeScreen() }
     return this
 }

@@ -1,9 +1,6 @@
 package co.mipyme.screen.welcome
 
 import android.widget.Toast
-import androidx.compose.animation.slideInHorizontally
-import androidx.compose.animation.slideOutHorizontally
-import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -42,9 +39,9 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withLink
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation3.ui.NavDisplay
 import co.mipyme.R
 import co.mipyme.navigation.LocalNavBackStack
+import co.mipyme.navigation.NavigationTransitions
 import co.mipyme.navigation.Route
 import co.mipyme.preview.ScreenPreview
 import co.mipyme.ui.Moshi
@@ -88,10 +85,7 @@ private val welcomeSlides = listOf(
 fun Module.welcomeScreenModule(): Module {
     viewModelOf(::WelcomeViewModel)
     navigation<Route.Welcome>(
-        metadata = NavDisplay.transitionSpec {
-            slideInHorizontally(initialOffsetX = { -it }) togetherWith
-                slideOutHorizontally(targetOffsetX = { it })
-        },
+        metadata = NavigationTransitions.backward,
     ) { WelcomeScreen() }
     return this
 }

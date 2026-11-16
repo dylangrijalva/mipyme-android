@@ -1,9 +1,6 @@
 package co.mipyme.screen.sign_in_with_email
 
 import android.widget.Toast
-import androidx.compose.animation.slideInHorizontally
-import androidx.compose.animation.slideOutHorizontally
-import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -28,11 +25,11 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation3.ui.NavDisplay
 import co.mipyme.R
 import co.mipyme.auth.AuthError
 import co.mipyme.auth.toStringResource
 import co.mipyme.navigation.LocalNavBackStack
+import co.mipyme.navigation.NavigationTransitions
 import co.mipyme.navigation.Route
 import co.mipyme.preview.ScreenPreview
 import co.mipyme.ui.Moshi
@@ -53,13 +50,7 @@ import org.koin.dsl.navigation3.navigation
 fun Module.signInWithEmailScreenModule(): Module {
     viewModelOf(::SignInWithEmailViewModel)
     navigation<Route.SignInWithEmail>(
-        metadata = NavDisplay.transitionSpec {
-            slideInHorizontally(initialOffsetX = { it }) togetherWith
-                slideOutHorizontally(targetOffsetX = { -it })
-        } + NavDisplay.popTransitionSpec {
-            slideInHorizontally(initialOffsetX = { -it }) togetherWith
-                slideOutHorizontally(targetOffsetX = { it })
-        },
+        metadata = NavigationTransitions.forwardWithBackwardPop,
     ) { SignInWithEmailScreen() }
     return this
 }

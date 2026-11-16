@@ -5,9 +5,6 @@ import android.content.Context
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.animation.slideInHorizontally
-import androidx.compose.animation.slideOutHorizontally
-import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -29,12 +26,12 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation3.ui.NavDisplay
 import co.mipyme.R
 import co.mipyme.data.notification.AndroidNotificationPermissionChecker
 import co.mipyme.data.notification.NotificationPermissionChecker
 import co.mipyme.data.notification.NotificationPermissionRepository
 import co.mipyme.extension.notificationPermissionDataStore
+import co.mipyme.navigation.NavigationTransitions
 import co.mipyme.navigation.Route
 import co.mipyme.preview.ScreenPreview
 import co.mipyme.ui.Moshi
@@ -64,10 +61,7 @@ fun Module.askNotificationPermissionsScreenModule(): Module {
     }
     viewModelOf(::AskNotificationPermissionsViewModel)
     navigation<Route.AskNotificationPermissions>(
-        metadata = NavDisplay.transitionSpec {
-            slideInHorizontally(initialOffsetX = { it }) togetherWith
-                slideOutHorizontally(targetOffsetX = { -it })
-        },
+        metadata = NavigationTransitions.forward,
     ) { AskNotificationPermissionsScreen() }
     return this
 }
