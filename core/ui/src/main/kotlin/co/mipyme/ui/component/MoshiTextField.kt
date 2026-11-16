@@ -116,29 +116,29 @@ fun MoshiTextField(
         ),
         label = "MoshiTextFieldLabelPosition",
     )
-    val labelScale = Moshi.typography.caption.fontSize.value / Moshi.typography.body.fontSize.value
-    val contentColor = if (enabled) colors.foreground.primary else colors.foreground.disabled
+    val labelScale = Moshi.typography.label12.fontSize.value / Moshi.typography.copy16.fontSize.value
+    val contentColor = if (enabled) colors.gray1000 else colors.gray700
     val labelColor by animateColorAsState(
         targetValue = when {
-            !enabled -> colors.foreground.disabled
-            isError -> colors.foreground.status.error
-            isFloated -> colors.foreground.primary
-            else -> colors.foreground.tertiary
+            !enabled -> colors.gray700
+            isError -> colors.red900
+            isFloated -> colors.gray1000
+            else -> colors.gray900
         },
         animationSpec = tween(durationMillis = FIELD_LABEL_DURATION_MILLIS),
         label = "MoshiTextFieldLabelColor",
     )
     val supportingColor = when {
-        !enabled -> colors.foreground.disabled
-        isError -> colors.foreground.status.error
-        else -> colors.foreground.secondary
+        !enabled -> colors.gray700
+        isError -> colors.red900
+        else -> colors.gray900
     }
     val borderWidth = if (enabled && focused) 2.dp else 1.dp
     val borderColor = when {
-        !enabled -> colors.border.default
-        isError -> colors.border.status.error
-        focused -> colors.border.focus
-        else -> colors.border.default
+        !enabled -> colors.gray400
+        isError -> colors.red900
+        focused -> colors.blue900
+        else -> colors.gray400
     }
     val fieldShape = RoundedCornerShape(6.dp)
     val containerClickModifier = if (enabled) {
@@ -153,7 +153,7 @@ fun MoshiTextField(
     val trailingActionContent: (@Composable () -> Unit)? = trailingAction?.let { action ->
         {
             val focusRing = if (enabled && trailingActionFocused) {
-                Modifier.border(2.dp, colors.border.focus, CircleShape)
+                Modifier.border(2.dp, colors.blue900, CircleShape)
             } else {
                 Modifier
             }
@@ -170,7 +170,7 @@ fun MoshiTextField(
                     painter = painterResource(action.icon),
                     contentDescription = action.contentDescription,
                     modifier = Modifier.size(spacing.space6),
-                    tint = if (enabled) colors.foreground.primary else colors.foreground.disabled,
+                    tint = if (enabled) colors.gray1000 else colors.gray700,
                 )
             }
         }
@@ -183,7 +183,7 @@ fun MoshiTextField(
                 .fillMaxWidth()
                 .heightIn(min = spacing.space16)
                 .background(
-                    color = if (enabled) colors.background.surface else colors.background.disabled,
+                    color = if (enabled) colors.background100 else colors.gray100,
                     shape = fieldShape,
                 )
                 .border(borderWidth, borderColor, fieldShape)
@@ -191,7 +191,7 @@ fun MoshiTextField(
             label = {
                 MoshiText(
                     text = label,
-                    role = MoshiTextRole.Body,
+                    role = MoshiTextRole.Copy16,
                     color = labelColor,
                     modifier = Modifier.graphicsLayer {
                         val scale = 1f + (labelScale - 1f) * labelProgress
@@ -224,9 +224,9 @@ fun MoshiTextField(
                             }
                         },
                     enabled = enabled,
-                    textStyle = Moshi.typography.body.copy(color = contentColor),
+                    textStyle = Moshi.typography.copy16.copy(color = contentColor),
                     singleLine = true,
-                    cursorBrush = SolidColor(colors.foreground.primary),
+                    cursorBrush = SolidColor(colors.gray1000),
                     keyboardOptions = keyboardOptions,
                     keyboardActions = keyboardActions,
                     visualTransformation = visualTransformation,
@@ -239,7 +239,7 @@ fun MoshiTextField(
                             if (prefixText != null) {
                                 MoshiText(
                                     text = prefixText,
-                                    role = MoshiTextRole.Body,
+                                    role = MoshiTextRole.Copy16,
                                     color = contentColor,
                                     maxLines = 1,
                                 )
@@ -249,11 +249,11 @@ fun MoshiTextField(
                                 if (focused && value.isEmpty() && placeholder != null) {
                                     MoshiText(
                                         text = placeholder,
-                                        role = MoshiTextRole.Body,
+                                        role = MoshiTextRole.Copy16,
                                         color = if (enabled) {
-                                            colors.foreground.tertiary
+                                            colors.gray900
                                         } else {
-                                            colors.foreground.disabled
+                                            colors.gray700
                                         },
                                         maxLines = 1,
                                     )
@@ -274,7 +274,7 @@ fun MoshiTextField(
                 MoshiText(
                     text = supportingText,
                     modifier = Modifier.weight(1f),
-                    role = MoshiTextRole.Caption,
+                    role = MoshiTextRole.Label12,
                     color = supportingColor,
                 )
             }
@@ -353,7 +353,7 @@ private fun MoshiTextFieldPreview() {
     MoshiTheme {
         Column(
             modifier = Modifier
-                .background(Moshi.colors.background.canvas)
+                .background(Moshi.colors.background100)
                 .padding(Moshi.spacing.space4),
             verticalArrangement = Arrangement.spacedBy(Moshi.spacing.space4),
         ) {

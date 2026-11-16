@@ -112,7 +112,7 @@ private fun SignInWithEmailContent(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Moshi.colors.background.canvas),
+            .background(Moshi.colors.background100),
     ) {
         MoshiToolbar(navigation = MoshiToolbarNavigation.Back(onClick = onClose))
 
@@ -128,13 +128,13 @@ private fun SignInWithEmailContent(
             Spacer(Modifier.height(spacing.space6))
             MoshiText(
                 text = stringResource(R.string.sign_in_with_email_title),
-                role = MoshiTextRole.Heading,
+                role = MoshiTextRole.Heading24,
             )
             Spacer(Modifier.height(spacing.space2))
             MoshiText(
                 text = stringResource(R.string.sign_in_with_email_subtitle),
-                role = MoshiTextRole.Body,
-                color = Moshi.colors.foreground.secondary,
+                role = MoshiTextRole.Copy16,
+                color = Moshi.colors.gray900,
             )
             Spacer(Modifier.height(spacing.space6))
             MoshiTextField(

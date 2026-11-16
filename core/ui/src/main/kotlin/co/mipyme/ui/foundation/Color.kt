@@ -1,266 +1,324 @@
 package co.mipyme.ui.foundation
 
-import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
-import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.ui.graphics.Color
-import co.mipyme.ui.Moshi
-import co.mipyme.ui.MoshiTheme
+import androidx.compose.ui.graphics.colorspace.ColorSpaces
+import kotlin.math.cos
+import kotlin.math.sin
+import kotlin.math.pow
 
+/** Geist snapshot and authored fallbacks: docs/geist-tokens.json. */
 @Immutable
 data class MoshiColors(
-    val background: Background,
-    val foreground: Foreground,
-    val border: Border,
-) {
-    companion object {
-        val background: Background
-            @Composable
-            @ReadOnlyComposable
-            get() = Moshi.colors.background
+    val gray100: Color,
+    val gray200: Color,
+    val gray300: Color,
+    val gray400: Color,
+    val gray500: Color,
+    val gray600: Color,
+    val gray700: Color,
+    val gray800: Color,
+    val gray900: Color,
+    val gray1000: Color,
+    val grayAlpha100: Color,
+    val grayAlpha200: Color,
+    val grayAlpha300: Color,
+    val grayAlpha400: Color,
+    val grayAlpha500: Color,
+    val grayAlpha600: Color,
+    val grayAlpha700: Color,
+    val grayAlpha800: Color,
+    val grayAlpha900: Color,
+    val grayAlpha1000: Color,
+    val background100: Color,
+    val background200: Color,
+    val blue100: Color,
+    val blue200: Color,
+    val blue300: Color,
+    val blue400: Color,
+    val blue500: Color,
+    val blue600: Color,
+    val blue700: Color,
+    val blue800: Color,
+    val blue900: Color,
+    val blue1000: Color,
+    val red100: Color,
+    val red200: Color,
+    val red300: Color,
+    val red400: Color,
+    val red500: Color,
+    val red600: Color,
+    val red700: Color,
+    val red800: Color,
+    val red900: Color,
+    val red1000: Color,
+    val amber100: Color,
+    val amber200: Color,
+    val amber300: Color,
+    val amber400: Color,
+    val amber500: Color,
+    val amber600: Color,
+    val amber700: Color,
+    val amber800: Color,
+    val amber900: Color,
+    val amber1000: Color,
+    val green100: Color,
+    val green200: Color,
+    val green300: Color,
+    val green400: Color,
+    val green500: Color,
+    val green600: Color,
+    val green700: Color,
+    val green800: Color,
+    val green900: Color,
+    val green1000: Color,
+    val teal100: Color,
+    val teal200: Color,
+    val teal300: Color,
+    val teal400: Color,
+    val teal500: Color,
+    val teal600: Color,
+    val teal700: Color,
+    val teal800: Color,
+    val teal900: Color,
+    val teal1000: Color,
+    val purple100: Color,
+    val purple200: Color,
+    val purple300: Color,
+    val purple400: Color,
+    val purple500: Color,
+    val purple600: Color,
+    val purple700: Color,
+    val purple800: Color,
+    val purple900: Color,
+    val purple1000: Color,
+    val pink100: Color,
+    val pink200: Color,
+    val pink300: Color,
+    val pink400: Color,
+    val pink500: Color,
+    val pink600: Color,
+    val pink700: Color,
+    val pink800: Color,
+    val pink900: Color,
+    val pink1000: Color,
+)
 
-        val foreground: Foreground
-            @Composable
-            @ReadOnlyComposable
-            get() = Moshi.colors.foreground
+internal fun lightMoshiColors(wideGamut: Boolean = false): MoshiColors {
+    return MoshiColors(
+        gray100 = Color.hsl(0f, 0f, 0.95f),
+        gray200 = Color.hsl(0f, 0f, 0.92f),
+        gray300 = Color.hsl(0f, 0f, 0.9f),
+        gray400 = Color.hsl(0f, 0f, 0.92f),
+        gray500 = Color.hsl(0f, 0f, 0.79f),
+        gray600 = Color.hsl(0f, 0f, 0.66f),
+        gray700 = Color.hsl(0f, 0f, 0.56f),
+        gray800 = Color.hsl(0f, 0f, 0.49f),
+        gray900 = Color.hsl(0f, 0f, 0.3f),
+        gray1000 = Color.hsl(0f, 0f, 0.09f),
+        grayAlpha100 = Color(0x0D000000),
+        grayAlpha200 = Color(0x14000000),
+        grayAlpha300 = Color(0x1A000000),
+        grayAlpha400 = Color(0x14000000),
+        grayAlpha500 = Color(0x36000000),
+        grayAlpha600 = Color(0x57000000),
+        grayAlpha700 = Color(0x70000000),
+        grayAlpha800 = Color(0x82000000),
+        grayAlpha900 = Color(0xB3000000),
+        grayAlpha1000 = Color(0xE8000000),
+        background100 = Color.hsl(0f, 0f, 1f),
+        background200 = Color.hsl(0f, 0f, 0.98f),
+        blue100 = if (wideGamut) geistP3(0.9732f, 0.0141f, 251.56f) else Color.hsl(212f, 1f, 0.97f),
+        blue200 = if (wideGamut) geistP3(0.9629f, 0.0195f, 250.59f) else Color.hsl(210f, 1f, 0.96f),
+        blue300 = if (wideGamut) geistP3(0.9458f, 0.0293f, 249.849f) else Color.hsl(210f, 1f, 0.94f),
+        blue400 = if (wideGamut) geistP3(0.9158f, 0.0473f, 245.116f) else Color.hsl(209f, 1f, 0.9f),
+        blue500 = if (wideGamut) geistP3(0.8275f, 0.0979f, 248.48f) else Color.hsl(209f, 1f, 0.8f),
+        blue600 = if (wideGamut) geistP3(0.7308f, 0.1583f, 248.133f) else Color.hsl(208f, 1f, 0.66f),
+        blue700 = if (wideGamut) geistP3(0.5761f, 0.2508f, 258.23f) else Color.hsl(212f, 1f, 0.48f),
+        blue800 = if (wideGamut) geistP3(0.5151f, 0.2399f, 257.85f) else Color.hsl(212f, 1f, 0.41f),
+        blue900 = if (wideGamut) geistP3(0.5318f, 0.2399f, 256.99f) else Color.hsl(211f, 1f, 0.42f),
+        blue1000 = if (wideGamut) geistP3(0.2667f, 0.1099f, 254.34f) else Color.hsl(211f, 1f, 0.15f),
+        red100 = if (wideGamut) geistP3(0.965f, 0.0223f, 13.09f) else Color.hsl(0f, 1f, 0.97f),
+        red200 = if (wideGamut) geistP3(0.9541f, 0.0299f, 14.2526f) else Color.hsl(0f, 1f, 0.96f),
+        red300 = if (wideGamut) geistP3(0.9433f, 0.0369f, 15.0115f) else Color.hsl(0f, 1f, 0.95f),
+        red400 = if (wideGamut) geistP3(0.9151f, 0.0471f, 19.8f) else Color.hsl(0f, 0.9f, 0.92f),
+        red500 = if (wideGamut) geistP3(0.8447f, 0.1018f, 17.71f) else Color.hsl(0f, 0.82f, 0.85f),
+        red600 = if (wideGamut) geistP3(0.7112f, 0.1881f, 21.22f) else Color.hsl(359f, 0.9f, 0.71f),
+        red700 = if (wideGamut) geistP3(0.6256f, 0.2524f, 23.03f) else Color.hsl(358f, 0.75f, 0.59f),
+        red800 = if (wideGamut) geistP3(0.5819f, 0.2482f, 25.15f) else Color.hsl(358f, 0.7f, 0.52f),
+        red900 = if (wideGamut) geistP3(0.5499f, 0.232f, 25.29f) else Color.hsl(358f, 0.66f, 0.48f),
+        red1000 = if (wideGamut) geistP3(0.248f, 0.1041f, 18.86f) else Color.hsl(355f, 0.49f, 0.15f),
+        amber100 = if (wideGamut) geistP3(0.9748f, 0.0331f, 85.79f) else Color.hsl(39f, 1f, 0.95f),
+        amber200 = if (wideGamut) geistP3(0.9681f, 0.0495f, 90.2423f) else Color.hsl(44f, 1f, 0.92f),
+        amber300 = if (wideGamut) geistP3(0.9593f, 0.0636f, 90.52f) else Color.hsl(43f, 0.96f, 0.9f),
+        amber400 = if (wideGamut) geistP3(0.9102f, 0.1322f, 88.25f) else Color.hsl(42f, 1f, 0.78f),
+        amber500 = if (wideGamut) geistP3(0.8655f, 0.1583f, 79.63f) else Color.hsl(38f, 1f, 0.71f),
+        amber600 = if (wideGamut) geistP3(0.8025f, 0.1953f, 73.59f) else Color.hsl(36f, 0.9f, 0.62f),
+        amber700 = if (wideGamut) geistP3(0.8187f, 0.1969f, 76.46f) else Color.hsl(39f, 1f, 0.57f),
+        amber800 = if (wideGamut) geistP3(0.7721f, 0.1991f, 64.28f) else Color.hsl(35f, 1f, 0.52f),
+        amber900 = if (wideGamut) geistP3(0.5279f, 0.1496f, 54.65f) else Color.hsl(30f, 1f, 0.32f),
+        amber1000 = if (wideGamut) geistP3(0.3083f, 0.099f, 45.48f) else Color.hsl(20f, 0.79f, 0.17f),
+        green100 = if (wideGamut) geistP3(0.9759f, 0.0289f, 145.42f) else Color.hsl(120f, 0.6f, 0.96f),
+        green200 = if (wideGamut) geistP3(0.9692f, 0.037f, 147.15f) else Color.hsl(120f, 0.6f, 0.95f),
+        green300 = if (wideGamut) geistP3(0.946f, 0.0674f, 144.23f) else Color.hsl(120f, 0.6f, 0.91f),
+        green400 = if (wideGamut) geistP3(0.9149f, 0.0976f, 146.24f) else Color.hsl(122f, 0.6f, 0.86f),
+        green500 = if (wideGamut) geistP3(0.8545f, 0.1627f, 146.3f) else Color.hsl(124f, 0.6f, 0.75f),
+        green600 = if (wideGamut) geistP3(0.8025f, 0.214f, 145.18f) else Color.hsl(125f, 0.6f, 0.64f),
+        green700 = if (wideGamut) geistP3(0.6458f, 0.1746f, 147.27f) else Color.hsl(131f, 0.41f, 0.46f),
+        green800 = if (wideGamut) geistP3(0.5781f, 0.1507f, 147.5f) else Color.hsl(132f, 0.43f, 0.39f),
+        green900 = if (wideGamut) geistP3(0.5175f, 0.1453f, 147.65f) else Color.hsl(133f, 0.5f, 0.32f),
+        green1000 = if (wideGamut) geistP3(0.2915f, 0.1197f, 147.38f) else Color.hsl(128f, 0.29f, 0.15f),
+        teal100 = if (wideGamut) geistP3(0.9772f, 0.0359f, 186.7f) else Color.hsl(169f, 0.7f, 0.96f),
+        teal200 = if (wideGamut) geistP3(0.9706f, 0.0347f, 180.66f) else Color.hsl(167f, 0.7f, 0.94f),
+        teal300 = if (wideGamut) geistP3(0.9492f, 0.0478f, 182.07f) else Color.hsl(168f, 0.7f, 0.9f),
+        teal400 = if (wideGamut) geistP3(0.9276f, 0.0718f, 183.78f) else Color.hsl(170f, 0.7f, 0.85f),
+        teal500 = if (wideGamut) geistP3(0.8688f, 0.1344f, 182.42f) else Color.hsl(170f, 0.7f, 0.72f),
+        teal600 = if (wideGamut) geistP3(0.815f, 0.161f, 178.96f) else Color.hsl(170f, 0.7f, 0.57f),
+        teal700 = if (wideGamut) geistP3(0.6492f, 0.1572f, 181.95f) else Color.hsl(173f, 0.8f, 0.36f),
+        teal800 = if (wideGamut) geistP3(0.5753f, 0.1392f, 181.66f) else Color.hsl(173f, 0.83f, 0.3f),
+        teal900 = if (wideGamut) geistP3(0.5208f, 0.1251f, 182.93f) else Color.hsl(174f, 0.91f, 0.25f),
+        teal1000 = if (wideGamut) geistP3(0.3211f, 0.0788f, 179.82f) else Color.hsl(171f, 0.8f, 0.13f),
+        purple100 = if (wideGamut) geistP3(0.9665f, 0.0244f, 312.189f) else Color.hsl(276f, 1f, 0.97f),
+        purple200 = if (wideGamut) geistP3(0.9673f, 0.0228f, 309.8f) else Color.hsl(277f, 0.87f, 0.97f),
+        purple300 = if (wideGamut) geistP3(0.9485f, 0.0364f, 310.15f) else Color.hsl(274f, 0.78f, 0.95f),
+        purple400 = if (wideGamut) geistP3(0.9177f, 0.0614f, 312.82f) else Color.hsl(276f, 0.71f, 0.92f),
+        purple500 = if (wideGamut) geistP3(0.8126f, 0.1409f, 310.8f) else Color.hsl(274f, 0.7f, 0.82f),
+        purple600 = if (wideGamut) geistP3(0.7207f, 0.2083f, 308.19f) else Color.hsl(273f, 0.72f, 0.73f),
+        purple700 = if (wideGamut) geistP3(0.555f, 0.3008f, 306.12f) else Color.hsl(272f, 0.51f, 0.54f),
+        purple800 = if (wideGamut) geistP3(0.4858f, 0.2638f, 305.73f) else Color.hsl(272f, 0.47f, 0.45f),
+        purple900 = if (wideGamut) geistP3(0.4718f, 0.2579f, 304f) else Color.hsl(274f, 0.71f, 0.43f),
+        purple1000 = if (wideGamut) geistP3(0.2396f, 0.13f, 305.66f) else Color.hsl(276f, 1f, 0.15f),
+        pink100 = if (wideGamut) geistP3(0.9569f, 0.0359f, 344.622f) else Color.hsl(330f, 1f, 0.96f),
+        pink200 = if (wideGamut) geistP3(0.9571f, 0.0321f, 353.14f) else Color.hsl(340f, 0.9f, 0.96f),
+        pink300 = if (wideGamut) geistP3(0.9383f, 0.0451f, 356.29f) else Color.hsl(340f, 0.82f, 0.94f),
+        pink400 = if (wideGamut) geistP3(0.9112f, 0.0573f, 358.82f) else Color.hsl(341f, 0.76f, 0.91f),
+        pink500 = if (wideGamut) geistP3(0.8428f, 0.0915f, 356.99f) else Color.hsl(340f, 0.75f, 0.84f),
+        pink600 = if (wideGamut) geistP3(0.7433f, 0.1547f, 0.24f) else Color.hsl(341f, 0.75f, 0.73f),
+        pink700 = if (wideGamut) geistP3(0.6352f, 0.238f, 1.01f) else Color.hsl(336f, 0.8f, 0.58f),
+        pink800 = if (wideGamut) geistP3(0.5951f, 0.2339f, 4.21f) else Color.hsl(336f, 0.74f, 0.51f),
+        pink900 = if (wideGamut) geistP3(0.535f, 0.2058f, 2.84f) else Color.hsl(336f, 0.65f, 0.45f),
+        pink1000 = if (wideGamut) geistP3(0.26f, 0.0977f, 359f) else Color.hsl(333f, 0.74f, 0.15f),
+    )
+}
 
-        val border: Border
-            @Composable
-            @ReadOnlyComposable
-            get() = Moshi.colors.border
+internal fun darkMoshiColors(wideGamut: Boolean = false): MoshiColors {
+    return MoshiColors(
+        gray100 = Color.hsl(0f, 0f, 0.1f),
+        gray200 = Color.hsl(0f, 0f, 0.12f),
+        gray300 = Color.hsl(0f, 0f, 0.16f),
+        gray400 = Color.hsl(0f, 0f, 0.18f),
+        gray500 = Color.hsl(0f, 0f, 0.27f),
+        gray600 = Color.hsl(0f, 0f, 0.53f),
+        gray700 = Color.hsl(0f, 0f, 0.56f),
+        gray800 = Color.hsl(0f, 0f, 0.49f),
+        gray900 = Color.hsl(0f, 0f, 0.63f),
+        gray1000 = Color.hsl(0f, 0f, 0.93f),
+        grayAlpha100 = Color(0x0FFFFFFF),
+        grayAlpha200 = Color(0x17FFFFFF),
+        grayAlpha300 = Color(0x21FFFFFF),
+        grayAlpha400 = Color(0x24FFFFFF),
+        grayAlpha500 = Color(0x3DFFFFFF),
+        grayAlpha600 = Color(0x82FFFFFF),
+        grayAlpha700 = Color(0x8AFFFFFF),
+        grayAlpha800 = Color(0x78FFFFFF),
+        grayAlpha900 = Color(0x9CFFFFFF),
+        grayAlpha1000 = Color(0xEBFFFFFF),
+        background100 = Color.hsl(0f, 0f, 0.04f),
+        background200 = Color.hsl(0f, 0f, 0f),
+        blue100 = if (wideGamut) geistP3(0.2217f, 0.069f, 259.89f) else Color.hsl(216f, 0.5f, 0.12f),
+        blue200 = if (wideGamut) geistP3(0.2545f, 0.0811f, 255.8f) else Color.hsl(214f, 0.59f, 0.15f),
+        blue300 = if (wideGamut) geistP3(0.3086f, 0.1022f, 255.21f) else Color.hsl(213f, 0.71f, 0.2f),
+        blue400 = if (wideGamut) geistP3(0.341f, 0.121f, 254.74f) else Color.hsl(212f, 0.78f, 0.23f),
+        blue500 = if (wideGamut) geistP3(0.385f, 0.1403f, 254.4f) else Color.hsl(211f, 0.86f, 0.27f),
+        blue600 = if (wideGamut) geistP3(0.6494f, 0.1982f, 251.813f) else Color.hsl(206f, 1f, 0.5f),
+        blue700 = if (wideGamut) geistP3(0.5761f, 0.2321f, 258.23f) else Color.hsl(212f, 1f, 0.48f),
+        blue800 = if (wideGamut) geistP3(0.5151f, 0.2307f, 257.85f) else Color.hsl(212f, 1f, 0.41f),
+        blue900 = if (wideGamut) geistP3(0.717f, 0.1648f, 250.794f) else Color.hsl(210f, 1f, 0.66f),
+        blue1000 = if (wideGamut) geistP3(0.9675f, 0.0179f, 242.423f) else Color.hsl(206f, 1f, 0.96f),
+        red100 = if (wideGamut) geistP3(0.221f, 0.0657f, 15.11f) else Color.hsl(357f, 0.37f, 0.12f),
+        red200 = if (wideGamut) geistP3(0.2593f, 0.0834f, 19.02f) else Color.hsl(357f, 0.46f, 0.16f),
+        red300 = if (wideGamut) geistP3(0.3147f, 0.1105f, 20.96f) else Color.hsl(356f, 0.54f, 0.22f),
+        red400 = if (wideGamut) geistP3(0.3527f, 0.1273f, 21.23f) else Color.hsl(357f, 0.55f, 0.26f),
+        red500 = if (wideGamut) geistP3(0.4068f, 0.1479f, 23.16f) else Color.hsl(357f, 0.6f, 0.32f),
+        red600 = if (wideGamut) geistP3(0.6256f, 0.2277f, 23.03f) else Color.hsl(358f, 0.75f, 0.59f),
+        red700 = if (wideGamut) geistP3(0.6256f, 0.2234f, 23.03f) else Color.hsl(358f, 0.75f, 0.59f),
+        red800 = if (wideGamut) geistP3(0.5801f, 0.227f, 25.12f) else Color.hsl(358f, 0.69f, 0.52f),
+        red900 = if (wideGamut) geistP3(0.6996f, 0.2136f, 22.03f) else Color.hsl(358f, 1f, 0.69f),
+        red1000 = if (wideGamut) geistP3(0.956f, 0.0293f, 6.61f) else Color.hsl(353f, 0.9f, 0.96f),
+        amber100 = if (wideGamut) geistP3(0.2246f, 0.0538f, 76.04f) else Color.hsl(35f, 1f, 0.08f),
+        amber200 = if (wideGamut) geistP3(0.2495f, 0.0642f, 64.78f) else Color.hsl(32f, 1f, 0.1f),
+        amber300 = if (wideGamut) geistP3(0.3234f, 0.0837f, 63.83f) else Color.hsl(33f, 1f, 0.15f),
+        amber400 = if (wideGamut) geistP3(0.3553f, 0.0903f, 66.2971f) else Color.hsl(35f, 1f, 0.17f),
+        amber500 = if (wideGamut) geistP3(0.4155f, 0.1044f, 67.98f) else Color.hsl(35f, 0.91f, 0.22f),
+        amber600 = if (wideGamut) geistP3(0.7504f, 0.1737f, 74.49f) else Color.hsl(39f, 0.85f, 0.49f),
+        amber700 = if (wideGamut) geistP3(0.8187f, 0.1969f, 76.46f) else Color.hsl(39f, 1f, 0.57f),
+        amber800 = if (wideGamut) geistP3(0.7721f, 0.1991f, 64.28f) else Color.hsl(35f, 1f, 0.52f),
+        amber900 = if (wideGamut) geistP3(0.7721f, 0.1991f, 64.28f) else Color.hsl(39f, 0.9f, 0.5f),
+        amber1000 = if (wideGamut) geistP3(0.967f, 0.0418f, 84.59f) else Color.hsl(40f, 0.94f, 0.93f),
+        green100 = if (wideGamut) geistP3(0.2309f, 0.0716f, 149.68f) else Color.hsl(136f, 0.5f, 0.09f),
+        green200 = if (wideGamut) geistP3(0.2712f, 0.0895f, 150.09f) else Color.hsl(137f, 0.5f, 0.12f),
+        green300 = if (wideGamut) geistP3(0.2984f, 0.096f, 149.25f) else Color.hsl(136f, 0.5f, 0.14f),
+        green400 = if (wideGamut) geistP3(0.3439f, 0.1039f, 147.78f) else Color.hsl(135f, 0.7f, 0.16f),
+        green500 = if (wideGamut) geistP3(0.4419f, 0.1484f, 147.2f) else Color.hsl(135f, 0.7f, 0.23f),
+        green600 = if (wideGamut) geistP3(0.5811f, 0.1815f, 146.55f) else Color.hsl(135f, 0.7f, 0.34f),
+        green700 = if (wideGamut) geistP3(0.6458f, 0.199f, 147.27f) else Color.hsl(131f, 0.41f, 0.46f),
+        green800 = if (wideGamut) geistP3(0.5781f, 0.1776f, 147.5f) else Color.hsl(132f, 0.43f, 0.39f),
+        green900 = if (wideGamut) geistP3(0.731f, 0.2158f, 148.29f) else Color.hsl(131f, 0.43f, 0.57f),
+        green1000 = if (wideGamut) geistP3(0.9676f, 0.056f, 154.18f) else Color.hsl(136f, 0.73f, 0.94f),
+        teal100 = if (wideGamut) geistP3(0.221f, 0.0544f, 178.74f) else Color.hsl(169f, 0.78f, 0.07f),
+        teal200 = if (wideGamut) geistP3(0.2506f, 0.062f, 178.76f) else Color.hsl(170f, 0.74f, 0.09f),
+        teal300 = if (wideGamut) geistP3(0.315f, 0.0767f, 180.99f) else Color.hsl(171f, 0.75f, 0.13f),
+        teal400 = if (wideGamut) geistP3(0.3243f, 0.0763f, 180.13f) else Color.hsl(171f, 0.85f, 0.13f),
+        teal500 = if (wideGamut) geistP3(0.4335f, 0.1055f, 180.97f) else Color.hsl(172f, 0.85f, 0.2f),
+        teal600 = if (wideGamut) geistP3(0.6071f, 0.1485f, 180.24f) else Color.hsl(172f, 0.85f, 0.32f),
+        teal700 = if (wideGamut) geistP3(0.6492f, 0.1403f, 181.95f) else Color.hsl(173f, 0.8f, 0.36f),
+        teal800 = if (wideGamut) geistP3(0.5753f, 0.1392f, 181.66f) else Color.hsl(173f, 0.83f, 0.3f),
+        teal900 = if (wideGamut) geistP3(0.7456f, 0.1765f, 182.8f) else Color.hsl(174f, 0.9f, 0.41f),
+        teal1000 = if (wideGamut) geistP3(0.9646f, 0.056f, 180.29f) else Color.hsl(166f, 0.71f, 0.93f),
+        purple100 = if (wideGamut) geistP3(0.2234f, 0.0779f, 316.87f) else Color.hsl(283f, 0.3f, 0.12f),
+        purple200 = if (wideGamut) geistP3(0.2591f, 0.0921f, 314.41f) else Color.hsl(281f, 0.38f, 0.16f),
+        purple300 = if (wideGamut) geistP3(0.3198f, 0.1219f, 312.41f) else Color.hsl(279f, 0.44f, 0.23f),
+        purple400 = if (wideGamut) geistP3(0.3593f, 0.1504f, 309.78f) else Color.hsl(277f, 0.46f, 0.28f),
+        purple500 = if (wideGamut) geistP3(0.4099f, 0.1721f, 307.92f) else Color.hsl(274f, 0.49f, 0.35f),
+        purple600 = if (wideGamut) geistP3(0.555f, 0.2191f, 306.12f) else Color.hsl(272f, 0.51f, 0.54f),
+        purple700 = if (wideGamut) geistP3(0.555f, 0.2186f, 306.12f) else Color.hsl(272f, 0.51f, 0.54f),
+        purple800 = if (wideGamut) geistP3(0.4858f, 0.2102f, 305.73f) else Color.hsl(272f, 0.47f, 0.45f),
+        purple900 = if (wideGamut) geistP3(0.6987f, 0.2037f, 309.51f) else Color.hsl(275f, 0.8f, 0.71f),
+        purple1000 = if (wideGamut) geistP3(0.961f, 0.0304f, 316.46f) else Color.hsl(281f, 0.73f, 0.96f),
+        pink100 = if (wideGamut) geistP3(0.2267f, 0.0628f, 354.73f) else Color.hsl(335f, 0.32f, 0.12f),
+        pink200 = if (wideGamut) geistP3(0.262f, 0.0859f, 356.68f) else Color.hsl(335f, 0.43f, 0.16f),
+        pink300 = if (wideGamut) geistP3(0.3115f, 0.1067f, 355.93f) else Color.hsl(335f, 0.47f, 0.21f),
+        pink400 = if (wideGamut) geistP3(0.3213f, 0.1174f, 356.71f) else Color.hsl(335f, 0.51f, 0.22f),
+        pink500 = if (wideGamut) geistP3(0.3701f, 0.1453f, 358.39f) else Color.hsl(335f, 0.57f, 0.27f),
+        pink600 = if (wideGamut) geistP3(0.5033f, 0.2089f, 4.33f) else Color.hsl(336f, 0.75f, 0.4f),
+        pink700 = if (wideGamut) geistP3(0.6352f, 0.2346f, 1.01f) else Color.hsl(336f, 0.8f, 0.58f),
+        pink800 = if (wideGamut) geistP3(0.5951f, 0.2429f, 4.21f) else Color.hsl(336f, 0.74f, 0.51f),
+        pink900 = if (wideGamut) geistP3(0.6936f, 0.2223f, 3.91f) else Color.hsl(341f, 0.9f, 0.67f),
+        pink1000 = if (wideGamut) geistP3(0.9574f, 0.0326f, 350.08f) else Color.hsl(333f, 0.9f, 0.96f),
+    )
+}
 
-        val TextPrimary: Color
-            @Composable
-            @ReadOnlyComposable
-            get() = foreground.primary
-
-        val TextSecondary: Color
-            @Composable
-            @ReadOnlyComposable
-            get() = foreground.secondary
-
-        val TextTertiary: Color
-            @Composable
-            @ReadOnlyComposable
-            get() = foreground.tertiary
+/** OKLCH to linear sRGB, then linear Display P3, using D65 matrices from CSS Color 4.
+ * Keep intermediate channels in Double: packing Oklab into Color first loses precision near black.
+ */
+internal fun geistP3(lightness: Float, chroma: Float, hue: Float): Color {
+    val radians = Math.toRadians(hue.toDouble())
+    val a = chroma * cos(radians)
+    val b = chroma * sin(radians)
+    val l = (lightness + 0.3963377774 * a + 0.2158037573 * b).pow(3)
+    val m = (lightness - 0.1055613458 * a - 0.0638541728 * b).pow(3)
+    val s = (lightness - 0.0894841775 * a - 1.2914855480 * b).pow(3)
+    val red = 4.0767416621 * l - 3.3077115913 * m + 0.2309699292 * s
+    val green = -1.2684380046 * l + 2.6097574011 * m - 0.3413193965 * s
+    val blue = -0.0041960863 * l - 0.7034186147 * m + 1.7076147010 * s
+    fun encode(channel: Double): Float {
+        val encoded = if (channel <= 0.0031308) 12.92 * channel else 1.055 * channel.pow(1.0 / 2.4) - 0.055
+        return encoded.coerceIn(0.0, 1.0).toFloat()
     }
-
-    @Immutable
-    data class Background(
-        val canvas: Color,
-        val surface: Color,
-        val elevated: Color,
-        val selected: Color,
-        val disabled: Color,
-        val inverse: Color,
-        val overlay: Color,
-        val brand: Color,
-        val action: BackgroundAction,
-        val status: Status,
-    )
-
-    @Immutable
-    data class BackgroundAction(
-        val primary: PrimaryAction,
-        val secondary: SecondaryAction,
-        val destructive: DestructiveAction,
-    )
-
-    @Immutable
-    data class PrimaryAction(
-        val default: Color,
-        val hover: Color,
-    )
-
-    @Immutable
-    data class SecondaryAction(
-        val default: Color,
-        val hover: Color,
-    )
-
-    @Immutable
-    data class DestructiveAction(
-        val default: Color,
-        val hover: Color,
-    )
-
-    @Immutable
-    data class Status(
-        val success: Color,
-        val warning: Color,
-        val error: Color,
-        val info: Color,
-    )
-
-    @Immutable
-    data class Foreground(
-        val primary: Color,
-        val secondary: Color,
-        val tertiary: Color,
-        val disabled: Color,
-        val inverse: Color,
-        val link: Color,
-        val onAction: OnAction,
-        val action: ForegroundAction,
-        val status: Status,
-    )
-
-    @Immutable
-    data class OnAction(
-        val primary: Color,
-        val destructive: Color,
-    )
-
-    @Immutable
-    data class ForegroundAction(
-        val secondary: Color,
-        val destructive: Color,
-    )
-
-    @Immutable
-    data class Border(
-        val default: Color,
-        val strong: Color,
-        val interactive: Color,
-        val focus: Color,
-        val status: Status,
-    )
-}
-
-internal fun lightMoshiColors(): MoshiColors {
-    return MoshiColors(
-        background = MoshiColors.Background(
-            canvas = Color(0xFFF0F0F2),
-            surface = Color(0xFFFFFFFF),
-            elevated = Color(0xFFFFFFFF),
-            selected = Color(0xFFF7F7F7),
-            disabled = Color(0xFFE5E5E5),
-            inverse = Color(0xFF252525),
-            overlay = Color(0x66000000),
-            brand = Color(0xFFFF4C00),
-            action = MoshiColors.BackgroundAction(
-                primary = MoshiColors.PrimaryAction(
-                    default = Color(0xFF2B4FB9),
-                    hover = Color(0xFF002182),
-                ),
-                secondary = MoshiColors.SecondaryAction(
-                    default = Color(0xFFE2E3E8),
-                    hover = Color(0xFFE7EAF6),
-                ),
-                destructive = MoshiColors.DestructiveAction(
-                    default = Color(0xFFCA244D),
-                    hover = Color(0xFF64172B),
-                ),
-            ),
-            status = MoshiColors.Status(
-                success = Color(0xFFE9F6E9),
-                warning = Color(0xFFFFF7C2),
-                error = Color(0xFFFEEAED),
-                info = Color(0xFFE6F4FE),
-            ),
-        ),
-        foreground = MoshiColors.Foreground(
-            primary = Color(0xFF252525),
-            secondary = Color(0xFF666666),
-            tertiary = Color(0xFF6B6B6B),
-            disabled = Color(0xFF7A7A7A),
-            inverse = Color(0xFFFFFFFF),
-            link = Color(0xFF2B4FB9),
-            onAction = MoshiColors.OnAction(
-                primary = Color(0xFFFFFFFF),
-                destructive = Color(0xFFFFFFFF),
-            ),
-            action = MoshiColors.ForegroundAction(
-                secondary = Color(0xFF2B4FB9),
-                destructive = Color(0xFFCA244D),
-            ),
-            status = MoshiColors.Status(
-                success = Color(0xFF2A7E3B),
-                warning = Color(0xFF4F3422),
-                error = Color(0xFFCA244D),
-                info = Color(0xFF113264),
-            ),
-        ),
-        border = MoshiColors.Border(
-            default = Color(0x1F000000),
-            strong = Color(0x33000000),
-            interactive = Color(0xFF5069C3),
-            focus = Color(0xFF558EDD),
-            status = MoshiColors.Status(
-                success = Color(0xFFB2DDB5),
-                warning = Color(0xFFF3D673),
-                error = Color(0xFFF8BFC8),
-                info = Color(0xFFACD8FC),
-            ),
-        ),
-    )
-}
-
-internal fun darkMoshiColors(): MoshiColors {
-    return MoshiColors(
-        background = MoshiColors.Background(
-            canvas = Color(0xFF131419),
-            surface = Color(0xFF262A34),
-            elevated = Color(0xFF32353F),
-            selected = Color(0xFF32353F),
-            disabled = Color(0xFF1E222C),
-            inverse = Color(0xFFFFFFFF),
-            overlay = Color(0x99000000),
-            brand = Color(0xFFFF4C00),
-            action = MoshiColors.BackgroundAction(
-                primary = MoshiColors.PrimaryAction(
-                    default = Color(0xFF2B4FB9),
-                    hover = Color(0xFF5069C3),
-                ),
-                secondary = MoshiColors.SecondaryAction(
-                    default = Color(0xFF32353F),
-                    hover = Color(0xFF213554),
-                ),
-                destructive = MoshiColors.DestructiveAction(
-                    default = Color(0xFFB3445A),
-                    hover = Color(0xFF883447),
-                ),
-            ),
-            status = MoshiColors.Status(
-                success = Color(0xFF182A1D),
-                warning = Color(0xFF302008),
-                error = Color(0xFF3B121E),
-                info = Color(0xFF0D2847),
-            ),
-        ),
-        foreground = MoshiColors.Foreground(
-            primary = Color(0xFFE5E5E5),
-            secondary = Color(0xCCFFFFFF),
-            tertiary = Color(0x99FFFFFF),
-            disabled = Color(0x80FFFFFF),
-            inverse = Color(0xFF252525),
-            link = Color(0xFF9DA9CA),
-            onAction = MoshiColors.OnAction(
-                primary = Color(0xFFFFFFFF),
-                destructive = Color(0xFFFFFFFF),
-            ),
-            action = MoshiColors.ForegroundAction(
-                secondary = Color(0xFF9DA9CA),
-                destructive = Color(0xFFFF949D),
-            ),
-            status = MoshiColors.Status(
-                success = Color(0xFF71D083),
-                warning = Color(0xFFFFCA16),
-                error = Color(0xFFFF949D),
-                info = Color(0xFF70B8FF),
-            ),
-        ),
-        border = MoshiColors.Border(
-            default = Color(0x1FFFFFFF),
-            strong = Color(0x33FFFFFF),
-            interactive = Color(0xFF9DA9CA),
-            focus = Color(0xFF558EDD),
-            status = MoshiColors.Status(
-                success = Color(0xFF2D5637),
-                warning = Color(0xFF5C3D05),
-                error = Color(0xFF6F2539),
-                info = Color(0xFF104D87),
-            ),
-        ),
+    return Color(
+        red = encode(0.8224619687 * red + 0.1775380313 * green),
+        green = encode(0.0331941989 * red + 0.9668058011 * green),
+        blue = encode(0.0170826307 * red + 0.0723974407 * green + 0.9105199286 * blue),
+        colorSpace = ColorSpaces.DisplayP3,
     )
 }

@@ -19,7 +19,7 @@ fun MoshiDivider(modifier: Modifier = Modifier) {
         modifier = modifier
             .fillMaxWidth()
             .height(1.dp)
-            .background(Moshi.colors.border.default),
+            .background(Moshi.colors.gray400),
     )
 }
 
@@ -29,7 +29,7 @@ private fun MoshiDividerPreview() {
     MoshiTheme {
         Column(
             modifier = Modifier
-                .background(Moshi.colors.background.canvas)
+                .background(Moshi.colors.background100)
                 .padding(Moshi.spacing.space4),
         ) {
             MoshiText(text = "Above")

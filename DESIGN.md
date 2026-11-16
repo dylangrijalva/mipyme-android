@@ -4,28 +4,29 @@ components:
   button:
     variants:
       Primary:
-        container: background.action.primary.default
-        content: foreground.onAction.primary
-        hoveredContainer: background.action.primary.hover
+        container: gray1000
+        content: background100
+        hoveredContainer: component-local primary hover (22% light / 80% dark)
       Secondary:
-        container: background.action.secondary.default
-        content: foreground.primary
-        hoveredContainer: background.action.secondary.hover
+        container: background100
+        content: gray1000
+        hoveredContainer: grayAlpha200
+        border: gray400
       Outline:
         container: transparent
-        content: foreground.action.secondary
-        hoveredContainer: background.action.secondary.hover
-        border: border.interactive
-        disabledBorder: border.default
+        content: gray1000
+        hoveredContainer: gray200
+        border: gray400
+        disabledBorder: gray400
       Text:
         container: transparent
-        content: foreground.action.secondary
-        hoveredContainer: background.action.secondary.hover
+        content: gray1000
+        hoveredContainer: gray200
     size: Default
-    disabledContainer: background.disabled
-    disabledContent: foreground.disabled
+    disabledContainer: gray100
+    disabledContent: gray700
     radius: radius.lg
-    label: typography.small
+    label: typography.button14
     minWidth: spacing.space-12
     minHeight: spacing.space-12
     horizontalPadding: spacing.space-4
@@ -37,8 +38,10 @@ components:
 
 # Moshi UI for Android
 
-Use the semantic colors, native typography, spacing, and shape tokens from the
-[Moshi design spec](https://github.com/dylangrijalva/moshi-ui/blob/main/DESIGN.md).
+Use the Geist color and typography scales through `Moshi.colors` and `Moshi.typography`.
+The retained [Geist snapshot](docs/geist-token-research.md) and
+[component mappings](docs/geist-component-mapping.md) document the source and Android adaptations.
+Moshi spacing, shapes, component geometry, and interactions keep their existing values.
 The Android token implementations and component code define the behavior shipped in this app.
 
 ## Components
@@ -48,10 +51,10 @@ The Android token implementations and component code define the behavior shipped
 Use for a focused message or decision that interrupts the current screen. It has a left-aligned
 title, optional supporting text, an optional 80 dp icon slot, and up to three actions. The elevated
 surface has a 12 dp corner radius and a maximum width of 720 dp. It uses the active Moshi theme,
-so the charcoal surface appears in dark theme and the light theme keeps its light elevated surface.
+with `background100` in light mode and `gray100` in dark mode to separate the dialog from the backdrop.
 Side insets are 12 dp, the bottom inset is 24 dp, and top padding is 24 dp without an icon and
 16 dp with one. Text
-uses Subheading and Body roles, with primary and secondary foreground colors. Two actions sit side
+uses Heading20 and Copy16 roles, with primary and secondary foreground colors. Two actions sit side
 by side when the content is at least 260 dp wide. Three actions use a horizontal row at 480 dp or
 wider, with the optional tertiary text action at the start and secondary and primary actions at the
 end. At narrower widths, actions stack full-width in primary, secondary, tertiary order. Content
@@ -83,10 +86,9 @@ has its own callback. It inherits the same theme, responsive layout, and accessi
 
 ### MoshiButton
 
-Use `Primary` for a prominent labeled action with the Moshi primary action fill.
-Use `Secondary` for a filled, lower-emphasis action that sits beside a `Primary` action, such as
-skipping a step; it uses the secondary action fill with the primary foreground, the secondary hover
-fill, and no border. Use `Outline` for a secondary action that needs a visible boundary and `Text`
+Use `Primary` for a prominent labeled action with a neutral gray1000 fill and background100 text.
+Use `Secondary` for a lower-emphasis action beside `Primary`, such as skipping a step. It uses
+background100, gray1000 text, a gray400 border, and grayAlpha200 on hover. Use `Outline` for a secondary action that needs a visible boundary and `Text`
 for a quieter action. Both use a transparent resting background and secondary
 action colors, with a 1 dp border on `Outline`. Use `Destructive` for the
 prominent, confirming action of an irreversible operation, such as deleting data;
@@ -103,7 +105,7 @@ and touch target of 48 × 48 dp. The button grows with the label as needed. Use
 sentence case for labels and let text wrap on narrow layouts or at larger font sizes.
 
 The required content slot provides the accessible label. `MoshiText` inherits
-the button's foreground and Small role unless the caller supplies an override.
+the button's foreground and Button14 role unless the caller supplies an override.
 Optional leading and trailing content follows the layout direction. Treat icons
 as decorative when the label already names the action.
 
@@ -118,9 +120,10 @@ Use native button interaction and ripple feedback.
 ### MoshiCheckbox
 
 Use for a single opt-in choice, such as accepting terms. The control is a 20 dp
-circle inside a 48 × 48 dp touch target. Checked uses `background.action.primary.default`
-with `foreground.onAction.primary` for the check; unchecked uses a `border.interactive`
-outline; disabled uses `background.disabled` and `border.default`.
+circle inside a 48 × 48 dp touch target. Checked uses `gray1000`
+with `background100` for the check; unchecked uses a `gray700`
+outline. Disabled checked controls use `gray600`; disabled unchecked controls use
+`gray100` fill and a `gray500` outline.
 
 `MoshiCheckbox` renders only the box and exposes `Role.Checkbox`. Place the label beside it
 in a `Row` so the label can contain its own links.
@@ -128,38 +131,38 @@ in a `Row` so the label can contain its own links.
 ### MoshiPageIndicator
 
 Use below a paged surface to show position. The current page is a 24 × 8 dp pill in
-`foreground.primary`; other pages are 8 dp dots in `border.strong`. The indicator is a single
+`gray1000`; other pages are 8 dp dots in `gray500`. The indicator is a single
 accessibility node announcing "Page x of y". It is not interactive.
 
 ### MoshiStepProgressIndicator
 
 Use in a multi-step workflow to show the current and completed steps. Each step is an equal-width,
 rounded segment with `spacing.space1` height and gaps. Current and completed steps use
-`foreground.primary`; upcoming steps use `border.default`. The indicator is a single accessibility
+`gray1000`; upcoming steps use `gray400`. The indicator is a single accessibility
 node announcing "Step x of y". `currentStep` is zero-based, and nonpositive `stepCount` renders no
 indicator.
 
 ### MoshiText with `AnnotatedString`
 
 An `AnnotatedString` overload of `MoshiText` supports inline styled spans and links.
-Style links with `foreground.link` and an underline.
+Style links with `blue900` and an underline.
 
 ### MoshiTextField
 
 Use for a single piece of free-form text, such as a name. The field has a required label inside a
-64 dp minimum-height container with a 6 dp corner radius and `typography.body` text. The label rests
+64 dp minimum-height container with a 6 dp corner radius and `typography.copy16` text. The label rests
 vertically centered when the field is empty and unfocused, then floats to the top and shrinks to
-`typography.caption` when focused or filled. An optional prefix also keeps the label floated.
+`typography.label12` when focused or filled. An optional prefix also keeps the label floated.
 
-The container uses `background.surface`, with a 1 dp `border.default` at rest, a 2 dp
-`border.focus` while focused, and `border.status.error` when invalid. Disabled styling takes
+The container uses `background100`, with a 1 dp `gray400` at rest, a 2 dp
+`blue900` while focused, and `red900` when invalid. Disabled styling takes
 precedence over error, and error takes precedence over focus. Disabled fields use
-`background.disabled`, `border.default`, and `foreground.disabled`.
+`gray100`, `gray400`, and `gray700`.
 
 An optional non-editable `prefixText` identifies the value's unit. The placeholder uses
-`foreground.tertiary` and appears only while the field is focused and empty. Supporting text wraps
-below the field with a 16 dp start inset aligned to the field content. It uses `typography.caption`
-with `foreground.secondary`, or `foreground.status.error` when invalid. The label is exposed as the
+`gray900` and appears only while the field is focused and empty. Supporting text wraps
+below the field with a 16 dp start inset aligned to the field content. It uses `typography.label12`
+with `gray900`, or `red900` when invalid. The label is exposed as the
 field's accessible name, and supporting text is also
 exposed as the error message when the enabled field is invalid. An optional trailing action uses a
 24 dp icon in a 48 dp touch target and requires an accessible name. Use sentence case for labels
@@ -171,15 +174,15 @@ can suggest saved values. The field is single line.
 
 Use for a fixed-length numeric one-time code, such as the email verification code. It draws one cell
 per digit (six by default) with a 6 dp corner radius and a 64 dp minimum height. Cells use
-`background.surface` with a 1 dp `border.interactive` border, and the cell that receives the next
-digit gets a 2 dp `border.focus` border while the field is focused. Invalid fields use
-`border.status.error`. Disabled fields use `background.disabled`, `border.default`, and
-`foreground.disabled`. Disabled styling takes precedence over error, and error takes precedence over
-focus. Digits use the Heading role in `foreground.primary`.
+`background100` with a 1 dp `gray500` border, and the cell that receives the next
+digit gets a 2 dp `blue900` border while the field is focused. Invalid fields use
+`red900`. Disabled fields use `gray100`, `gray400`, and
+`gray700`. Disabled styling takes precedence over error, and error takes precedence over
+focus. Digits use the Label20 role in `gray1000`.
 
 Input is filtered to digits and truncated to `length`, and the keyboard is numeric with the Done
 action. Pass `KeyboardActions` to react to Done. Supporting text wraps below the cells with
-`typography.caption` in `foreground.secondary`, or `foreground.status.error` when invalid.
+`typography.label12` in `gray900`, or `red900` when invalid.
 
 The whole field is a single accessibility node named by the required `label`; the cells are
 decorative. Supporting text is also exposed as the error message when the enabled field is invalid.
@@ -190,14 +193,14 @@ Tapping anywhere on the cells focuses the field and shows the keyboard.
 Use for a single choice presented as a card, such as the business type during onboarding.
 Based on [Mobile Card Selector V02](https://www.figma.com/design/XIRCkRjiI126cvhOjZXn4r/Business-Native?node-id=11131-274057),
 it has an 8 dp corner radius, a 64 dp minimum height, an optional 24 dp icon above the label, a
-body label, optional Small supporting text, and a trailing radio indicator. Pass `icon` as a
+Label16 label, optional Copy14 supporting text, and a trailing radio indicator. Pass `icon` as a
 Fluent drawable; it sits `space2` above the label, takes the label color (including the disabled
 color), and stays decorative because the label already names the option. Labels and supporting text wrap as needed. The onboarding
 business type grid gives every card the height of its tallest option. Every card has a
-`border.default` border. Unselected cards use `background.surface`; the selected card uses
-`background.action.secondary.hover`, a tint of the primary action blue, with a
-`background.action.primary.default` indicator. Disabled cards use
-`background.disabled`, `border.default`, and `foreground.disabled`.
+`gray400` border. Unselected cards use `background100`; the selected card uses
+`gray200`, a neutral selected fill, with a
+`gray1000` indicator. Disabled cards use
+`gray100`, `gray400`, and `gray700`.
 
 The whole card exposes `Role.RadioButton`; the indicator has no separate click action.
 Place related cards inside `Modifier.selectableGroup()` and keep selection in the caller's state.
@@ -209,11 +212,11 @@ and 12 dp vertical text insets. Typography and colors follow Moshi in both theme
 Use for one choice in a list where exactly one option applies, such as a business type. The
 option is a full-width row with the label first and a 20 dp selected indicator last, with a 64 dp
 minimum height and a 12 dp corner radius. This keeps cards aligned while allowing them to grow when
-labels wrap. Every option has a `border.default` border. Unselected options use
-`background.surface`; the selected option uses `background.action.secondary.hover`, a tint of the
-primary action blue, with a `background.action.primary.default` outline and dot in the indicator.
+labels wrap. Every option has a `gray400` border. Unselected options use
+`background100`; the selected option uses a neutral `gray200` fill and a `blue900`
+outline and dot in the indicator.
 Disabled options use
-`background.disabled`, `border.default`, and `foreground.disabled`.
+`gray100`, `gray400`, and `gray700`.
 
 Pass `leadingContent` to show a visual before the label, such as a country flag. It is placed
 `space3` before the label and should stay decorative, because the label already names the option.
@@ -225,9 +228,9 @@ group. Space the options with `Spacer` or `Arrangement.spacedBy`.
 ### MoshiToolbar
 
 Use at the top of a screen to show where the user is. Based on the Android App Bar, it has an
-optional `typography.subheading` title in `foreground.primary`, an optional `typography.body` subtitle in
-`foreground.secondary` (such as the current location), and an optional navigation action before the
-title. The bar uses `background.canvas`, has a 64 dp minimum height, and grows when text wraps at
+optional `typography.heading20` title in `gray1000`, an optional `typography.copy16` subtitle in
+`gray900` (such as the current location), and an optional navigation action before the
+title. The bar uses `background100`, has a 64 dp minimum height, and grows when text wraps at
 larger font sizes. It applies `WindowInsets.statusBars` by default so the background extends behind
 the status bar; pass `windowInsets` to change that, for example when a `Scaffold` already handles them.
 
@@ -245,15 +248,15 @@ dismiss icon for a full-screen flow. When you change the icon, also pass a local
 Pass `actions` (optional) to add `MoshiToolbarAction` items after the title. With one or two actions,
 each shows as a 24 dp icon in a 48 × 48 dp touch target, labeled with the action's `label`. With
 three or more, the toolbar shows a single "More actions" button that opens a menu on
-`background.elevated` listing every action with its icon and label; choosing one closes the menu
+`background100` in light mode and `gray100` in dark mode, listing every action with its icon and label; choosing one closes the menu
 and runs its callback. Set `compact = true` (default `false`) to use the "More actions" menu for any
 number of actions, even a single one.
 
 ### MoshiLinearProgressIndicator
 
 Use to show how far along a determinate task or workflow is, such as the onboarding steps. It is a
-single continuous, fully rounded bar with `spacing.space1` height. The track uses `border.default`
-and the fill uses `foreground.primary`. Pass `progress` from `0f` to `1f`; values outside that range
+single continuous, fully rounded bar with `spacing.space1` height. The track uses `gray400`
+and the fill uses `gray1000`. Pass `progress` from `0f` to `1f`; values outside that range
 are clamped, and the fill animates when the value changes. The bar is one accessibility node that
 exposes its progress through `ProgressBarRangeInfo`, so assistive technology announces it as a
 percentage. It is not interactive. Use `MoshiStepProgressIndicator` instead when each step should be
@@ -268,10 +271,10 @@ so assistive technology announces it as in progress without a percentage.
 
 Use for the app's top-level destinations, opened from the `MoshiToolbarNavigation.Menu` action or by
 swiping from the start edge. It wraps the Material 3 modal drawer, so the sheet slides over the
-content on the start edge, dims it with `background.overlay`, and closes on a scrim tap or Back,
+content on the start edge, dims it with `grayAlpha700`, and closes on a scrim tap or Back,
 including the predictive back gesture. Back closes the drawer before any handler registered before
 it opened.
-The sheet uses `background.canvas` with square corners, a fixed width of 310 dp, and respects the
+The sheet uses `background100` with square corners, a fixed width of 310 dp, and respects the
 system window insets.
 
 Pass `drawerState` to open and close the drawer, and set `gesturesEnabled` to false while a screen
@@ -285,9 +288,9 @@ closes the drawer in response to an item click.
 ### MoshiNavigationDrawerItem
 
 Use inside `MoshiNavigationDrawer` for one destination. It shows a 24 dp icon in
-`foreground.primary`, a 12 dp gap, and a Body label in `foreground.primary`, with no trailing
-chevron. The selected item fills a 12 dp rounded container with `background.action.secondary.default`;
-other items stay on `background.canvas`. The whole row is the click target, with a minimum height of
+`gray1000`, a 12 dp gap, and a Label16 label in `gray1000`, with no trailing
+chevron. The selected item fills a 12 dp rounded container with `gray100`;
+other items stay on `background100`. The whole row is the click target, with a minimum height of
 48 dp and native ripple feedback. The row grows and the label wraps at larger font sizes.
 
 Mark exactly one item as `selected`. Pass `selectedIcon` (optional, defaults to `icon`) to show the
@@ -300,28 +303,28 @@ Use for a tappable row in a list of choices or actions, such as the entries of a
 fills the available width with no outer margins, so the whole row from edge to edge is the click
 target and shows native ripple feedback. Content sits inside a 16 dp horizontal inset
 (`pageGutterNarrow`) within that target. The row has 16 dp vertical padding (`space4`), so a
-single-line row is 56 dp tall, and a 48 dp minimum height, and grows when the label wraps at larger font sizes. The label uses `typography.body` in
-`foreground.primary`.
+single-line row is 56 dp tall, and a 48 dp minimum height, and grows when the label wraps at larger font sizes. The label uses `typography.label16` in
+`gray1000`.
 
 Pass `leadingIcon` (optional) to show a 24 dp icon before the label, separated by a 12 dp gap. The
 icon is decorative; the label provides the accessible name. Pass `trailing` (optional) to place
 content after the label, such as `MoshiListItemChevron` to signal that the row opens another screen.
-`MoshiListItemChevron` is a decorative 16 dp chevron in `foreground.secondary`. Leave `trailing` empty
+`MoshiListItemChevron` is a decorative 16 dp chevron in `gray900`. Leave `trailing` empty
 for rows that perform an action in place.
 
 Set `destructive` to true for irreversible or account-level actions, such as signing out. The label
-and leading icon then use `foreground.action.destructive`. The row exposes `Role.Button`. Use
+and leading icon then use `red900`. The row exposes `Role.Button`. Use
 sentence case for labels. Items have no dividers; stack them directly.
 
 ### MoshiBottomSheet
 
 Use for a short, focused choice that slides up from the bottom edge, such as picking one option from a
 small list. It wraps the Material 3 modal bottom sheet. The elevated surface uses
-`background.elevated` with 12 dp top corners, a `background.overlay` scrim, and a drag handle in
-`border.strong`. Content sits inside a 16 dp horizontal inset (`pageGutterNarrow`), with 24 dp below
+`background100` with 12 dp top corners, a `grayAlpha700` scrim, and a drag handle in
+`gray500`. Content sits inside a 16 dp horizontal inset (`pageGutterNarrow`), with 24 dp below
 it. Material's default window insets keep the content clear of the navigation bar.
 
-Pass `title` (optional) to show a left-aligned `typography.heading` title in `foreground.primary`,
+Pass `title` (optional) to show a left-aligned `typography.heading24` title in `gray1000`,
 exposed as a heading and followed by a 16 dp gap before the content. Swiping down, tapping the scrim,
 and Back all call `onDismissRequest`. The caller owns visibility and must stop composing the sheet in
 response. The sheet opens fully expanded; pass `sheetState` to change that.
@@ -333,15 +336,45 @@ parent with `Modifier.selectableGroup()`. It fills the available width with a 12
 a 48 dp minimum height, with 16 dp horizontal and 12 dp vertical padding. The whole row is the
 selectable target with a rounded native ripple and exposes `Role.RadioButton`.
 
-The label uses `typography.body` in `foreground.primary`, or `foreground.disabled` when disabled.
-Pass `supportingText` (optional) for a `typography.small` description in `foreground.secondary`
-below the label; both texts use `foreground.disabled` when disabled. Text wraps at larger font
-sizes. Selected rows fill with `background.action.secondary.hover` and show a decorative 24 dp
-checkmark in `foreground.action.secondary` at the end; unselected rows are transparent with no
+The label uses `typography.label16` in `gray1000`, or `gray700` when disabled.
+Pass `supportingText` (optional) for a `typography.copy14` description in `gray900`
+below the label; both texts use `gray700` when disabled. Text wraps at larger font
+sizes. Selected rows fill with `gray200` and show a decorative 24 dp
+checkmark in `gray1000` at the end; unselected rows are transparent with no
 border.
 
 ### MoshiDivider
 
 Use to separate groups of content, such as the header of a drawer from its items. It is a 1 dp
-horizontal line in `border.default` that fills the available width. It is decorative and hidden
+horizontal line in `gray400` that fills the available width. It is decorative and hidden
 from accessibility services. Pass a `modifier` to inset it from the edges or to change its width.
+
+## Geist foundations
+
+`Moshi.colors` exposes `background100`, `background200`, and the ten steps `100` through
+`1000` in `gray`, `grayAlpha`, `blue`, `red`, `amber`, `green`, `teal`, `purple`, and `pink`.
+Choose the actual treatment from the component mapping. Gray900 is secondary text and gray1000
+is primary text. GrayAlpha is for translucent edges and overlays. Old semantic token aliases
+have been removed.
+
+`Moshi.typography` and `MoshiTextRole` expose all 30 retained Geist styles, such as `heading24`
+/ `Heading24`, `button14` / `Button14`, `label14` / `Label14`, and `copy16` / `Copy16`.
+Copy16 is the default paragraph role. Buttons provide Button14 to their content. Use labels
+for controls and copy for paragraphs. Copy14Mono is present in deployed CSS but is not listed
+in the public typography table. Unspecified source tracking stays unspecified.
+
+Use `emphasis = MoshiTextEmphasis.Strong` for supported copy and label roles. Heading16,
+Heading20, Heading24, and Heading32 support `Subtle` instead. An unsupported modifier fails
+with a descriptive error. For inline emphasis, call `withMoshiEmphasis { append(...) }` inside
+`buildAnnotatedString`. It chooses the heading subtle or copy/label strong treatment for its
+containing role. Copy strong is exact weight 550, label strong and heading subtle are 500.
+Modifiers use gray1000 or gray900 by default. An explicit `MoshiText` color or an inherited
+component color takes precedence over modifier colors, including disabled button content.
+Unannotated caller spans keep their existing styling.
+
+Font sizes, line heights, and explicit tracking use `sp`. Font padding is disabled to honor the
+specified line boxes while preserving Android font scaling and wrapping. Static Sans and Mono
+550 instances support API 24 without approximating the glyph weight. Production Moshi uses the
+authored sRGB fallbacks, as approved after inspecting Compose UI 1.11's solid-color rendering
+path. Full P3 data and tested conversion remain available in the retained snapshot and reference
+for a future renderer that supports it. Browser and Android glyph rasterization can differ.

@@ -40,11 +40,11 @@ fun MoshiRadioOption(
     val spacing = Moshi.spacing
     val shape = RoundedCornerShape(12.dp)
     val containerColor = when {
-        !enabled -> colors.background.disabled
-        selected -> colors.background.action.secondary.hover
-        else -> colors.background.surface
+        !enabled -> colors.gray100
+        selected -> colors.gray200
+        else -> colors.background100
     }
-    val labelColor = if (enabled) colors.foreground.primary else colors.foreground.disabled
+    val labelColor = if (enabled) colors.gray1000 else colors.gray700
 
     Row(
         modifier = modifier
@@ -52,7 +52,7 @@ fun MoshiRadioOption(
             .sizeIn(minHeight = spacing.space16)
             .clip(shape)
             .background(containerColor)
-            .border(width = 1.dp, color = colors.border.default, shape = shape)
+            .border(width = 1.dp, color = colors.gray400, shape = shape)
             .selectable(
                 selected = selected,
                 enabled = enabled,
@@ -71,7 +71,7 @@ fun MoshiRadioOption(
         MoshiText(
             text = label,
             modifier = Modifier.weight(1f),
-            role = MoshiTextRole.Body,
+            role = MoshiTextRole.Label16,
             color = labelColor,
         )
         Spacer(Modifier.width(spacing.space3))
@@ -84,11 +84,11 @@ private fun RadioIndicator(selected: Boolean, enabled: Boolean) {
     val colors = Moshi.colors
     val spacing = Moshi.spacing
     val outline = when {
-        !enabled -> colors.border.default
-        selected -> colors.background.action.primary.default
-        else -> colors.border.interactive
+        !enabled -> colors.gray400
+        selected -> colors.blue900
+        else -> colors.gray500
     }
-    val dot = if (enabled) colors.background.action.primary.default else colors.foreground.disabled
+    val dot = if (enabled) colors.blue900 else colors.gray900
 
     Box(
         modifier = Modifier
@@ -112,7 +112,7 @@ private fun MoshiRadioOptionPreview() {
     MoshiTheme {
         Column(
             modifier = Modifier
-                .background(Moshi.colors.background.canvas)
+                .background(Moshi.colors.background100)
                 .padding(Moshi.spacing.space4)
                 .selectableGroup(),
             verticalArrangement = Arrangement.spacedBy(Moshi.spacing.space2),
@@ -127,7 +127,7 @@ private fun MoshiRadioOptionPreview() {
                     Box(
                         modifier = Modifier
                             .size(Moshi.spacing.space8)
-                            .background(Moshi.colors.background.selected, CircleShape),
+                            .background(Moshi.colors.gray100, CircleShape),
                     )
                 },
             )

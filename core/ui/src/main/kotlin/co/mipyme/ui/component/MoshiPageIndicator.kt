@@ -57,7 +57,7 @@ private fun PageIndicatorMark(selected: Boolean) {
         label = "pageIndicatorWidth",
     )
     val color by animateColorAsState(
-        targetValue = if (selected) Moshi.colors.foreground.primary else Moshi.colors.border.strong,
+        targetValue = if (selected) Moshi.colors.gray1000 else Moshi.colors.gray500,
         label = "pageIndicatorColor",
     )
 
@@ -77,7 +77,7 @@ private fun MoshiPageIndicatorPreview() {
     MoshiTheme {
         Column(
             modifier = Modifier
-                .background(Moshi.colors.background.canvas)
+                .background(Moshi.colors.background100)
                 .padding(Moshi.spacing.space4),
             verticalArrangement = Arrangement.spacedBy(Moshi.spacing.space2),
         ) {

@@ -35,7 +35,7 @@ private fun InventoryContent(state: InventoryScreenUiState) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Moshi.colors.background.canvas),
+            .background(Moshi.colors.background100),
     ) {
         MoshiToolbar(
             title = stringResource(R.string.home_destination_inventory),

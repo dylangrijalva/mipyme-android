@@ -99,7 +99,7 @@ private fun AskNotificationPermissionsContent(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Moshi.colors.background.canvas)
+            .background(Moshi.colors.background100)
             .safeDrawingPadding()
             .padding(horizontal = spacing.pageGutterNarrow),
     ) {
@@ -115,22 +115,22 @@ private fun AskNotificationPermissionsContent(
                 painter = painterResource(R.drawable.ic_fluent_alert_24_regular),
                 contentDescription = null,
                 modifier = Modifier.size(spacing.space12),
-                tint = Moshi.colors.foreground.link,
+                tint = Moshi.colors.blue900,
             )
             Spacer(Modifier.height(spacing.space6))
             MoshiText(
                 text = stringResource(R.string.ask_notification_permissions_title),
                 modifier = Modifier.fillMaxWidth(),
-                role = MoshiTextRole.Heading,
+                role = MoshiTextRole.Heading24,
                 textAlign = TextAlign.Center,
             )
             Spacer(Modifier.height(spacing.space2))
             MoshiText(
                 text = stringResource(R.string.ask_notification_permissions_body),
                 modifier = Modifier.fillMaxWidth(),
-                role = MoshiTextRole.Body,
+                role = MoshiTextRole.Copy16,
                 textAlign = TextAlign.Center,
-                color = Moshi.colors.foreground.secondary,
+                color = Moshi.colors.gray900,
             )
         }
 

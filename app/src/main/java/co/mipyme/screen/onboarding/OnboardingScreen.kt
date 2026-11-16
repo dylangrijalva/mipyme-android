@@ -136,7 +136,7 @@ private fun OnboardingContent(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Moshi.colors.background.canvas)
+            .background(Moshi.colors.background100)
             .safeDrawingPadding(),
     ) {
         MoshiToolbar(
@@ -181,13 +181,13 @@ private fun OnboardingContent(
                 Column(modifier = Modifier.fillMaxSize()) {
                     MoshiText(
                         text = stringResource(step.titleRes()),
-                        role = MoshiTextRole.Heading,
+                        role = MoshiTextRole.Heading24,
                     )
                     Spacer(Modifier.height(spacing.space2))
                     MoshiText(
                         text = stringResource(step.subtitleRes()),
-                        role = MoshiTextRole.Body,
-                        color = Moshi.colors.foreground.secondary,
+                        role = MoshiTextRole.Copy16,
+                        color = Moshi.colors.gray900,
                     )
                     Spacer(Modifier.height(spacing.space6))
                     Column(
@@ -394,7 +394,7 @@ private fun CountryFlag(country: CountryIsoCode) {
         contentDescription = null,
         modifier = Modifier
             .size(Moshi.spacing.space8)
-            .border(width = 1.dp, color = Moshi.colors.border.default, shape = CircleShape),
+            .border(width = 1.dp, color = Moshi.colors.gray400, shape = CircleShape),
     )
 }
 

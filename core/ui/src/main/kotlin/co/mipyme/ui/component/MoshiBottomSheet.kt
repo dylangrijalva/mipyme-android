@@ -40,10 +40,10 @@ fun MoshiBottomSheet(
         modifier = modifier,
         sheetState = sheetState,
         shape = RoundedCornerShape(topStart = spacing.space3, topEnd = spacing.space3),
-        containerColor = colors.background.elevated,
-        contentColor = colors.foreground.primary,
-        scrimColor = colors.background.overlay,
-        dragHandle = { BottomSheetDefaults.DragHandle(color = colors.border.strong) },
+        containerColor = colors.background100,
+        contentColor = colors.gray1000,
+        scrimColor = colors.grayAlpha700,
+        dragHandle = { BottomSheetDefaults.DragHandle(color = colors.gray500) },
     ) {
         MoshiBottomSheetContent(title = title, content = content)
     }
@@ -69,8 +69,8 @@ private fun MoshiBottomSheetContent(
                 modifier = Modifier
                     .fillMaxWidth()
                     .semantics { heading() },
-                role = MoshiTextRole.Heading,
-                color = Moshi.colors.foreground.primary,
+                role = MoshiTextRole.Heading24,
+                color = Moshi.colors.gray1000,
                 textAlign = TextAlign.Start,
             )
             Spacer(Modifier.height(spacing.space4))
@@ -85,7 +85,7 @@ private fun MoshiBottomSheetPreview() {
     MoshiTheme {
         Column(
             modifier = Modifier
-                .background(Moshi.colors.background.elevated)
+                .background(Moshi.colors.background100)
                 .padding(top = Moshi.spacing.space4),
         ) {
             MoshiBottomSheetContent(title = "Choose a theme") {

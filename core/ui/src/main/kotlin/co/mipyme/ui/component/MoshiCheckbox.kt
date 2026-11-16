@@ -16,7 +16,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
@@ -35,16 +34,18 @@ fun MoshiCheckbox(
     val colors = Moshi.colors
     val spacing = Moshi.spacing
     val fill = when {
-        !enabled -> colors.background.disabled
-        checked -> colors.background.action.primary.default
-        else -> Color.Transparent
+        !enabled && checked -> colors.gray600
+        !enabled -> colors.gray100
+        checked -> colors.gray1000
+        else -> colors.background100
     }
     val borderColor = when {
-        !enabled -> colors.border.default
-        checked -> colors.background.action.primary.default
-        else -> colors.border.interactive
+        !enabled && checked -> colors.gray600
+        !enabled -> colors.gray500
+        checked -> colors.gray1000
+        else -> colors.gray700
     }
-    val checkColor = if (enabled) colors.foreground.onAction.primary else colors.foreground.disabled
+    val checkColor = colors.background100
 
     Box(
         modifier = modifier
@@ -85,7 +86,7 @@ private fun MoshiCheckboxPreview() {
     MoshiTheme {
         Column(
             modifier = Modifier
-                .background(Moshi.colors.background.canvas)
+                .background(Moshi.colors.background100)
                 .padding(Moshi.spacing.space4),
             verticalArrangement = Arrangement.spacedBy(Moshi.spacing.space2),
         ) {

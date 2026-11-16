@@ -34,7 +34,7 @@ fun MoshiListItem(
 ) {
     val colors = Moshi.colors
     val spacing = Moshi.spacing
-    val contentColor = if (destructive) colors.foreground.action.destructive else colors.foreground.primary
+    val contentColor = if (destructive) colors.red900 else colors.gray1000
 
     Row(
         modifier = modifier
@@ -61,7 +61,7 @@ fun MoshiListItem(
         MoshiText(
             text = label,
             modifier = Modifier.weight(1f),
-            role = MoshiTextRole.Body,
+            role = MoshiTextRole.Label16,
             color = contentColor,
         )
         if (trailing != null) {
@@ -77,7 +77,7 @@ fun MoshiListItemChevron(modifier: Modifier = Modifier) {
         painter = painterResource(R.drawable.ic_fluent_chevron_right_24_regular),
         contentDescription = null,
         modifier = modifier.size(Moshi.spacing.space4),
-        tint = Moshi.colors.foreground.secondary,
+        tint = Moshi.colors.gray900,
     )
 }
 
@@ -85,7 +85,7 @@ fun MoshiListItemChevron(modifier: Modifier = Modifier) {
 @Composable
 private fun MoshiListItemPreview() {
     MoshiTheme {
-        Column(modifier = Modifier.background(Moshi.colors.background.canvas)) {
+        Column(modifier = Modifier.background(Moshi.colors.background100)) {
             MoshiListItem(
                 label = "Default item",
                 onClick = {},

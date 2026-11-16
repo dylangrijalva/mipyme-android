@@ -29,6 +29,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
@@ -90,7 +91,7 @@ fun MoshiToolbar(
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .background(colors.background.canvas)
+            .background(colors.background100)
             .windowInsetsPadding(windowInsets)
             .sizeIn(minHeight = spacing.space16)
             .padding(horizontal = spacing.space1, vertical = spacing.space2),
@@ -112,15 +113,15 @@ fun MoshiToolbar(
                 MoshiText(
                     text = title,
                     modifier = Modifier.semantics { heading() },
-                    role = MoshiTextRole.Subheading,
-                    color = colors.foreground.primary,
+                    role = MoshiTextRole.Heading20,
+                    color = colors.gray1000,
                 )
             }
             if (subtitle != null) {
                 MoshiText(
                     text = subtitle,
-                    role = MoshiTextRole.Body,
-                    color = colors.foreground.secondary,
+                    role = MoshiTextRole.Copy16,
+                    color = colors.gray900,
                 )
             }
         }
@@ -163,6 +164,7 @@ private fun ToolbarNavigationButton(navigation: MoshiToolbarNavigation) {
 private fun ToolbarOverflowMenu(actions: List<MoshiToolbarAction>) {
     val colors = Moshi.colors
     val spacing = Moshi.spacing
+    val background = if (colors.background100.luminance() < 0.5f) colors.gray100 else colors.background100
     var expanded by remember { mutableStateOf(false) }
 
     Box {
@@ -175,15 +177,15 @@ private fun ToolbarOverflowMenu(actions: List<MoshiToolbarAction>) {
             expanded = expanded,
             onDismissRequest = { expanded = false },
             shape = RoundedCornerShape(spacing.space2),
-            containerColor = colors.background.elevated,
+            containerColor = background,
         ) {
             actions.forEach { action ->
                 DropdownMenuItem(
                     text = {
                         MoshiText(
                             text = action.label,
-                            role = MoshiTextRole.Body,
-                            color = colors.foreground.primary,
+                            role = MoshiTextRole.Copy16,
+                            color = colors.gray1000,
                         )
                     },
                     leadingIcon = {
@@ -191,7 +193,7 @@ private fun ToolbarOverflowMenu(actions: List<MoshiToolbarAction>) {
                             painter = painterResource(action.icon),
                             contentDescription = null,
                             modifier = Modifier.size(spacing.space6),
-                            tint = colors.foreground.primary,
+                            tint = colors.gray1000,
                         )
                     },
                     onClick = {
@@ -221,7 +223,7 @@ private fun ToolbarIconButton(
                 indication = ripple(
                     bounded = false,
                     radius = spacing.space6,
-                    color = Moshi.colors.foreground.primary,
+                    color = Moshi.colors.gray1000,
                 ),
                 onClick = onClick,
             ),
@@ -231,7 +233,7 @@ private fun ToolbarIconButton(
             painter = painterResource(iconRes),
             contentDescription = contentDescription,
             modifier = Modifier.size(spacing.space6),
-            tint = Moshi.colors.foreground.primary,
+            tint = Moshi.colors.gray1000,
         )
     }
 }
@@ -243,7 +245,7 @@ private fun MoshiToolbarPreview() {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(Moshi.colors.background.surface)
+                .background(Moshi.colors.background100)
                 .padding(vertical = Moshi.spacing.space4),
             verticalArrangement = Arrangement.spacedBy(Moshi.spacing.space4),
         ) {

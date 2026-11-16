@@ -46,14 +46,23 @@ fun MoshiCardSelector(
     val colors = Moshi.colors
     val spacing = Moshi.spacing
     val shape = RoundedCornerShape(spacing.space2)
-    val selectedColor = colors.background.action.primary.default
-    val labelColor = if (enabled) colors.foreground.primary else colors.foreground.disabled
-    val supportingColor = if (enabled) colors.foreground.secondary else colors.foreground.disabled
-    val backgroundColor = when {
-        !enabled -> colors.background.disabled
-        selected -> colors.background.action.secondary.hover
-        else -> colors.background.surface
+    val selectedColor = colors.blue600
+    val labelColor = when {
+        !enabled -> colors.gray800
+        selected -> colors.blue900
+        else -> colors.gray1000
     }
+    val supportingColor = when {
+        !enabled -> colors.gray800
+        selected -> colors.blue900
+        else -> colors.gray900
+    }
+    val backgroundColor = when {
+        !enabled -> colors.gray100
+        selected -> colors.blue100
+        else -> colors.background100
+    }
+    val borderColor = if (enabled && selected) colors.blue600 else colors.gray400
 
     Row(
         modifier = modifier
@@ -61,7 +70,7 @@ fun MoshiCardSelector(
             .sizeIn(minHeight = spacing.space16)
             .clip(shape)
             .background(backgroundColor)
-            .border(width = 1.dp, color = colors.border.default, shape = shape)
+            .border(width = 1.dp, color = borderColor, shape = shape)
             .selectable(
                 selected = selected,
                 enabled = enabled,
@@ -87,9 +96,9 @@ fun MoshiCardSelector(
                 )
                 Spacer(Modifier.height(spacing.space2))
             }
-            MoshiText(text = label, role = MoshiTextRole.Body, color = labelColor)
+            MoshiText(text = label, role = MoshiTextRole.Label16, color = labelColor)
             if (supportingText != null) {
-                MoshiText(text = supportingText, role = MoshiTextRole.Small, color = supportingColor)
+                MoshiText(text = supportingText, role = MoshiTextRole.Copy14, color = supportingColor)
             }
         }
         Spacer(Modifier.width(spacing.space4))
@@ -100,9 +109,9 @@ fun MoshiCardSelector(
             enabled = enabled,
             colors = RadioButtonDefaults.colors(
                 selectedColor = selectedColor,
-                unselectedColor = colors.border.strong,
-                disabledSelectedColor = colors.foreground.disabled,
-                disabledUnselectedColor = colors.border.default,
+                unselectedColor = colors.gray500,
+                disabledSelectedColor = colors.gray700,
+                disabledUnselectedColor = colors.gray400,
             ),
         )
     }
@@ -114,7 +123,7 @@ private fun MoshiCardSelectorPreview() {
     MoshiTheme {
         Column(
             modifier = Modifier
-                .background(Moshi.colors.background.canvas)
+                .background(Moshi.colors.background100)
                 .padding(Moshi.spacing.space4)
                 .selectableGroup(),
             verticalArrangement = Arrangement.spacedBy(Moshi.spacing.space4),

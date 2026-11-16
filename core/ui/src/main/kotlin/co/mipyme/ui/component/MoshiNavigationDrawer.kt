@@ -50,8 +50,8 @@ fun MoshiNavigationDrawer(
                     drawerState = drawerState,
                     modifier = Modifier.width(310.dp),
                     drawerShape = RectangleShape,
-                    drawerContainerColor = colors.background.canvas,
-                    drawerContentColor = colors.foreground.primary,
+                    drawerContainerColor = colors.background100,
+                    drawerContentColor = colors.gray1000,
                 ) {
                     Column(modifier = Modifier.fillMaxSize()) {
                         Column(
@@ -76,7 +76,7 @@ fun MoshiNavigationDrawer(
         modifier = modifier.clipToBounds(),
         drawerState = drawerState,
         gesturesEnabled = gesturesEnabled,
-        scrimColor = colors.background.overlay,
+        scrimColor = colors.grayAlpha700,
         content = content,
     )
 }
@@ -89,11 +89,11 @@ private fun MoshiNavigationDrawerPreview() {
             drawerState = rememberDrawerState(DrawerValue.Open),
             header = {
                 Column(modifier = Modifier.padding(Moshi.spacing.space4)) {
-                    MoshiText(text = "Downtown store", role = MoshiTextRole.Heading)
+                    MoshiText(text = "Downtown store", role = MoshiTextRole.Heading24)
                     MoshiText(
                         text = "ada@example.com",
-                        role = MoshiTextRole.Body,
-                        color = Moshi.colors.foreground.secondary,
+                        role = MoshiTextRole.Copy16,
+                        color = Moshi.colors.gray900,
                     )
                 }
                 MoshiDivider()
@@ -120,7 +120,7 @@ private fun MoshiNavigationDrawerPreview() {
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(Moshi.colors.background.canvas),
+                    .background(Moshi.colors.background100),
             )
         }
     }

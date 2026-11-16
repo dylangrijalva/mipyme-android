@@ -21,6 +21,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.heading
@@ -82,13 +83,14 @@ private fun MoshiModalContent(
 ) {
     val spacing = Moshi.spacing
     val colors = Moshi.colors
+    val background = if (colors.background100.luminance() < 0.5f) colors.gray100 else colors.background100
 
     Column(
         modifier = modifier
             .widthIn(max = 720.dp)
             .fillMaxWidth()
             .clip(RoundedCornerShape(spacing.space3))
-            .background(colors.background.elevated)
+            .background(background)
             .semantics { paneTitle = title }
             .verticalScroll(rememberScrollState())
             .padding(
@@ -111,8 +113,8 @@ private fun MoshiModalContent(
         MoshiText(
             text = title,
             modifier = Modifier.fillMaxWidth().semantics { heading() },
-            role = MoshiTextRole.Subheading,
-            color = colors.foreground.primary,
+            role = MoshiTextRole.Heading20,
+            color = colors.gray1000,
             textAlign = TextAlign.Start,
         )
         if (supportingText != null) {
@@ -120,8 +122,8 @@ private fun MoshiModalContent(
             MoshiText(
                 text = supportingText,
                 modifier = Modifier.fillMaxWidth(),
-                role = MoshiTextRole.Body,
-                color = colors.foreground.secondary,
+                role = MoshiTextRole.Copy16,
+                color = colors.gray900,
                 textAlign = TextAlign.Start,
             )
         }
@@ -234,7 +236,7 @@ private fun ModalPreview(
     MoshiTheme {
         Box(
             modifier = Modifier
-                .background(Moshi.colors.background.canvas)
+                .background(Moshi.colors.background100)
                 .padding(Moshi.spacing.space6),
         ) {
             MoshiModalContent(
@@ -275,14 +277,14 @@ private fun ModalPreviewIcon() {
     Box(
         modifier = Modifier
             .size(Moshi.spacing.space16 + Moshi.spacing.space4)
-            .background(Moshi.colors.background.status.warning, CircleShape),
+            .background(Moshi.colors.amber100, CircleShape),
         contentAlignment = Alignment.Center,
     ) {
         Icon(
             painter = painterResource(R.drawable.ic_fluent_warning_24_regular),
             contentDescription = null,
             modifier = Modifier.size(Moshi.spacing.space10),
-            tint = Moshi.colors.foreground.status.warning,
+            tint = Moshi.colors.amber900,
         )
     }
 }

@@ -23,10 +23,8 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.withStyle
+import co.mipyme.ui.component.withMoshiEmphasis
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import co.mipyme.R
 import co.mipyme.auth.AuthError
@@ -106,14 +104,14 @@ private fun VerifyOtpCodeContent(
     val keyboardController = LocalSoftwareKeyboardController.current
     val error = state.error
     val template = stringResource(R.string.verify_otp_code_description, "\u0000", OTP_CODE_LENGTH)
-    val description = remember(template, state.email, colors.foreground.primary) {
+    val description = remember(template, state.email, colors.gray1000) {
         val emailIndex = template.indexOf('\u0000')
         buildAnnotatedString {
             if (emailIndex < 0) {
                 append(template)
             } else {
                 append(template.substring(0, emailIndex))
-                withStyle(SpanStyle(fontWeight = FontWeight.Bold, color = colors.foreground.primary)) {
+                withMoshiEmphasis {
                     append(state.email)
                 }
                 append(template.substring(emailIndex + 1))
@@ -133,7 +131,7 @@ private fun VerifyOtpCodeContent(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(colors.background.canvas),
+            .background(colors.background100),
     ) {
         MoshiToolbar(navigation = MoshiToolbarNavigation.Back(onClick = onBack))
 
@@ -149,13 +147,13 @@ private fun VerifyOtpCodeContent(
             Spacer(Modifier.height(spacing.space6))
             MoshiText(
                 text = stringResource(R.string.verify_otp_code_title),
-                role = MoshiTextRole.Heading,
+                role = MoshiTextRole.Heading24,
             )
             Spacer(Modifier.height(spacing.space2))
             MoshiText(
                 text = description,
-                role = MoshiTextRole.Body,
-                color = colors.foreground.secondary,
+                role = MoshiTextRole.Copy16,
+                color = colors.gray900,
             )
             Spacer(Modifier.height(spacing.space6))
             MoshiCodeField(
@@ -180,8 +178,8 @@ private fun VerifyOtpCodeContent(
                 Spacer(Modifier.height(spacing.space2))
                 MoshiText(
                     text = stringResource(R.string.verify_otp_code_resent),
-                    role = MoshiTextRole.Caption,
-                    color = colors.foreground.status.success,
+                    role = MoshiTextRole.Label12,
+                    color = colors.green900,
                 )
             }
             Spacer(Modifier.height(spacing.space6))
@@ -211,8 +209,8 @@ private fun VerifyOtpCodeContent(
             Spacer(Modifier.height(spacing.space4))
             MoshiText(
                 text = stringResource(R.string.verify_otp_code_guidance),
-                role = MoshiTextRole.Small,
-                color = colors.foreground.secondary,
+                role = MoshiTextRole.Copy14,
+                color = colors.gray900,
             )
             Spacer(Modifier.height(spacing.space4))
         }

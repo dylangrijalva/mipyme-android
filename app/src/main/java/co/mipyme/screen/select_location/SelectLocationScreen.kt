@@ -101,7 +101,7 @@ private fun SelectLocationContent(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Moshi.colors.background.canvas),
+            .background(Moshi.colors.background100),
     ) {
         MoshiToolbar(
             title = stringResource(R.string.select_location_title),
@@ -156,13 +156,13 @@ private fun LocationRow(
         Column(modifier = Modifier.weight(1f)) {
             MoshiText(
                 text = location.name,
-                role = MoshiTextRole.Body,
+                role = MoshiTextRole.Copy16,
             )
             if (address != null) {
                 MoshiText(
                     text = address,
-                    role = MoshiTextRole.Small,
-                    color = Moshi.colors.foreground.secondary,
+                    role = MoshiTextRole.Copy14,
+                    color = Moshi.colors.gray900,
                 )
             }
         }
@@ -171,7 +171,7 @@ private fun LocationRow(
             painter = painterResource(R.drawable.ic_fluent_chevron_right_24_regular),
             contentDescription = null,
             modifier = Modifier.size(spacing.space4),
-            tint = Moshi.colors.foreground.secondary,
+            tint = Moshi.colors.gray900,
         )
     }
 }

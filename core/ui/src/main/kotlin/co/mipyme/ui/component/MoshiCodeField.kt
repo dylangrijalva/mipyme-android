@@ -69,9 +69,9 @@ fun MoshiCodeField(
     val keyboardController = LocalSoftwareKeyboardController.current
     val activeIndex = value.length.coerceAtMost(length - 1)
     val supportingColor = when {
-        !enabled -> colors.foreground.disabled
-        isError -> colors.foreground.status.error
-        else -> colors.foreground.secondary
+        !enabled -> colors.gray700
+        isError -> colors.red900
+        else -> colors.gray900
     }
     val containerClickModifier = if (enabled) {
         Modifier.pointerInput(Unit) {
@@ -105,7 +105,7 @@ fun MoshiCodeField(
                     }
                 },
             enabled = enabled,
-            textStyle = Moshi.typography.body.copy(color = Color.Transparent),
+            textStyle = Moshi.typography.label20.copy(color = Color.Transparent),
             singleLine = true,
             cursorBrush = SolidColor(Color.Transparent),
             keyboardOptions = KeyboardOptions(
@@ -142,7 +142,7 @@ fun MoshiCodeField(
             MoshiText(
                 text = supportingText,
                 modifier = Modifier.fillMaxWidth(),
-                role = MoshiTextRole.Caption,
+                role = MoshiTextRole.Label12,
                 color = supportingColor,
             )
         }
@@ -160,10 +160,10 @@ private fun CodeCell(
     val colors = Moshi.colors
     val shape = RoundedCornerShape(6.dp)
     val borderColor = when {
-        !enabled -> colors.border.default
-        isError -> colors.border.status.error
-        isActive -> colors.border.focus
-        else -> colors.border.interactive
+        !enabled -> colors.gray400
+        isError -> colors.red900
+        isActive -> colors.blue900
+        else -> colors.gray500
     }
     val borderWidth = if (enabled && isActive) 2.dp else 1.dp
 
@@ -171,7 +171,7 @@ private fun CodeCell(
         modifier = modifier
             .heightIn(min = Moshi.spacing.space16)
             .background(
-                color = if (enabled) colors.background.surface else colors.background.disabled,
+                color = if (enabled) colors.background100 else colors.gray100,
                 shape = shape,
             )
             .border(borderWidth, borderColor, shape)
@@ -181,8 +181,8 @@ private fun CodeCell(
         if (digit != null) {
             MoshiText(
                 text = digit.toString(),
-                role = MoshiTextRole.Heading,
-                color = if (enabled) colors.foreground.primary else colors.foreground.disabled,
+                role = MoshiTextRole.Label20,
+                color = if (enabled) colors.gray1000 else colors.gray700,
                 textAlign = TextAlign.Center,
                 maxLines = 1,
             )
@@ -196,7 +196,7 @@ private fun MoshiCodeFieldPreview() {
     MoshiTheme {
         Column(
             modifier = Modifier
-                .background(Moshi.colors.background.canvas)
+                .background(Moshi.colors.background100)
                 .padding(Moshi.spacing.space4),
             verticalArrangement = Arrangement.spacedBy(Moshi.spacing.space4),
         ) {
