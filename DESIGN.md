@@ -79,6 +79,11 @@ size is 64 dp; a caller can set the required image dimensions through `modifier`
 container uses the secondary action background and Label12 text. It has no accessibility node
 because the adjacent label should expose the full name.
 
+Pass `colorSeed` for a stable decorative color derived from an entity ID. This uses paired
+200 background and 1000 foreground tokens from a fixed blue, green, teal, purple, pink, and amber
+palette, with Label16 text. Pass initials as `name` when displaying a location monogram.
+Omit `colorSeed` to retain the neutral treatment.
+
 ### MoshiPill
 
 Use for compact tab choices or filter actions. Selected pills use the inverse background and

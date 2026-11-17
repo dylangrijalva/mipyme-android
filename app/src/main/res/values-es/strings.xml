@@ -96,6 +96,7 @@
     <string name="ask_notification_permissions_skip">Ahora no</string>
 
     <string name="select_location_title">Selecciona una ubicación</string>
+    <string name="select_location_no_address">Sin dirección agregada</string>
     <string name="select_location_error">No pudimos seleccionar esa ubicación. Inténtalo de nuevo.</string>
     <string name="select_location_sign_out">Cerrar sesión</string>
     <string name="select_location_sign_out_confirm_title">¿Cerrar sesión?</string>

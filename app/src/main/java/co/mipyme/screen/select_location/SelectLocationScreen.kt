@@ -7,6 +7,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.WindowInsets
@@ -27,6 +28,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.semantics.Role
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import co.mipyme.R
@@ -40,6 +42,7 @@ import co.mipyme.ui.Moshi
 import co.mipyme.ui.MoshiTheme
 import co.mipyme.ui.component.MoshiAlertDialog
 import co.mipyme.ui.component.MoshiButtonVariant
+import co.mipyme.ui.component.MoshiMonogram
 import co.mipyme.ui.component.MoshiModalAction
 import co.mipyme.ui.component.MoshiText
 import co.mipyme.ui.component.MoshiTextRole
@@ -62,7 +65,7 @@ fun Module.selectLocationScreenModule(): Module {
     }
     viewModelOf(::SelectLocationViewModel)
     navigation<Route.SelectLocation>(
-        metadata = NavigationTransitions.forward,
+        metadata = NavigationTransitions.forwardWithBackwardPop,
     ) { SelectLocationScreen() }
     return this
 }
@@ -150,7 +153,8 @@ private fun LocationRow(
     onClick: () -> Unit,
 ) {
     val spacing = Moshi.spacing
-    val address = location.address
+    val address = location.address?.takeIf(String::isNotBlank)
+        ?: stringResource(R.string.select_location_no_address)
 
     Row(
         modifier = Modifier
@@ -160,18 +164,25 @@ private fun LocationRow(
             .padding(horizontal = spacing.pageGutterNarrow, vertical = spacing.space3),
         verticalAlignment = Alignment.CenterVertically,
     ) {
+        MoshiMonogram(
+            name = location.initials,
+            colorSeed = location.id,
+            modifier = Modifier.size(spacing.space12),
+        )
+        Spacer(Modifier.width(spacing.space4))
         Column(modifier = Modifier.weight(1f)) {
             MoshiText(
                 text = location.name,
                 role = MoshiTextRole.Copy16,
             )
-            if (address != null) {
-                MoshiText(
-                    text = address,
-                    role = MoshiTextRole.Copy14,
-                    color = Moshi.colors.gray900,
-                )
-            }
+            Spacer(Modifier.height(spacing.space1))
+            MoshiText(
+                text = address,
+                role = MoshiTextRole.Copy14,
+                color = Moshi.colors.gray900,
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis,
+            )
         }
         Spacer(Modifier.width(spacing.space4))
         Icon(

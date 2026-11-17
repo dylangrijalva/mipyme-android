@@ -20,8 +20,26 @@ import co.mipyme.ui.MoshiTheme
 import co.mipyme.ui.R
 
 @Composable
-fun MoshiMonogram(name: String, modifier: Modifier = Modifier) {
+fun MoshiMonogram(
+    name: String,
+    modifier: Modifier = Modifier,
+    colorSeed: String? = null,
+) {
     val spacing = Moshi.spacing
+    val colors = Moshi.colors
+    val palette = listOf(
+        colors.blue200 to colors.blue1000,
+        colors.green200 to colors.green1000,
+        colors.teal200 to colors.teal1000,
+        colors.purple200 to colors.purple1000,
+        colors.pink200 to colors.pink1000,
+        colors.amber200 to colors.amber1000,
+    )
+    val (background, foreground) = if (colorSeed == null) {
+        colors.gray100 to colors.gray900
+    } else {
+        palette[Math.floorMod(colorSeed.hashCode(), palette.size)]
+    }
     val shortenedName = remember(name) {
         val words = name.trim().split(Regex("\\s+")).filter(String::isNotBlank)
         val firstWords = words.take(2).joinToString(" ")
@@ -31,15 +49,15 @@ fun MoshiMonogram(name: String, modifier: Modifier = Modifier) {
         modifier = modifier
             .size(spacing.space16)
             .clip(RoundedCornerShape(spacing.space2))
-            .background(Moshi.colors.gray100)
+            .background(background)
             .padding(horizontal = spacing.space1)
             .clearAndSetSemantics { },
         contentAlignment = Alignment.Center,
     ) {
         MoshiText(
             text = shortenedName,
-            role = MoshiTextRole.Label12,
-            color = Moshi.colors.gray900,
+            role = if (colorSeed == null) MoshiTextRole.Label12 else MoshiTextRole.Label16,
+            color = foreground,
             textAlign = TextAlign.Center,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
