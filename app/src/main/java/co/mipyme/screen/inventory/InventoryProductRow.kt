@@ -6,6 +6,7 @@ import co.mipyme.contract.ProductType
 import co.mipyme.data.inventory.InventoryContext
 import co.mipyme.database.CatalogGrouping
 import java.math.BigDecimal
+import java.text.DecimalFormat
 import java.text.NumberFormat
 import java.util.Currency
 import java.util.Locale
@@ -45,8 +46,16 @@ internal fun Product.toInventoryRow(
     val priceFormatter = if (context.country == null || context.country.name == "ZZ") {
         NumberFormat.getNumberInstance(locale)
     } else {
-        NumberFormat.getCurrencyInstance(locale).apply {
-            currency = Currency.getInstance(Locale.Builder().setRegion(context.country.name).build())
+        val countryLocale = Locale.Builder().setLanguage("en").setRegion(context.country.name).build()
+        val merchantCurrency = Currency.getInstance(countryLocale)
+        NumberFormat.getCurrencyInstance(countryLocale).apply {
+            currency = merchantCurrency
+            minimumFractionDigits = 2
+            maximumFractionDigits = 2
+            isGroupingUsed = true
+            if (context.country.name == "NI" && this is DecimalFormat) {
+                decimalFormatSymbols = decimalFormatSymbols.apply { currencySymbol = "C$" }
+            }
         }
     }
     val quantityFormatter = NumberFormat.getNumberInstance(locale).apply { maximumFractionDigits = 340 }

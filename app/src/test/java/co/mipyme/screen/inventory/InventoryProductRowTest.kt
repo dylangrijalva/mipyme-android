@@ -24,6 +24,15 @@ class InventoryProductRowTest {
     }
 
     @Test
+    fun `Nicaragua prices use merchant currency grouped thousands and two decimals across device locales`() {
+        val product = sunnyProduct().copy(price = co.mipyme.contract.Decimal("12500"))
+        for (locale in listOf(Locale.US, Locale.GERMANY, Locale.forLanguageTag("es-NI"))) {
+            val row = product.toInventoryRow(InventoryContext("water7", CountryIsoCode.NI), CatalogGrouping.NONE, locale)
+            assertEquals("C$12,500.00", row.price)
+        }
+    }
+
+    @Test
     fun `missing one or all variants never becomes a partial sum or zero`() {
         listOf(
             listOf(sunnyVariant("luffy", 2.5), sunnyVariant("zoro", null)),
