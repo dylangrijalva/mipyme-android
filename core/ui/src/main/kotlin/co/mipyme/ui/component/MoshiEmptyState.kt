@@ -44,7 +44,7 @@ fun MoshiEmptyState(
         modifier = modifier.padding(spacing.space6),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        CompositionLocalProvider(LocalContentColor provides Moshi.colors.gray1000) {
+        CompositionLocalProvider(LocalContentColor provides Moshi.colors.foreground.primary) {
             Box(Modifier.size(spacing.space6), contentAlignment = Alignment.Center) {
                 icon()
             }
@@ -60,7 +60,7 @@ fun MoshiEmptyState(
         MoshiText(
             text = description,
             modifier = Modifier.fillMaxWidth(),
-            color = Moshi.colors.gray900,
+            color = Moshi.colors.foreground.secondary,
             textAlign = TextAlign.Center,
         )
         if (primaryAction != null || secondaryAction != null) {
@@ -98,7 +98,7 @@ private fun MoshiEmptyStatePreview() {
         MoshiEmptyState(
             title = stringResource(R.string.moshi_empty_preview_title),
             description = stringResource(R.string.moshi_empty_preview_description),
-            modifier = Modifier.background(Moshi.colors.background100),
+            modifier = Modifier.background(Moshi.colors.background.surface),
             icon = {
                 Icon(
                     painter = painterResource(R.drawable.ic_fluent_search_24_regular),

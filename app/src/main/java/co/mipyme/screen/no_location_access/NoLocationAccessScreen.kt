@@ -95,7 +95,7 @@ private fun NoLocationAccessContent(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(colors.background100),
+            .background(colors.background.surface),
     ) {
         MoshiToolbar(
             actions = listOf(
@@ -126,15 +126,15 @@ private fun NoLocationAccessContent(
             Box(
                 modifier = Modifier
                     .size(spacing.space16)
-                    .background(colors.red100, CircleShape)
-                    .border(width = 1.dp, color = colors.red900, shape = CircleShape),
+                    .background(colors.status.danger.background, CircleShape)
+                    .border(width = 1.dp, color = colors.border.error, shape = CircleShape),
                 contentAlignment = Alignment.Center,
             ) {
                 Icon(
                     painter = painterResource(R.drawable.ic_fluent_dismiss_24_regular),
                     contentDescription = null,
                     modifier = Modifier.size(spacing.space8),
-                    tint = colors.red900,
+                    tint = colors.foreground.danger,
                 )
             }
             Spacer(Modifier.height(spacing.space6))
@@ -148,7 +148,7 @@ private fun NoLocationAccessContent(
                 text = stringResource(R.string.no_location_access_body),
                 modifier = Modifier.fillMaxWidth(),
                 role = MoshiTextRole.Copy16,
-                color = colors.gray900,
+                color = colors.foreground.secondary,
             )
         }
     }

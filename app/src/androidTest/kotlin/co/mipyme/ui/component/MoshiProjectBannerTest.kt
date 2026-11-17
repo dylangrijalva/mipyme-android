@@ -154,7 +154,7 @@ class MoshiProjectBannerTest {
         composeRule.setContent {
             MoshiTheme(darkTheme = dark.value) {
                 Column(
-                    Modifier.testTag("project-banners").width(360.dp).background(Moshi.colors.background100),
+                    Modifier.testTag("project-banners").width(360.dp).background(Moshi.colors.background.surface),
                 ) {
                     MoshiProjectBannerVariant.entries.forEach { variant ->
                         MoshiProjectBanner(

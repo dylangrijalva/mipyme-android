@@ -163,7 +163,7 @@
     <string name="inventory_clear_search">Borrar búsqueda</string>
     <string name="inventory_clear_filters">Quitar filtros</string>
     <string name="inventory_stock_quantity">%1$s en existencia</string>
-    <string name="inventory_stock_unavailable">Existencias no disponibles</string>
+    <string name="inventory_stock_unavailable">Existencias sin definir</string>
     <string name="inventory_out_of_stock">Sin existencias</string>
     <string name="inventory_status_active">Activo</string>
     <string name="inventory_status_draft">Borrador</string>

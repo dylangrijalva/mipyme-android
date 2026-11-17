@@ -49,14 +49,14 @@ fun MoshiLinearProgressIndicator(
             .fillMaxWidth()
             .height(Moshi.spacing.space1)
             .clip(CircleShape)
-            .background(Moshi.colors.gray400),
+            .background(Moshi.colors.progress.track),
     ) {
         Box(
             modifier = Modifier
                 .fillMaxWidth(animatedProgress)
                 .fillMaxHeight()
                 .clip(CircleShape)
-                .background(Moshi.colors.gray1000),
+                .background(Moshi.colors.progress.foreground),
         )
     }
 }
@@ -82,7 +82,7 @@ fun MoshiLinearProgressIndicator(modifier: Modifier = Modifier) {
             .fillMaxWidth()
             .height(Moshi.spacing.space1)
             .clip(CircleShape)
-            .background(Moshi.colors.gray400),
+            .background(Moshi.colors.progress.track),
     ) {
         Box(
             modifier = Modifier
@@ -90,7 +90,7 @@ fun MoshiLinearProgressIndicator(modifier: Modifier = Modifier) {
                 .width(maxWidth * INDETERMINATE_SEGMENT_FRACTION)
                 .fillMaxHeight()
                 .clip(CircleShape)
-                .background(Moshi.colors.gray1000),
+                .background(Moshi.colors.progress.foreground),
         )
     }
 }
@@ -104,7 +104,7 @@ private fun MoshiLinearProgressIndicatorPreview() {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(Moshi.colors.background100)
+                .background(Moshi.colors.background.surface)
                 .padding(Moshi.spacing.space4),
             verticalArrangement = Arrangement.spacedBy(Moshi.spacing.space2),
         ) {

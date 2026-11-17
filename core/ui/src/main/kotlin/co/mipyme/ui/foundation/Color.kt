@@ -9,7 +9,7 @@ import kotlin.math.pow
 
 /** Geist snapshot and authored fallbacks: docs/geist-tokens.json. */
 @Immutable
-data class MoshiColors(
+internal data class MoshiPalette(
     val gray100: Color,
     val gray200: Color,
     val gray300: Color,
@@ -103,9 +103,8 @@ data class MoshiColors(
     val pink900: Color,
     val pink1000: Color,
 )
-
-internal fun lightMoshiColors(wideGamut: Boolean = false): MoshiColors {
-    return MoshiColors(
+internal fun lightMoshiPalette(wideGamut: Boolean = false): MoshiPalette {
+    return MoshiPalette(
         gray100 = Color.hsl(0f, 0f, 0.95f),
         gray200 = Color.hsl(0f, 0f, 0.92f),
         gray300 = Color.hsl(0f, 0f, 0.9f),
@@ -201,8 +200,8 @@ internal fun lightMoshiColors(wideGamut: Boolean = false): MoshiColors {
     )
 }
 
-internal fun darkMoshiColors(wideGamut: Boolean = false): MoshiColors {
-    return MoshiColors(
+internal fun darkMoshiPalette(wideGamut: Boolean = false): MoshiPalette {
+    return MoshiPalette(
         gray100 = Color.hsl(0f, 0f, 0.1f),
         gray200 = Color.hsl(0f, 0f, 0.12f),
         gray300 = Color.hsl(0f, 0f, 0.16f),

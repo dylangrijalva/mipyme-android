@@ -245,7 +245,7 @@ class MoshiChoiceboxTest {
                     modifier = Modifier
                         .testTag("choicebox-render")
                         .width(360.dp)
-                        .background(Moshi.colors.background100)
+                        .background(Moshi.colors.background.surface)
                         .padding(Moshi.spacing.space4),
                     verticalArrangement = Arrangement.spacedBy(Moshi.spacing.space4),
                 ) {

@@ -29,6 +29,7 @@ import androidx.compose.ui.semantics.SemanticsProperties
 import androidx.compose.ui.test.SemanticsMatcher
 import androidx.compose.ui.test.assert
 import androidx.compose.ui.test.assertHeightIsAtLeast
+import androidx.compose.ui.test.assertHeightIsEqualTo
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertIsEnabled
 import androidx.compose.ui.test.assertIsNotEnabled
@@ -65,6 +66,24 @@ class InventoryMoshiComponentsTest {
     private val searchLabel = context.getString(R.string.inventory_search_products)
     private val clearLabel = context.getString(R.string.inventory_clear_search)
     private val secondaryLabel = context.getString(R.string.inventory_clear_filters)
+
+    @Test
+    fun inventoryImageFallbackLeavesProductDetailsVisible() {
+        composeRule.setContent {
+            MoshiTheme {
+                co.mipyme.screen.inventory.InventoryProductListRow(
+                    row = co.mipyme.screen.inventory.InventoryProductRow(
+                        id = "sunny", name = "Thousand Sunny", imageUrl = null,
+                        price = "C$100.00", quantity = "12", isService = false,
+                        badge = null, group = null,
+                    ),
+                    modifier = Modifier.width(400.dp),
+                )
+            }
+        }
+        composeRule.onNodeWithText("Thousand Sunny", useUnmergedTree = true).assertIsDisplayed()
+        composeRule.onNodeWithText("C$100.00", useUnmergedTree = true).assertIsDisplayed()
+    }
 
     @Test
     fun searchClearAppearsForTextAndClearsThroughValueCallback() {
@@ -201,6 +220,52 @@ class InventoryMoshiComponentsTest {
     }
 
     @Test
+    fun productRowHasUniformHeightAndDisabledRowsIgnoreClicks() {
+        var clicks = 0
+        composeRule.setContent {
+            MoshiTheme {
+                Column {
+                    MoshiProductRow("Nami", "C$12,500.00", "12 in stock", { clicks++ }, Modifier.testTag("enabledRow"))
+                    MoshiProductRow(
+                        "Thousand Sunny sailing supplies from Water 7",
+                        "C$12,500.00", "Stock not set", { clicks++ }, Modifier.testTag("disabledRow"),
+                        enabled = false, tag = "Draft", showDivider = true,
+                    )
+                }
+            }
+        }
+        val enabled = composeRule.onNodeWithTag("enabledRow")
+        val disabled = composeRule.onNodeWithTag("disabledRow")
+        enabled.assertHeightIsEqualTo(72.dp).assertIsEnabled().performClick()
+        disabled.assertIsNotEnabled().performTouchInput { click() }
+        assertEquals(enabled.fetchSemanticsNode().boundsInRoot.height, disabled.fetchSemanticsNode().boundsInRoot.height)
+        composeRule.runOnIdle { assertEquals(1, clicks) }
+    }
+
+    @Test
+    fun narrowLargeFontRowsKeepEqualHeightsAndFullTextSemantics() {
+        val longName = "Thousand Sunny sailing supplies from Water 7"
+        val stockTag = context.getString(R.string.inventory_out_of_stock)
+        composeRule.setContent {
+            MoshiTheme {
+                val density = LocalDensity.current
+                CompositionLocalProvider(LocalDensity provides Density(density.density, 2f)) {
+                    Column(Modifier.width(320.dp)) {
+                        MoshiProductRow("Nami", "C$12,500.00", "12 in stock", {}, Modifier.testTag("shortRow"))
+                        MoshiProductRow(longName, "C$12,500.00", "Stock not set", {}, Modifier.testTag("longRow"), tag = stockTag)
+                    }
+                }
+            }
+        }
+        val shortRow = composeRule.onNodeWithTag("shortRow").fetchSemanticsNode().boundsInRoot
+        val longRow = composeRule.onNodeWithTag("longRow").fetchSemanticsNode().boundsInRoot
+        assertEquals(shortRow.height, longRow.height)
+        composeRule.onNodeWithTag("longRow").assertHeightIsEqualTo(144.dp)
+        composeRule.onNodeWithText(longName, useUnmergedTree = true).assertExists()
+        composeRule.onNodeWithText(stockTag.uppercase(), useUnmergedTree = true).assertExists()
+    }
+
+    @Test
     fun captureLightComponents() {
         captureComponents(darkTheme = false, fontScale = 1f, filename = "inventory-moshi-light.png")
     }
@@ -262,7 +327,7 @@ class InventoryMoshiComponentsTest {
             modifier = Modifier
                 .testTag("render")
                 .width(320.dp)
-                .background(Moshi.colors.background100)
+                .background(Moshi.colors.background.surface)
                 .padding(spacing.space4),
         ) {
             MoshiSearchField(
@@ -295,9 +360,9 @@ class InventoryMoshiComponentsTest {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 MoshiMonogram("Straw Hat Pirates")
                 Spacer(Modifier.width(spacing.space3))
-                MoshiStatusBadge(
+                MoshiTag(
                     label = context.getString(R.string.inventory_out_of_stock),
-                    tone = MoshiStatusBadgeTone.Warning,
+                    tone = MoshiTagTone.Error,
                     modifier = Modifier.weight(1f, fill = false),
                 )
             }

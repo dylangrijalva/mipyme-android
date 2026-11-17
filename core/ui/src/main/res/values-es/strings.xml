@@ -22,4 +22,14 @@
     <string name="moshi_tabs_preview_categories">Categorías</string>
     <string name="moshi_badge_preview_label">Borrador</string>
     <string name="moshi_pull_refresh_preview_label">Desliza hacia abajo para actualizar</string>
+    <string name="moshi_product_preview_name">Straw Hat Pirates</string>
+    <string name="moshi_product_preview_price">C$12,500.00</string>
+    <string name="moshi_product_preview_stock">12 en existencia</string>
+    <string name="moshi_product_preview_zero_stock">0 en existencia</string>
+    <string name="moshi_product_preview_archived">Archivado</string>
+    <string name="moshi_product_preview_out_of_stock">Sin existencias</string>
+    <string name="moshi_product_preview_stock_not_set">Existencias sin definir</string>
+    <string name="moshi_product_preview_service">Servicio</string>
+    <string name="moshi_product_preview_service_name">Reparación de barcos en Water 7</string>
+    <string name="moshi_product_preview_long_name">Barco modelo conmemorativo Thousand Sunny de los Piratas de Sombrero de Paja</string>
 </resources>

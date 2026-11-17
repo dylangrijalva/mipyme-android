@@ -38,14 +38,14 @@ fun MoshiPill(
     val spacing = Moshi.spacing
     val shape = RoundedCornerShape(percent = 50)
     val background = when {
-        !enabled -> colors.gray100
-        selected -> colors.gray1000
-        else -> colors.background100
+        !enabled -> colors.background.disabled
+        selected -> colors.action.primary.background
+        else -> colors.background.surface
     }
     val foreground = when {
-        !enabled -> colors.gray700
-        selected -> colors.background100
-        else -> colors.gray1000
+        !enabled -> colors.foreground.disabled
+        selected -> colors.action.primary.foreground
+        else -> colors.foreground.primary
     }
     Row(
         modifier = modifier
@@ -54,7 +54,7 @@ fun MoshiPill(
             .background(background)
             .border(
                 width = 1.dp,
-                color = if (selected && enabled) background else colors.gray400,
+                color = if (selected && enabled) background else colors.border.default,
                 shape = shape,
             )
             .selectable(

@@ -21,7 +21,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.heading
@@ -86,7 +85,7 @@ private fun MoshiModalContent(
 ) {
     val spacing = Moshi.spacing
     val colors = Moshi.colors
-    val background = if (colors.background100.luminance() < 0.5f) colors.gray100 else colors.background100
+    val background = colors.background.elevated
 
     Column(
         modifier = modifier
@@ -117,7 +116,7 @@ private fun MoshiModalContent(
             text = title,
             modifier = Modifier.fillMaxWidth().semantics { heading() },
             role = MoshiTextRole.Heading20,
-            color = colors.gray1000,
+            color = colors.foreground.primary,
             textAlign = TextAlign.Start,
         )
         if (supportingText != null) {
@@ -126,7 +125,7 @@ private fun MoshiModalContent(
                 text = supportingText,
                 modifier = Modifier.fillMaxWidth(),
                 role = MoshiTextRole.Copy16,
-                color = colors.gray900,
+                color = colors.foreground.secondary,
                 textAlign = TextAlign.Start,
             )
         }
@@ -239,7 +238,7 @@ private fun ModalPreview(
     MoshiTheme {
         Box(
             modifier = Modifier
-                .background(Moshi.colors.background100)
+                .background(Moshi.colors.background.surface)
                 .padding(Moshi.spacing.space6),
         ) {
             MoshiModalContent(
@@ -280,14 +279,14 @@ private fun ModalPreviewIcon() {
     Box(
         modifier = Modifier
             .size(Moshi.spacing.space16 + Moshi.spacing.space4)
-            .background(Moshi.colors.amber100, CircleShape),
+            .background(Moshi.colors.status.warning.background, CircleShape),
         contentAlignment = Alignment.Center,
     ) {
         Icon(
             painter = painterResource(R.drawable.ic_fluent_warning_24_regular),
             contentDescription = null,
             modifier = Modifier.size(Moshi.spacing.space10),
-            tint = Moshi.colors.amber900,
+            tint = Moshi.colors.foreground.warning,
         )
     }
 }

@@ -120,7 +120,7 @@ private fun InitialSyncContent(
     BoxWithConstraints(
         modifier = Modifier
             .fillMaxSize()
-            .background(Moshi.colors.background100),
+            .background(Moshi.colors.background.surface),
     ) {
         InitialSyncLogo(modifier = Modifier.align(Alignment.Center).size(144.dp))
 
@@ -140,7 +140,7 @@ private fun InitialSyncContent(
                 MoshiText(
                     text = stringResource(R.string.initial_sync_loading),
                     role = MoshiTextRole.Copy16,
-                    color = Moshi.colors.gray900,
+                    color = Moshi.colors.foreground.secondary,
                     textAlign = TextAlign.Center,
                 )
                 Spacer(Modifier.height(spacing.space4))
@@ -152,7 +152,7 @@ private fun InitialSyncContent(
                     text = stringResource(errorRes),
                     modifier = Modifier.fillMaxWidth(),
                     role = MoshiTextRole.Copy16,
-                    color = Moshi.colors.gray900,
+                    color = Moshi.colors.foreground.secondary,
                     textAlign = TextAlign.Center,
                 )
                 Spacer(Modifier.height(spacing.space6))

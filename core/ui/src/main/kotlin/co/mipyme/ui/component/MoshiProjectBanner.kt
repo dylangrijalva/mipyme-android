@@ -69,33 +69,34 @@ fun MoshiProjectBanner(
     val colors = Moshi.colors
     val spacing = Moshi.spacing
     val background = when (variant) {
-        MoshiProjectBannerVariant.Default -> colors.gray100
-        MoshiProjectBannerVariant.Success -> colors.blue100
-        MoshiProjectBannerVariant.Warning -> colors.amber100
-        MoshiProjectBannerVariant.Error -> colors.red100
+        MoshiProjectBannerVariant.Default -> colors.status.neutral.background
+        MoshiProjectBannerVariant.Success -> colors.status.information.background
+        MoshiProjectBannerVariant.Warning -> colors.status.warning.background
+        MoshiProjectBannerVariant.Error -> colors.status.danger.background
     }
     val border = when (variant) {
-        MoshiProjectBannerVariant.Default -> colors.gray400
-        MoshiProjectBannerVariant.Success -> colors.blue400
-        MoshiProjectBannerVariant.Warning -> colors.amber400
-        MoshiProjectBannerVariant.Error -> colors.red400
+        MoshiProjectBannerVariant.Default -> colors.status.neutral.border
+        MoshiProjectBannerVariant.Success -> colors.status.information.border
+        MoshiProjectBannerVariant.Warning -> colors.status.warning.border
+        MoshiProjectBannerVariant.Error -> colors.status.danger.border
     }
     val foreground = when (variant) {
-        MoshiProjectBannerVariant.Default -> colors.gray900
-        MoshiProjectBannerVariant.Success -> colors.blue900
-        MoshiProjectBannerVariant.Warning -> colors.amber900
-        MoshiProjectBannerVariant.Error -> colors.red900
+        MoshiProjectBannerVariant.Default -> colors.status.neutral.foreground
+        MoshiProjectBannerVariant.Success -> colors.status.information.foreground
+        MoshiProjectBannerVariant.Warning -> colors.status.warning.foreground
+        MoshiProjectBannerVariant.Error -> colors.status.danger.foreground
     }
     val actionColor = when (variant) {
-        MoshiProjectBannerVariant.Default -> colors.gray1000
-        MoshiProjectBannerVariant.Success -> colors.blue1000
-        MoshiProjectBannerVariant.Warning -> colors.amber1000
-        MoshiProjectBannerVariant.Error -> colors.red1000
+        MoshiProjectBannerVariant.Default -> colors.status.neutral.strongForeground
+        MoshiProjectBannerVariant.Success -> colors.status.information.strongForeground
+        MoshiProjectBannerVariant.Warning -> colors.status.warning.strongForeground
+        MoshiProjectBannerVariant.Error -> colors.status.danger.strongForeground
     }
     val focusColor = when (variant) {
-        MoshiProjectBannerVariant.Default, MoshiProjectBannerVariant.Success -> colors.blue600
-        MoshiProjectBannerVariant.Warning -> colors.amber700
-        MoshiProjectBannerVariant.Error -> colors.red700
+        MoshiProjectBannerVariant.Default -> colors.status.neutral.focus
+        MoshiProjectBannerVariant.Success -> colors.status.information.focus
+        MoshiProjectBannerVariant.Warning -> colors.status.warning.focus
+        MoshiProjectBannerVariant.Error -> colors.status.danger.focus
     }
 
     BoxWithConstraints(
@@ -197,7 +198,7 @@ private fun ProjectBannerAction(
 @Composable
 private fun MoshiProjectBannerPreview() {
     MoshiTheme {
-        Column(Modifier.background(Moshi.colors.background100)) {
+        Column(Modifier.background(Moshi.colors.background.surface)) {
             MoshiProjectBanner(
                 message = stringResource(R.string.moshi_project_banner_preview_default),
                 actionLabel = stringResource(R.string.moshi_project_banner_preview_review),

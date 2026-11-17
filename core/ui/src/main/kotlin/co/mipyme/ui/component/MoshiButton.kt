@@ -26,7 +26,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.layout.layout
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -73,28 +72,25 @@ fun MoshiButton(
     val interactionSource = remember { MutableInteractionSource() }
     val hovered by interactionSource.collectIsHoveredAsState()
     val focused by interactionSource.collectIsFocusedAsState()
-    val darkTheme = colors.background100.luminance() < 0.5f
     val background = when {
-        !canActivate -> colors.gray100
-        variant == MoshiButtonVariant.Primary && hovered ->
-            Color.hsl(0f, 0f, if (darkTheme) 0.8f else 0.22f)
-        variant == MoshiButtonVariant.Primary -> colors.gray1000
-        variant == MoshiButtonVariant.Secondary && hovered -> colors.grayAlpha200
-        variant == MoshiButtonVariant.Secondary -> colors.background100
+        !canActivate -> colors.background.disabled
+        variant == MoshiButtonVariant.Primary && hovered -> colors.action.primary.hovered
+        variant == MoshiButtonVariant.Primary -> colors.action.primary.background
+        variant == MoshiButtonVariant.Secondary && hovered -> colors.action.secondary.hovered
+        variant == MoshiButtonVariant.Secondary -> colors.action.secondary.background
         variant == MoshiButtonVariant.Destructive && hovered ->
-            if (darkTheme) colors.red900 else Color(0xFFAE292F)
-        variant == MoshiButtonVariant.Destructive -> colors.red800
-        hovered -> colors.gray200
+            colors.action.danger.hovered
+        variant == MoshiButtonVariant.Destructive -> colors.action.danger.background
+        hovered -> colors.action.subtle.hovered
         else -> Color.Transparent
     }
     val foreground = when {
-        !canActivate -> colors.gray700
-        variant == MoshiButtonVariant.Primary -> colors.background100
-        variant == MoshiButtonVariant.Secondary -> colors.gray1000
-        variant == MoshiButtonVariant.Destructive ->
-            if (darkTheme) Color.White else Color(0xFFF5F5F5)
-        variant == MoshiButtonVariant.DestructiveOutline -> colors.red900
-        else -> colors.gray1000
+        !canActivate -> colors.foreground.disabled
+        variant == MoshiButtonVariant.Primary -> colors.action.primary.foreground
+        variant == MoshiButtonVariant.Secondary -> colors.foreground.primary
+        variant == MoshiButtonVariant.Destructive -> colors.action.danger.foreground
+        variant == MoshiButtonVariant.DestructiveOutline -> colors.foreground.danger
+        else -> colors.foreground.primary
     }
     val minimumSize = when (size) {
         MoshiButtonSize.Default -> spacing.space12
@@ -102,10 +98,10 @@ fun MoshiButton(
     val radius = 12.dp
     val shape = RoundedCornerShape(radius)
     val borderColor = when {
-        !canActivate -> colors.gray400
-        focused -> colors.blue900
-        variant == MoshiButtonVariant.DestructiveOutline -> colors.red400
-        variant == MoshiButtonVariant.Secondary || variant == MoshiButtonVariant.Outline -> colors.gray400
+        !canActivate -> colors.control.disabledBorder
+        focused -> colors.border.focus
+        variant == MoshiButtonVariant.DestructiveOutline -> colors.border.danger
+        variant == MoshiButtonVariant.Secondary || variant == MoshiButtonVariant.Outline -> colors.border.default
         else -> Color.Transparent
     }
     val border = Modifier.border(
@@ -201,7 +197,7 @@ private fun MoshiButtonPreview() {
         val spacing = Moshi.spacing
         Column(
             modifier = Modifier
-                .background(Moshi.colors.background100)
+                .background(Moshi.colors.background.surface)
                 .padding(spacing.space4),
             verticalArrangement = Arrangement.spacedBy(spacing.space2),
         ) {

@@ -35,7 +35,7 @@ private fun StaffContent(state: StaffScreenUiState) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Moshi.colors.background100),
+            .background(Moshi.colors.background.surface),
     ) {
         MoshiToolbar(
             title = stringResource(R.string.home_destination_staff),

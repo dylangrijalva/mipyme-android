@@ -53,7 +53,7 @@ private fun PrintersAndDevicesSettingsContent(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Moshi.colors.background100),
+            .background(Moshi.colors.background.surface),
     ) {
         MoshiToolbar(
             title = stringResource(R.string.settings_printers_and_devices),

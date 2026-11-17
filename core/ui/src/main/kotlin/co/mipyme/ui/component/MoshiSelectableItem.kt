@@ -38,8 +38,8 @@ fun MoshiSelectableItem(
 ) {
     val colors = Moshi.colors
     val spacing = Moshi.spacing
-    val containerColor = if (selected) colors.gray200 else Color.Transparent
-    val labelColor = if (enabled) colors.gray1000 else colors.gray700
+    val containerColor = if (selected) colors.background.selected else Color.Transparent
+    val labelColor = if (enabled) colors.foreground.primary else colors.foreground.disabled
 
     Row(
         modifier = modifier
@@ -68,7 +68,7 @@ fun MoshiSelectableItem(
                 MoshiText(
                     text = supportingText,
                     role = MoshiTextRole.Copy14,
-                    color = if (enabled) colors.gray900 else colors.gray700,
+                    color = if (enabled) colors.foreground.secondary else colors.foreground.disabled,
                 )
             }
         }
@@ -78,7 +78,7 @@ fun MoshiSelectableItem(
                 painter = painterResource(R.drawable.ic_fluent_checkmark_24_regular),
                 contentDescription = null,
                 modifier = Modifier.size(spacing.space6),
-                tint = colors.gray1000,
+                tint = colors.foreground.primary,
             )
         }
     }
@@ -90,7 +90,7 @@ private fun MoshiSelectableItemPreview() {
     MoshiTheme {
         Column(
             modifier = Modifier
-                .background(Moshi.colors.background100)
+                .background(Moshi.colors.background.surface)
                 .padding(Moshi.spacing.space4)
                 .selectableGroup(),
             verticalArrangement = Arrangement.spacedBy(Moshi.spacing.space1),

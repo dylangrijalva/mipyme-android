@@ -36,8 +36,8 @@ fun MoshiPullToRefreshBox(
                 state = state,
                 isRefreshing = isRefreshing,
                 modifier = Modifier.align(Alignment.TopCenter),
-                containerColor = Moshi.colors.background100,
-                color = Moshi.colors.gray1000,
+                containerColor = Moshi.colors.background.surface,
+                color = Moshi.colors.foreground.primary,
             )
         },
         content = content,

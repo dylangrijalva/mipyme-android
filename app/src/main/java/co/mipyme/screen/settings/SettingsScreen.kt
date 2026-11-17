@@ -112,7 +112,7 @@ private fun SettingsContent(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Moshi.colors.background100),
+            .background(Moshi.colors.background.surface),
     ) {
         MoshiToolbar(
             title = stringResource(R.string.home_destination_settings),
@@ -183,13 +183,13 @@ private fun SettingsContent(
                     MoshiText(
                         text = stringResource(R.string.app_name),
                         role = MoshiTextRole.Copy14,
-                        color = Moshi.colors.gray900,
+                        color = Moshi.colors.foreground.secondary,
                         textAlign = TextAlign.Center,
                     )
                     MoshiText(
                         text = stringResource(R.string.settings_app_version, versionName),
                         role = MoshiTextRole.Label12,
-                        color = Moshi.colors.gray900,
+                        color = Moshi.colors.foreground.secondary,
                         textAlign = TextAlign.Center,
                     )
                 }

@@ -39,7 +39,7 @@ fun MoshiNavigationDrawerItem(
     val colors = Moshi.colors
     val spacing = Moshi.spacing
     val shape = RoundedCornerShape(spacing.space3)
-    val containerColor = if (selected) colors.gray300 else Color.Transparent
+    val containerColor = if (selected) colors.background.selectedStrong else Color.Transparent
 
     Row(
         modifier = modifier
@@ -61,14 +61,14 @@ fun MoshiNavigationDrawerItem(
             painter = painterResource(if (selected) selectedIcon else icon),
             contentDescription = null,
             modifier = Modifier.size(spacing.space6),
-            tint = colors.gray1000,
+            tint = colors.foreground.primary,
         )
         Spacer(Modifier.width(spacing.space3))
         MoshiText(
             text = label,
             modifier = Modifier.weight(1f),
             role = MoshiTextRole.Label16,
-            color = colors.gray1000,
+            color = colors.foreground.primary,
         )
     }
 }
@@ -79,7 +79,7 @@ private fun MoshiNavigationDrawerItemPreview() {
     MoshiTheme {
         Column(
             modifier = Modifier
-                .background(Moshi.colors.gray100)
+                .background(Moshi.colors.background.subtle)
                 .padding(Moshi.spacing.space4),
             verticalArrangement = Arrangement.spacedBy(Moshi.spacing.space4),
         ) {

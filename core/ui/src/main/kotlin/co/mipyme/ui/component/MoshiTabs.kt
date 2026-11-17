@@ -37,7 +37,7 @@ fun MoshiTabs(
         selectedTabIndex = selectedIndex,
         modifier = modifier,
         containerColor = Color.Transparent,
-        contentColor = colors.gray1000,
+        contentColor = colors.foreground.primary,
         divider = {},
         indicator = {
             TabRowDefaults.PrimaryIndicator(
@@ -55,7 +55,7 @@ fun MoshiTabs(
                 },
                 width = Dp.Unspecified,
                 height = 2.dp,
-                color = colors.blue900,
+                color = colors.selection.indicator,
             )
         },
     ) {
@@ -64,13 +64,13 @@ fun MoshiTabs(
                 selected = selectedIndex == index,
                 onClick = { onTabSelected(index) },
                 modifier = Modifier.heightIn(min = spacing.space12),
-                selectedContentColor = colors.gray1000,
-                unselectedContentColor = colors.gray700,
+                selectedContentColor = colors.foreground.primary,
+                unselectedContentColor = colors.foreground.disabled,
                 text = {
                     MoshiText(
                         text = label,
                         role = MoshiTextRole.Label16,
-                        color = if (selectedIndex == index) colors.gray1000 else colors.gray700,
+                        color = if (selectedIndex == index) colors.foreground.primary else colors.foreground.disabled,
                     )
                 },
             )

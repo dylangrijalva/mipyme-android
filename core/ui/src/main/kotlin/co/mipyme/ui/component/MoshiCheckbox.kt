@@ -34,18 +34,18 @@ fun MoshiCheckbox(
     val colors = Moshi.colors
     val spacing = Moshi.spacing
     val fill = when {
-        !enabled && checked -> colors.gray600
-        !enabled -> colors.gray100
-        checked -> colors.gray1000
-        else -> colors.background100
+        !enabled && checked -> colors.selection.disabledFill
+        !enabled -> colors.background.disabled
+        checked -> colors.action.primary.background
+        else -> colors.background.surface
     }
     val borderColor = when {
-        !enabled && checked -> colors.gray600
-        !enabled -> colors.gray500
-        checked -> colors.gray1000
-        else -> colors.gray700
+        !enabled && checked -> colors.selection.disabledFill
+        !enabled -> colors.control.mutedBorder
+        checked -> colors.action.primary.background
+        else -> colors.control.border
     }
-    val checkColor = colors.background100
+    val checkColor = colors.foreground.inverse
 
     Box(
         modifier = modifier
@@ -86,7 +86,7 @@ private fun MoshiCheckboxPreview() {
     MoshiTheme {
         Column(
             modifier = Modifier
-                .background(Moshi.colors.background100)
+                .background(Moshi.colors.background.surface)
                 .padding(Moshi.spacing.space4),
             verticalArrangement = Arrangement.spacedBy(Moshi.spacing.space2),
         ) {

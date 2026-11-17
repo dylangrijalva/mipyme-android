@@ -11,8 +11,8 @@ There are 92 colors per theme, 70 P3 overrides per theme, 30 text styles, and 15
 The [component table](../../docs/geist-component-mapping.md) records state mappings and native
 Android adaptations. Spacing and geometry retain the existing Moshi values.
 
-Use `Moshi.colors.gray1000`, `Moshi.typography.copy16`, and `MoshiTextRole.Copy16`.
-The previous semantic color tree and six text-role aliases have been removed.
+Use semantic color roles such as `Moshi.colors.foreground.primary`, `Moshi.colors.border.focus`, and `Moshi.colors.action.primary.background`. The retained Geist palette is internal to the foundation and its fixture tests.
+Use `Moshi.typography.copy16` and `MoshiTextRole.Copy16` for text.
 See [DESIGN.md](../../DESIGN.md) for component usage and emphasis behavior.
 
 ## Fonts

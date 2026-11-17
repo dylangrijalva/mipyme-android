@@ -104,7 +104,7 @@ private fun VerifyOtpCodeContent(
     val keyboardController = LocalSoftwareKeyboardController.current
     val error = state.error
     val template = stringResource(R.string.verify_otp_code_description, "\u0000", OTP_CODE_LENGTH)
-    val description = remember(template, state.email, colors.gray1000) {
+    val description = remember(template, state.email, colors.foreground.primary) {
         val emailIndex = template.indexOf('\u0000')
         buildAnnotatedString {
             if (emailIndex < 0) {
@@ -131,7 +131,7 @@ private fun VerifyOtpCodeContent(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(colors.background100),
+            .background(colors.background.surface),
     ) {
         MoshiToolbar(navigation = MoshiToolbarNavigation.Back(onClick = onBack))
 
@@ -153,7 +153,7 @@ private fun VerifyOtpCodeContent(
             MoshiText(
                 text = description,
                 role = MoshiTextRole.Copy16,
-                color = colors.gray900,
+                color = colors.foreground.secondary,
             )
             Spacer(Modifier.height(spacing.space6))
             MoshiCodeField(
@@ -179,7 +179,7 @@ private fun VerifyOtpCodeContent(
                 MoshiText(
                     text = stringResource(R.string.verify_otp_code_resent),
                     role = MoshiTextRole.Label12,
-                    color = colors.green900,
+                    color = colors.foreground.success,
                 )
             }
             Spacer(Modifier.height(spacing.space6))
@@ -210,7 +210,7 @@ private fun VerifyOtpCodeContent(
             MoshiText(
                 text = stringResource(R.string.verify_otp_code_guidance),
                 role = MoshiTextRole.Copy14,
-                color = colors.gray900,
+                color = colors.foreground.secondary,
             )
             Spacer(Modifier.height(spacing.space4))
         }

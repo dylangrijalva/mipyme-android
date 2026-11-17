@@ -51,7 +51,7 @@ fun MoshiSearchField(
     val focused by interactionSource.collectIsFocusedAsState()
     val focusManager = LocalFocusManager.current
     val shape = RoundedCornerShape(spacing.space6)
-    val foreground = if (enabled) colors.gray1000 else colors.gray700
+    val foreground = if (enabled) colors.foreground.primary else colors.foreground.disabled
 
     BasicTextField(
         value = value,
@@ -60,7 +60,7 @@ fun MoshiSearchField(
         enabled = enabled,
         singleLine = true,
         textStyle = Moshi.typography.copy16.copy(color = foreground),
-        cursorBrush = SolidColor(colors.gray1000),
+        cursorBrush = SolidColor(colors.foreground.primary),
         interactionSource = interactionSource,
         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
         keyboardActions = KeyboardActions(onSearch = { focusManager.clearFocus() }),
@@ -68,11 +68,9 @@ fun MoshiSearchField(
             Row(
                 modifier = Modifier
                     .heightIn(min = spacing.space12)
-                    .background(if (enabled) colors.background100 else colors.gray100, shape)
-                    .border(
-                        width = if (focused && enabled) 2.dp else 1.dp,
-                        color = if (focused && enabled) colors.blue900 else colors.gray400,
-                        shape = shape,
+                    .background(colors.background.subtle, shape)
+                    .then(
+                        if (focused && enabled) Modifier.border(2.dp, colors.border.focus, shape) else Modifier,
                     )
                     .padding(start = spacing.space4),
                 verticalAlignment = Alignment.CenterVertically,
@@ -81,7 +79,7 @@ fun MoshiSearchField(
                     painter = painterResource(R.drawable.ic_fluent_search_24_regular),
                     contentDescription = null,
                     modifier = Modifier.size(spacing.space6),
-                    tint = if (enabled) colors.gray900 else colors.gray700,
+                    tint = if (enabled) colors.foreground.secondary else colors.foreground.disabled,
                 )
                 Spacer(Modifier.width(spacing.space2))
                 Box(
@@ -92,7 +90,7 @@ fun MoshiSearchField(
                     if (value.isEmpty()) {
                         MoshiText(
                             text = label,
-                            color = if (enabled) colors.gray900 else colors.gray700,
+                            color = if (enabled) colors.foreground.secondary else colors.foreground.disabled,
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis,
                         )

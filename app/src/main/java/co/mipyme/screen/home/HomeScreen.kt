@@ -178,7 +178,7 @@ private fun HomeContent(
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(Moshi.colors.background100),
+                    .background(Moshi.colors.background.surface),
             )
         } else {
             NavDisplay(
@@ -242,13 +242,13 @@ private fun HomeDrawerHeader(
         Box(
             modifier = Modifier
                 .size(spacing.space12)
-                .background(Moshi.colors.blue900, RoundedCornerShape(spacing.space3)),
+                .background(Moshi.colors.background.accent, RoundedCornerShape(spacing.space3)),
             contentAlignment = Alignment.Center,
         ) {
             MoshiText(
                 text = locationName.orEmpty().initials(),
                 role = MoshiTextRole.Heading20,
-                color = Moshi.colors.background100,
+                color = Moshi.colors.foreground.inverse,
                 modifier = Modifier.clearAndSetSemantics {},
             )
         }
@@ -263,7 +263,7 @@ private fun HomeDrawerHeader(
                 MoshiText(
                     text = email,
                     role = MoshiTextRole.Copy14,
-                    color = Moshi.colors.gray900,
+                    color = Moshi.colors.foreground.secondary,
                 )
             }
         }
@@ -272,7 +272,7 @@ private fun HomeDrawerHeader(
             painter = painterResource(R.drawable.ic_fluent_chevron_up_down_24_regular),
             contentDescription = null,
             modifier = Modifier.size(spacing.space4),
-            tint = Moshi.colors.gray1000,
+            tint = Moshi.colors.foreground.primary,
         )
     }
 }

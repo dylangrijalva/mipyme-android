@@ -27,16 +27,9 @@ fun MoshiMonogram(
 ) {
     val spacing = Moshi.spacing
     val colors = Moshi.colors
-    val palette = listOf(
-        colors.blue200 to colors.blue1000,
-        colors.green200 to colors.green1000,
-        colors.teal200 to colors.teal1000,
-        colors.purple200 to colors.purple1000,
-        colors.pink200 to colors.pink1000,
-        colors.amber200 to colors.amber1000,
-    )
+    val palette = colors.identity.swatches
     val (background, foreground) = if (colorSeed == null) {
-        colors.gray100 to colors.gray900
+        colors.background.subtle to colors.foreground.secondary
     } else {
         palette[Math.floorMod(colorSeed.hashCode(), palette.size)]
     }
@@ -47,7 +40,7 @@ fun MoshiMonogram(
     }
     Box(
         modifier = modifier
-            .size(spacing.space16)
+            .size(width = spacing.space16, height = spacing.space12)
             .clip(RoundedCornerShape(spacing.space2))
             .background(background)
             .padding(horizontal = spacing.space1)

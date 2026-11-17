@@ -74,14 +74,14 @@ class GeistRenderTest {
             val density = LocalDensity.current
             CompositionLocalProvider(LocalDensity provides Density(density.density, scale)) {
                 MoshiTheme(darkTheme = dark) {
-                    authoredSrgb = Moshi.colors.blue900.colorSpace == ColorSpaces.Srgb
+                    authoredSrgb = Moshi.colors.selection.foreground.colorSpace == ColorSpaces.Srgb
                     val resolver = LocalFontFamilyResolver.current
                     sansTypeface = resolver.resolve(Moshi.typography.copy16.fontFamily, FontWeight(550)).value as Typeface
                     monoTypeface = resolver.resolve(Moshi.typography.copy14Mono.fontFamily, FontWeight(550)).value as Typeface
                     Column(
                         modifier = Modifier
                             .testTag("geist-render")
-                            .background(Moshi.colors.background100)
+                            .background(Moshi.colors.background.surface)
                             .verticalScroll(rememberScrollState())
                             .padding(Moshi.spacing.space4),
                         verticalArrangement = Arrangement.spacedBy(Moshi.spacing.space3),

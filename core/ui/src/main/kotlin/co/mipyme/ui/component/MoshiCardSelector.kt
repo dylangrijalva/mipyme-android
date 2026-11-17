@@ -46,23 +46,23 @@ fun MoshiCardSelector(
     val colors = Moshi.colors
     val spacing = Moshi.spacing
     val shape = RoundedCornerShape(spacing.space2)
-    val selectedColor = colors.blue600
+    val selectedColor = colors.selection.border
     val labelColor = when {
-        !enabled -> colors.gray800
-        selected -> colors.blue900
-        else -> colors.gray1000
+        !enabled -> colors.foreground.disabledStrong
+        selected -> colors.selection.foreground
+        else -> colors.foreground.primary
     }
     val supportingColor = when {
-        !enabled -> colors.gray800
-        selected -> colors.blue900
-        else -> colors.gray900
+        !enabled -> colors.foreground.disabledStrong
+        selected -> colors.selection.foreground
+        else -> colors.foreground.secondary
     }
     val backgroundColor = when {
-        !enabled -> colors.gray100
-        selected -> colors.blue100
-        else -> colors.background100
+        !enabled -> colors.background.disabled
+        selected -> colors.selection.background
+        else -> colors.background.surface
     }
-    val borderColor = if (enabled && selected) colors.blue600 else colors.gray400
+    val borderColor = if (enabled && selected) colors.selection.border else colors.border.default
 
     Row(
         modifier = modifier
@@ -109,9 +109,9 @@ fun MoshiCardSelector(
             enabled = enabled,
             colors = RadioButtonDefaults.colors(
                 selectedColor = selectedColor,
-                unselectedColor = colors.gray500,
-                disabledSelectedColor = colors.gray700,
-                disabledUnselectedColor = colors.gray400,
+                unselectedColor = colors.control.mutedBorder,
+                disabledSelectedColor = colors.foreground.disabled,
+                disabledUnselectedColor = colors.border.default,
             ),
         )
     }
@@ -123,7 +123,7 @@ private fun MoshiCardSelectorPreview() {
     MoshiTheme {
         Column(
             modifier = Modifier
-                .background(Moshi.colors.background100)
+                .background(Moshi.colors.background.surface)
                 .padding(Moshi.spacing.space4)
                 .selectableGroup(),
             verticalArrangement = Arrangement.spacedBy(Moshi.spacing.space4),

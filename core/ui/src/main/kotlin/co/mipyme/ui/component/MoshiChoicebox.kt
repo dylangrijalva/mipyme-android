@@ -172,25 +172,25 @@ private fun ChoiceboxTile(
     val focused by interactionSource.collectIsFocusedAsState()
     val hovered by interactionSource.collectIsHoveredAsState()
     val borderColor = when {
-        enabled && (selected || focused) -> colors.blue600
-        enabled && hovered -> colors.gray500
-        else -> colors.gray400
+        enabled && (selected || focused) -> colors.selection.border
+        enabled && hovered -> colors.border.hovered
+        else -> colors.border.default
     }
     val optionBackground = when {
-        enabled && selected && hovered -> colors.blue200
-        enabled && selected -> colors.blue100
-        enabled && hovered -> colors.gray100
-        else -> colors.background100
+        enabled && selected && hovered -> colors.selection.hovered
+        enabled && selected -> colors.selection.background
+        enabled && hovered -> colors.background.subtle
+        else -> colors.background.surface
     }
     val titleColor = when {
-        !enabled -> colors.gray800
-        selected -> colors.blue900
-        else -> colors.gray1000
+        !enabled -> colors.foreground.disabledStrong
+        selected -> colors.selection.foreground
+        else -> colors.foreground.primary
     }
     val descriptionColor = when {
-        !enabled -> colors.gray800
-        selected -> colors.blue900
-        else -> colors.gray900
+        !enabled -> colors.foreground.disabledStrong
+        selected -> colors.selection.foreground
+        else -> colors.foreground.secondary
     }
     val selectionModifier = if (multiple) {
         Modifier.toggleable(
@@ -216,7 +216,7 @@ private fun ChoiceboxTile(
         modifier = modifier
             .sizeIn(minWidth = spacing.space12, minHeight = spacing.space12)
             .clip(shape)
-            .background(colors.background100)
+            .background(colors.background.surface)
             .border(if (enabled && focused) 2.dp else 1.dp, borderColor, shape)
             .then(selectionModifier),
     ) {
@@ -265,14 +265,14 @@ private fun ChoiceboxIndicator(selected: Boolean, multiple: Boolean, enabled: Bo
     val spacing = Moshi.spacing
     val shape = if (multiple) RoundedCornerShape(4.dp) else CircleShape
     val indicatorColor = when {
-        !enabled && selected -> if (multiple) colors.gray600 else colors.gray900
-        selected -> colors.blue900
-        else -> colors.gray500
+        !enabled && selected -> if (multiple) colors.selection.disabledFill else colors.selection.disabledDot
+        selected -> colors.selection.foreground
+        else -> colors.control.mutedBorder
     }
     val fill = when {
         multiple && selected -> indicatorColor
-        !enabled && !selected -> colors.gray100
-        else -> colors.background100
+        !enabled && !selected -> colors.background.disabled
+        else -> colors.background.surface
     }
     Box(
         modifier = Modifier
@@ -286,7 +286,7 @@ private fun ChoiceboxIndicator(selected: Boolean, multiple: Boolean, enabled: Bo
                 painter = painterResource(R.drawable.ic_fluent_checkmark_24_regular),
                 contentDescription = null,
                 modifier = Modifier.size(spacing.space3),
-                tint = colors.background100,
+                tint = colors.foreground.inverse,
             )
         } else if (selected) {
             Box(Modifier.size(spacing.space2).background(indicatorColor, CircleShape))
@@ -315,7 +315,7 @@ private fun MoshiChoiceboxPreview() {
         val label = stringResource(R.string.moshi_choicebox_preview_group)
         val reason = stringResource(R.string.moshi_choicebox_preview_disabled_reason)
         Column(
-            modifier = Modifier.background(Moshi.colors.background100).padding(spacing.space4),
+            modifier = Modifier.background(Moshi.colors.background.surface).padding(spacing.space4),
             verticalArrangement = Arrangement.spacedBy(spacing.space4),
         ) {
             MoshiChoicebox(label, options, selectedValue = "water7", onValueChange = {})

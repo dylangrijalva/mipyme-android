@@ -2,6 +2,7 @@ package co.mipyme.screen.inventory
 
 import android.widget.Toast
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
@@ -10,11 +11,15 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Icon
+import androidx.compose.material3.ripple
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.pluralStringResource
@@ -41,6 +46,7 @@ import co.mipyme.screen.home.LocalHomeDrawer
 import co.mipyme.ui.Moshi
 import co.mipyme.ui.MoshiTheme
 import co.mipyme.ui.component.*
+import coil3.compose.SubcomposeAsyncImage
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.module.Module
@@ -137,7 +143,7 @@ internal fun InventoryContent(
             if (!scrolling) actions.selectTab(InventoryTab.entries[page])
         }
     }
-    Column(Modifier.fillMaxSize().background(Moshi.colors.background100)) {
+    Column(Modifier.fillMaxSize().background(Moshi.colors.background.surface)) {
         MoshiToolbar(
             title = stringResource(R.string.home_destination_inventory),
             navigation = MoshiToolbarNavigation.Menu(onClick = LocalHomeDrawer.current::open),
@@ -262,13 +268,50 @@ private fun InventoryProducts(
 }
 
 @Composable
+internal fun InventoryProductListRow(row: InventoryProductRow, modifier: Modifier = Modifier) {
+    MoshiProductRow(
+        name = row.name,
+        price = row.price,
+        supportingText = if (row.isService) stringResource(R.string.inventory_service) else {
+            row.quantity?.let { stringResource(R.string.inventory_stock_quantity, it) }
+                ?: stringResource(R.string.inventory_stock_unavailable)
+        },
+        tag = row.badge?.let { badge ->
+            stringResource(when (badge) {
+                InventoryBadge.DRAFT -> R.string.inventory_status_draft
+                InventoryBadge.ARCHIVED -> R.string.inventory_status_archived
+                InventoryBadge.OUT_OF_STOCK -> R.string.inventory_out_of_stock
+            })
+        },
+        tagTone = if (row.badge == InventoryBadge.OUT_OF_STOCK) MoshiTagTone.Error else MoshiTagTone.Neutral,
+        onClick = {},
+        modifier = modifier,
+        image = {
+            SubcomposeAsyncImage(
+                model = row.imageUrl,
+                contentDescription = null,
+                modifier = Modifier
+                    .size(width = Moshi.spacing.space16, height = Moshi.spacing.space12)
+                    .clip(RoundedCornerShape(Moshi.spacing.space2)),
+                contentScale = ContentScale.Crop,
+                loading = { MoshiMonogram(row.name, Modifier.fillMaxSize()) },
+                error = { MoshiMonogram(row.name, Modifier.fillMaxSize()) },
+            )
+        },
+    )
+}
+
+@Composable
 private fun InventoryGroupHeading(group: InventoryGroup) {
     MoshiText(
         text = group.status?.let { stringResource(it.inventoryLabel()) }
             ?: group.categoryName ?: stringResource(R.string.inventory_uncategorized),
-        modifier = Modifier.fillMaxWidth().background(Moshi.colors.background100)
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(Moshi.colors.background.surface)
             .padding(horizontal = Moshi.spacing.pageGutterNarrow, vertical = Moshi.spacing.space3).semantics { heading() },
-        role = MoshiTextRole.Heading20,
+        role = MoshiTextRole.Heading14,
+        color = Moshi.colors.foreground.secondary
     )
 }
 
@@ -280,6 +323,21 @@ private fun InventoryCategories(state: InventoryScreenUiState, scroll: LazyListS
         LazyColumn(state = scroll, modifier = Modifier.fillMaxSize()) {
             items(state.visibleCategories, key = { it.id }) { InventoryCategoryListRow(it) }
         }
+    }
+}
+
+@Composable
+internal fun InventoryCategoryListRow(row: InventoryCategoryRow) {
+    val spacing = Moshi.spacing
+    Row(
+        modifier = Modifier.fillMaxWidth()
+            .clickable(interactionSource = null, indication = ripple(), onClick = {})
+            .padding(horizontal = spacing.pageGutterNarrow, vertical = spacing.space3),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        MoshiMonogram(row.name)
+        Spacer(Modifier.width(spacing.space3))
+        MoshiText(row.name, modifier = Modifier.weight(1f))
     }
 }
 
@@ -357,9 +415,12 @@ private fun inventoryPreviewState(
 
 private fun inventoryPreviewProducts(): List<InventoryListItem> {
     return listOf(
-        InventoryProductRow("sunny", "Thousand Sunny", null, "C$ 2,500.00", "12", false, null, null),
+        InventoryProductRow(
+            "sunny", "Thousand Sunny Straw Hat Pirates supplies and navigation services", null,
+            "C$ 999,999,999.99", "123,456.789", false, InventoryBadge.DRAFT, null,
+        ),
         InventoryProductRow("logpose", "Log Pose", null, "C$ 350.00", "0", false, InventoryBadge.OUT_OF_STOCK, null),
-        InventoryProductRow("merry", "Going Merry", null, "C$ 1,200.00", null, false, InventoryBadge.DRAFT, null),
+        InventoryProductRow("merry", "Going Merry", null, "C$ 1,200.00", "12", false, null, null),
         InventoryProductRow("den-den", "Den Den Mushi", null, "C$ 750.00", "3", false, InventoryBadge.ARCHIVED, null),
         InventoryProductRow("navigation", "Nami navigation", null, "C$ 150.00", null, true, null, null),
         InventoryProductRow("vivre", "Vivre Card", null, "C$ 25.00", null, false, null, null),
@@ -371,6 +432,8 @@ private fun inventoryPreviewNoMatches(query: CatalogQuery): InventoryScreenUiSta
 }
 
 @ScreenPreview
+@Preview(name = "Spanish large text light", locale = "es", fontScale = 2f, widthDp = 320, showSystemUi = true, uiMode = android.content.res.Configuration.UI_MODE_NIGHT_NO)
+@Preview(name = "Spanish large text dark", locale = "es", fontScale = 2f, widthDp = 320, showSystemUi = true, uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES)
 @Composable
 private fun InventoryProductsPreview() {
     MoshiTheme { InventoryContent(inventoryPreviewState()) }
@@ -468,26 +531,6 @@ private fun InventoryCategoryGroupingPreview() {
 @Preview(name = "Spanish large text light", locale = "es", fontScale = 2f, widthDp = 320, showSystemUi = true, uiMode = android.content.res.Configuration.UI_MODE_NIGHT_NO)
 @Preview(name = "Spanish large text dark", locale = "es", fontScale = 2f, widthDp = 320, showSystemUi = true, uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES)
 @Composable
-private fun InventoryLongProductsPreview() {
-    val row = (inventoryPreviewProducts().first() as InventoryListItem.ProductItem).row.copy(
-        name = "Thousand Sunny Straw Hat Pirates supplies and navigation services",
-        price = "C$ 999,999,999.99",
-        quantity = "123,456.789",
-        badge = InventoryBadge.DRAFT,
-    )
-    MoshiTheme { InventoryContent(inventoryPreviewState(listOf(InventoryListItem.ProductItem(row)))) }
-}
-
-@ScreenPreview
-@Preview(name = "Spanish large text light", locale = "es", fontScale = 2f, widthDp = 320, showSystemUi = true, uiMode = android.content.res.Configuration.UI_MODE_NIGHT_NO)
-@Preview(name = "Spanish large text dark", locale = "es", fontScale = 2f, widthDp = 320, showSystemUi = true, uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES)
-@Composable
 private fun InventoryNoMatchesLargeTextPreview() {
     MoshiTheme { InventoryContent(inventoryPreviewNoMatches(CatalogQuery(text = "Zoro", type = ProductType.SERVICE))) }
-}
-
-@ScreenPreview
-@Composable
-private fun InventoryServicesAndUnavailableStockPreview() {
-    MoshiTheme { InventoryContent(inventoryPreviewState(inventoryPreviewProducts().takeLast(2))) }
 }

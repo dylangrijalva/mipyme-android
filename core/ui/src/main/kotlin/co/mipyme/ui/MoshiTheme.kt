@@ -14,8 +14,9 @@ import androidx.compose.ui.platform.LocalResources
 import co.mipyme.ui.foundation.MoshiColors
 import co.mipyme.ui.foundation.MoshiSpacing
 import co.mipyme.ui.foundation.MoshiTypography
-import co.mipyme.ui.foundation.darkMoshiColors
-import co.mipyme.ui.foundation.lightMoshiColors
+import co.mipyme.ui.foundation.toSemanticColors
+import co.mipyme.ui.foundation.darkMoshiPalette
+import co.mipyme.ui.foundation.lightMoshiPalette
 
 private val LocalMoshiColors = staticCompositionLocalOf<MoshiColors> {
     error("Moshi.colors must be read inside MoshiTheme")
@@ -37,7 +38,7 @@ fun MoshiTheme(
     // Compose UI 1.11 converts solid paint colors to sRGB. Use Geist's authored fallback,
     // rather than clipping its P3 override through that renderer.
     val colors = remember(darkTheme) {
-        if (darkTheme) darkMoshiColors() else lightMoshiColors()
+        (if (darkTheme) darkMoshiPalette() else lightMoshiPalette()).toSemanticColors()
     }
     val typography = remember { MoshiTypography() }
     val configuration = LocalConfiguration.current

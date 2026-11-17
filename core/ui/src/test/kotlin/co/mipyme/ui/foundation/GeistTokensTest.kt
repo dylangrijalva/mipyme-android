@@ -25,7 +25,7 @@ class GeistTokensTest {
     }
 
     private fun palette(theme: String, p3: Boolean = false): Map<String, Color> {
-        val colors = if (theme == "light") lightMoshiColors(p3) else darkMoshiColors(p3)
+        val colors = if (theme == "light") lightMoshiPalette(p3) else darkMoshiPalette(p3)
         return mapOf(
             "gray100" to colors.gray100,
             "gray200" to colors.gray200,
@@ -147,8 +147,8 @@ class GeistTokensTest {
                 assertEquals("$theme $name blue", channel(4f), actual.blue, 0.002f)
             }
         }
-        assertEquals(13f / 255f, lightMoshiColors().grayAlpha100.alpha, 0.00001f)
-        assertEquals(15f / 255f, darkMoshiColors().grayAlpha100.alpha, 0.00001f)
+        assertEquals(13f / 255f, lightMoshiPalette().grayAlpha100.alpha, 0.00001f)
+        assertEquals(15f / 255f, darkMoshiPalette().grayAlpha100.alpha, 0.00001f)
     }
 
     @Test
@@ -162,8 +162,8 @@ class GeistTokensTest {
             assertEquals(row.take(2).toString(), row[4].toFloat(), color.green, 0.002f)
             assertEquals(row.take(2).toString(), row[5].toFloat(), color.blue, 0.002f)
         }
-        assertEquals(ColorSpaces.Srgb, lightMoshiColors(true).gray100.colorSpace)
-        assertEquals(ColorSpaces.Srgb, darkMoshiColors(true).background100.colorSpace)
+        assertEquals(ColorSpaces.Srgb, lightMoshiPalette(true).gray100.colorSpace)
+        assertEquals(ColorSpaces.Srgb, darkMoshiPalette(true).background100.colorSpace)
     }
 
     @Test
@@ -216,7 +216,7 @@ class GeistTokensTest {
 
     @Test
     fun exactModifiersAndExplicitOrDisabledColorsTakePrecedence() {
-        val colors = lightMoshiColors()
+        val colors = lightMoshiPalette().toSemanticColors()
         var count = 0
         for (role in MoshiTextRole.entries) {
             val emphasis = if (role.name in listOf("Heading16", "Heading20", "Heading24", "Heading32")) {
@@ -225,7 +225,7 @@ class GeistTokensTest {
             val span = runCatching { role.emphasisStyle(emphasis, colors) }.getOrNull() ?: continue
             count++
             assertEquals(if (role.name.startsWith("Copy")) 550 else 500, span.fontWeight!!.weight)
-            assertEquals(if (emphasis == MoshiTextEmphasis.Subtle) colors.gray900 else colors.gray1000, span.color)
+            assertEquals(if (emphasis == MoshiTextEmphasis.Subtle) colors.foreground.secondary else colors.foreground.primary, span.color)
         }
         assertEquals(15, count)
         val annotated = buildAnnotatedString {
@@ -235,7 +235,7 @@ class GeistTokensTest {
         val normal = emphasizedText(annotated, MoshiTextRole.Copy16, MoshiTextEmphasis.Default, colors, Color.Unspecified)
         assertEquals(550, normal.spanStyles.single().item.fontWeight!!.weight)
         assertEquals(5, normal.spanStyles.single().start)
-        for (override in listOf(colors.gray700, colors.red900)) {
+        for (override in listOf(colors.foreground.disabled, colors.foreground.danger)) {
             val text = emphasizedText(annotated, MoshiTextRole.Copy16, MoshiTextEmphasis.Strong, colors, override)
             assertTrue(text.spanStyles.all { it.item.color == override })
         }
@@ -247,7 +247,7 @@ class GeistTokensTest {
             withMoshiEmphasis { withStyle(caller) { append("Copy") } }
         }
         val result = emphasizedText(text, MoshiTextRole.Copy16, MoshiTextEmphasis.Strong,
-            lightMoshiColors(), Color.Unspecified)
+            lightMoshiPalette().toSemanticColors(), Color.Unspecified)
         // Later spans win in AnnotatedString. Caller styling must remain the last layer.
         assertEquals(caller, result.spanStyles.last().item)
         assertEquals(3, result.spanStyles.size)

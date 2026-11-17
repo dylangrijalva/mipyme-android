@@ -69,9 +69,9 @@ fun MoshiCodeField(
     val keyboardController = LocalSoftwareKeyboardController.current
     val activeIndex = value.length.coerceAtMost(length - 1)
     val supportingColor = when {
-        !enabled -> colors.gray700
-        isError -> colors.red900
-        else -> colors.gray900
+        !enabled -> colors.foreground.disabled
+        isError -> colors.foreground.danger
+        else -> colors.foreground.secondary
     }
     val containerClickModifier = if (enabled) {
         Modifier.pointerInput(Unit) {
@@ -160,10 +160,10 @@ private fun CodeCell(
     val colors = Moshi.colors
     val shape = RoundedCornerShape(6.dp)
     val borderColor = when {
-        !enabled -> colors.gray400
-        isError -> colors.red900
-        isActive -> colors.blue900
-        else -> colors.gray500
+        !enabled -> colors.control.disabledBorder
+        isError -> colors.border.error
+        isActive -> colors.border.focus
+        else -> colors.control.mutedBorder
     }
     val borderWidth = if (enabled && isActive) 2.dp else 1.dp
 
@@ -171,7 +171,7 @@ private fun CodeCell(
         modifier = modifier
             .heightIn(min = Moshi.spacing.space16)
             .background(
-                color = if (enabled) colors.background100 else colors.gray100,
+                color = if (enabled) colors.background.surface else colors.background.disabled,
                 shape = shape,
             )
             .border(borderWidth, borderColor, shape)
@@ -182,7 +182,7 @@ private fun CodeCell(
             MoshiText(
                 text = digit.toString(),
                 role = MoshiTextRole.Label20,
-                color = if (enabled) colors.gray1000 else colors.gray700,
+                color = if (enabled) colors.foreground.primary else colors.foreground.disabled,
                 textAlign = TextAlign.Center,
                 maxLines = 1,
             )
@@ -196,7 +196,7 @@ private fun MoshiCodeFieldPreview() {
     MoshiTheme {
         Column(
             modifier = Modifier
-                .background(Moshi.colors.background100)
+                .background(Moshi.colors.background.surface)
                 .padding(Moshi.spacing.space4),
             verticalArrangement = Arrangement.spacedBy(Moshi.spacing.space4),
         ) {

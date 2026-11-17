@@ -153,7 +153,7 @@ private fun WelcomeContent(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Moshi.colors.background100)
+            .background(Moshi.colors.background.surface)
             .safeDrawingPadding()
             .padding(horizontal = spacing.pageGutterNarrow),
     ) {
@@ -261,7 +261,7 @@ private fun WelcomeSlidePage(slide: WelcomeSlide) {
                 .padding(top = spacing.space2),
             role = MoshiTextRole.Copy16,
             textAlign = TextAlign.Center,
-            color = Moshi.colors.gray900,
+            color = Moshi.colors.foreground.secondary,
         )
     }
 }
@@ -275,7 +275,7 @@ private fun TermsRow(
 ) {
     val linkStyle = TextLinkStyles(
         style = SpanStyle(
-            color = Moshi.colors.blue900,
+            color = Moshi.colors.foreground.accent,
             textDecoration = TextDecoration.Underline,
             fontWeight = FontWeight.Medium,
         ),
@@ -307,7 +307,7 @@ private fun TermsRow(
                 .weight(1f)
                 .clickable { onAcceptedChange(!accepted) },
             role = MoshiTextRole.Copy14,
-            color = Moshi.colors.gray900,
+            color = Moshi.colors.foreground.secondary,
             textAlign = TextAlign.Start,
         )
     }

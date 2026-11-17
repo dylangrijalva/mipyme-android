@@ -30,7 +30,7 @@ fun MoshiIconButton(
     enabled: Boolean = true,
 ) {
     val spacing = Moshi.spacing
-    val color = if (enabled) Moshi.colors.gray1000 else Moshi.colors.gray700
+    val color = if (enabled) Moshi.colors.foreground.primary else Moshi.colors.foreground.disabled
     Box(
         modifier = modifier
             .sizeIn(minWidth = spacing.space12, minHeight = spacing.space12)

@@ -102,12 +102,36 @@ selected state. The underline matches the measured label width; provide a `pageP
 returning the fractional pager position to move it with a horizontal pager. The lambda is read during
 layout. Callers own the selected index and tab click behavior.
 
-### MoshiStatusBadge
+### MoshiTag
 
-Use for a noninteractive, labeled status. `Neutral` uses gray100 background and gray900 foreground
-colors. `Warning`, `Error`, and `Success` use the matching Geist scale steps 100 and 900. The Label12 label
-wraps, so status information remains available at larger font sizes. Always include a label rather
+Use for a noninteractive, labeled status. `Neutral`, `Warning`, `Error`, and `Success` use their shared status background and foreground
+roles, retaining the current Geist scale values. The uppercase Label12 label
+stays on one line and ellipsizes when constrained; its full text remains available to accessibility. Always include a label rather
 than communicating status through color alone. Keep domain-specific status selection in the caller.
+
+### MoshiProductRow
+
+Use for product lists in inventory or a sale picker. Supply the name, formatted price, supporting
+text, optional tag and tone, and click callback. The component has no domain state. Callers select
+status, aggregate stock, and format currency using the merchant's country. Inventory gives archived
+and draft status precedence over out-of-stock, uses neutral lifecycle tags and a warning stock tag,
+and supplies localized service, missing-stock, or quantity text.
+
+The image is 64 dp with 8 dp corners. An optional image slot lets consumers use their existing image
+loader without adding a UI dependency. The slot must show `MoshiMonogram(name)` while loading or on
+failure; omitting the slot displays that fallback directly. It shows a shortened name, not initials.
+The name starts at Copy16, shrinks to 12 sp, and then ellipsizes on one line. The optional tag follows
+the measured name with an 8 dp gap. Right-aligned Copy16 price and secondary Copy14 supporting text
+have priority over the flexible name area. All rows are 88 dp at the default font scale and grow by
+the same font-scale multiplier, independent of their content. `showDivider` adds a bottom divider
+inset past the image. The full row has ripple feedback; disabled rows expose disabled semantics and
+ignore clicks. Callers retain navigation behavior.
+
+Finite horizontal space cannot fit arbitrary prices, supporting text, and tags at every font scale.
+At narrow widths or large accessibility scales, the name and tag truncate. The tag is capped at half
+the available name area so both can share that area, with their full text retained in semantics.
+Trailing values can still exhaust the available width at extreme sizes. Validate the consumer's
+supported device sizes and locales.
 
 ### MoshiIconButton
 
@@ -430,11 +454,13 @@ from accessibility services. Pass a `modifier` to inset it from the edges or to 
 
 ## Geist foundations
 
-`Moshi.colors` exposes `background100`, `background200`, and the ten steps `100` through
-`1000` in `gray`, `grayAlpha`, `blue`, `red`, `amber`, `green`, `teal`, `purple`, and `pink`.
-Choose the actual treatment from the component mapping. Gray900 is secondary text and gray1000
-is primary text. GrayAlpha is for translucent edges and overlays. Old semantic token aliases
-have been removed.
+`Moshi.colors` exposes shared semantic groups. Use `foreground.primary` and
+`foreground.secondary` for text, `background.surface` and `background.subtle` for surfaces,
+`border.default` and `border.focus` for outlines, and the `action`, `selection`, `control`,
+`progress`, `overlay`, and `status` groups for their matching purposes. These roles preserve the
+current light and dark Geist-derived values. The palette stays inside the foundation and its tests;
+components and screens consume semantic roles. Decorative identity swatches retain their stable
+blue, green, teal, purple, pink, amber order and remain separate from status colors.
 
 `Moshi.typography` and `MoshiTextRole` expose all 30 retained Geist styles, such as `heading24`
 / `Heading24`, `button14` / `Button14`, `label14` / `Label14`, and `copy16` / `Copy16`.

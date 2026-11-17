@@ -22,4 +22,14 @@
     <string name="moshi_tabs_preview_categories">Categories</string>
     <string name="moshi_badge_preview_label">Draft</string>
     <string name="moshi_pull_refresh_preview_label">Pull down to refresh</string>
+    <string name="moshi_product_preview_name">Straw Hat Pirates</string>
+    <string name="moshi_product_preview_price">C$12,500.00</string>
+    <string name="moshi_product_preview_stock">12 in stock</string>
+    <string name="moshi_product_preview_zero_stock">0 in stock</string>
+    <string name="moshi_product_preview_archived">Archived</string>
+    <string name="moshi_product_preview_out_of_stock">Out of stock</string>
+    <string name="moshi_product_preview_stock_not_set">Stock not set</string>
+    <string name="moshi_product_preview_service">Service</string>
+    <string name="moshi_product_preview_service_name">Water 7 ship repair</string>
+    <string name="moshi_product_preview_long_name">Straw Hat Pirates Thousand Sunny commemorative model ship</string>
 </resources>

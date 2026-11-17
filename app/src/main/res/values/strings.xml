@@ -163,7 +163,7 @@
     <string name="inventory_clear_search">Clear search</string>
     <string name="inventory_clear_filters">Clear filters</string>
     <string name="inventory_stock_quantity">%1$s in stock</string>
-    <string name="inventory_stock_unavailable">Stock unavailable</string>
+    <string name="inventory_stock_unavailable">Stock not set</string>
     <string name="inventory_out_of_stock">Out of stock</string>
     <string name="inventory_status_active">Active</string>
     <string name="inventory_status_draft">Draft</string>

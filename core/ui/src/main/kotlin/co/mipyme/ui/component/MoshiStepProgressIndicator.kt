@@ -64,7 +64,7 @@ private fun StepProgressSegment(
     modifier: Modifier = Modifier,
 ) {
     val color by animateColorAsState(
-        targetValue = if (active) Moshi.colors.gray1000 else Moshi.colors.gray400,
+        targetValue = if (active) Moshi.colors.foreground.primary else Moshi.colors.progress.track,
         label = "stepProgressSegmentColor",
     )
 
@@ -84,7 +84,7 @@ private fun MoshiStepProgressIndicatorPreview() {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(Moshi.colors.background100)
+                .background(Moshi.colors.background.surface)
                 .padding(Moshi.spacing.space4),
             verticalArrangement = Arrangement.spacedBy(Moshi.spacing.space2),
         ) {

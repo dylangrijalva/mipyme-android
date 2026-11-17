@@ -382,7 +382,7 @@ private fun PickerDialogFrame(title: String, onDismiss: () -> Unit, wide: Boolea
             Column(
                 Modifier.padding(Moshi.spacing.space2)
                     .widthIn(max = if (wide) 840.dp else 480.dp).fillMaxWidth()
-                    .clip(RoundedCornerShape(Moshi.spacing.space3)).background(Moshi.colors.background100)
+                    .clip(RoundedCornerShape(Moshi.spacing.space3)).background(Moshi.colors.background.surface)
                     .semantics { paneTitle = title }
                     .verticalScroll(rememberScrollState()).padding(Moshi.spacing.space2),
             ) {
@@ -514,8 +514,8 @@ private fun CalendarDays(
                                 ).joinToString(", ")
                                 Box(
                                     Modifier.size(cell).clip(shape)
-                                        .background(if (active) Moshi.colors.gray1000 else if (inside) Moshi.colors.gray200 else Moshi.colors.background100)
-                                        .then(if (date == today) Modifier.border(1.dp, Moshi.colors.blue900, shape) else Modifier)
+                                        .background(if (active) Moshi.colors.action.primary.background else if (inside) Moshi.colors.background.selected else Moshi.colors.background.surface)
+                                        .then(if (date == today) Modifier.border(1.dp, Moshi.colors.border.focus, shape) else Modifier)
                                         .clickable(enabled = allowed, role = Role.Button) { onSelect(date) }
                                         .semantics(mergeDescendants = true) {
                                             contentDescription = date.format(DateTimeFormatter.ofLocalizedDate(FormatStyle.FULL).withLocale(locale))
@@ -525,7 +525,7 @@ private fun CalendarDays(
                                     contentAlignment = Alignment.Center,
                                 ) {
                                     MoshiText(localizedNumber(number, locale), role = MoshiTextRole.Copy14,
-                                        color = if (!allowed) Moshi.colors.gray700 else if (active) Moshi.colors.background100 else Moshi.colors.gray1000,
+                                        color = if (!allowed) Moshi.colors.foreground.disabled else if (active) Moshi.colors.action.primary.foreground else Moshi.colors.foreground.primary,
                                         modifier = Modifier.clearAndSetSemantics { })
                                 }
                             }
@@ -566,7 +566,7 @@ private fun TimeUnitSelection(label: String, value: String, previous: String, ne
 
 @Composable
 private fun PickerError(text: String) {
-    MoshiText(text, color = Moshi.colors.red900, modifier = Modifier.semantics { error(text); liveRegion = LiveRegionMode.Polite })
+    MoshiText(text, color = Moshi.colors.foreground.danger, modifier = Modifier.semantics { error(text); liveRegion = LiveRegionMode.Polite })
 }
 
 @Composable
@@ -604,7 +604,7 @@ private fun naturalHelp(locale: Locale): String {
 @Composable
 private fun MoshiDatePickerVariantsPreview() {
     MoshiTheme {
-        Column(Modifier.background(Moshi.colors.background100).padding(Moshi.spacing.space4), verticalArrangement = Arrangement.spacedBy(Moshi.spacing.space2)) {
+        Column(Modifier.background(Moshi.colors.background.surface).padding(Moshi.spacing.space4), verticalArrangement = Arrangement.spacedBy(Moshi.spacing.space2)) {
             val date = LocalDate.of(2026, 11, 16)
             MoshiDatePicker(date, {})
             MoshiDateRangePicker(MoshiDateRange(date, date.plusDays(4)), {})
@@ -643,7 +643,7 @@ private fun CalendarPreview(wide: Boolean) {
         val date = LocalDate.of(2026, 11, 16)
         val range = MoshiDateRange(date, date.plusDays(4))
         val constraints = MoshiDateConstraints(isDateDisabled = { it.dayOfWeek == DayOfWeek.SUNDAY })
-        Column(Modifier.background(Moshi.colors.background100).padding(Moshi.spacing.space2)) {
+        Column(Modifier.background(Moshi.colors.background.surface).padding(Moshi.spacing.space2)) {
             Row {
                 CalendarPanel(YearMonth.from(date), {}, date, range, constraints, date, Locale.US, Modifier.weight(1f)) {}
                 if (wide) {

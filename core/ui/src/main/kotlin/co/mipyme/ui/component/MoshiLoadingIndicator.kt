@@ -17,8 +17,8 @@ fun MoshiLoadingIndicator(modifier: Modifier = Modifier) {
     val description = stringResource(R.string.moshi_button_loading)
     CircularProgressIndicator(
         modifier = modifier.size(Moshi.spacing.space8).semantics { contentDescription = description },
-        color = Moshi.colors.gray1000,
-        trackColor = Moshi.colors.gray100,
+        color = Moshi.colors.progress.foreground,
+        trackColor = Moshi.colors.progress.subtleTrack,
     )
 }
 

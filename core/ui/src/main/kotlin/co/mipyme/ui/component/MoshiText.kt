@@ -1,5 +1,6 @@
 package co.mipyme.ui.component
 
+import androidx.compose.foundation.text.TextAutoSize
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
@@ -105,63 +106,63 @@ internal fun MoshiTextRole.emphasisStyle(emphasis: MoshiTextEmphasis, colors: Mo
     return when (this) {
         MoshiTextRole.Heading16 -> {
             require(emphasis == MoshiTextEmphasis.Subtle) { "heading16 supports subtle emphasis" }
-            SpanStyle(fontWeight = FontWeight(500), color = colors.gray900)
+            SpanStyle(fontWeight = FontWeight(500), color = colors.foreground.secondary)
         }
         MoshiTextRole.Heading20 -> {
             require(emphasis == MoshiTextEmphasis.Subtle) { "heading20 supports subtle emphasis" }
-            SpanStyle(fontWeight = FontWeight(500), color = colors.gray900)
+            SpanStyle(fontWeight = FontWeight(500), color = colors.foreground.secondary)
         }
         MoshiTextRole.Heading24 -> {
             require(emphasis == MoshiTextEmphasis.Subtle) { "heading24 supports subtle emphasis" }
-            SpanStyle(fontWeight = FontWeight(500), color = colors.gray900)
+            SpanStyle(fontWeight = FontWeight(500), color = colors.foreground.secondary)
         }
         MoshiTextRole.Heading32 -> {
             require(emphasis == MoshiTextEmphasis.Subtle) { "heading32 supports subtle emphasis" }
-            SpanStyle(fontWeight = FontWeight(500), color = colors.gray900)
+            SpanStyle(fontWeight = FontWeight(500), color = colors.foreground.secondary)
         }
         MoshiTextRole.Copy13 -> {
             require(emphasis == MoshiTextEmphasis.Strong) { "copy13 supports strong emphasis" }
-            SpanStyle(fontWeight = FontWeight(550), color = colors.gray1000)
+            SpanStyle(fontWeight = FontWeight(550), color = colors.foreground.primary)
         }
         MoshiTextRole.Copy14 -> {
             require(emphasis == MoshiTextEmphasis.Strong) { "copy14 supports strong emphasis" }
-            SpanStyle(fontWeight = FontWeight(550), color = colors.gray1000)
+            SpanStyle(fontWeight = FontWeight(550), color = colors.foreground.primary)
         }
         MoshiTextRole.Copy14Mono -> {
             require(emphasis == MoshiTextEmphasis.Strong) { "copy14Mono supports strong emphasis" }
-            SpanStyle(fontWeight = FontWeight(550), color = colors.gray1000)
+            SpanStyle(fontWeight = FontWeight(550), color = colors.foreground.primary)
         }
         MoshiTextRole.Copy16 -> {
             require(emphasis == MoshiTextEmphasis.Strong) { "copy16 supports strong emphasis" }
-            SpanStyle(fontWeight = FontWeight(550), color = colors.gray1000)
+            SpanStyle(fontWeight = FontWeight(550), color = colors.foreground.primary)
         }
         MoshiTextRole.Copy18 -> {
             require(emphasis == MoshiTextEmphasis.Strong) { "copy18 supports strong emphasis" }
-            SpanStyle(fontWeight = FontWeight(550), color = colors.gray1000)
+            SpanStyle(fontWeight = FontWeight(550), color = colors.foreground.primary)
         }
         MoshiTextRole.Copy20 -> {
             require(emphasis == MoshiTextEmphasis.Strong) { "copy20 supports strong emphasis" }
-            SpanStyle(fontWeight = FontWeight(550), color = colors.gray1000)
+            SpanStyle(fontWeight = FontWeight(550), color = colors.foreground.primary)
         }
         MoshiTextRole.Copy24 -> {
             require(emphasis == MoshiTextEmphasis.Strong) { "copy24 supports strong emphasis" }
-            SpanStyle(fontWeight = FontWeight(550), color = colors.gray1000)
+            SpanStyle(fontWeight = FontWeight(550), color = colors.foreground.primary)
         }
         MoshiTextRole.Label12 -> {
             require(emphasis == MoshiTextEmphasis.Strong) { "label12 supports strong emphasis" }
-            SpanStyle(fontWeight = FontWeight(500), color = colors.gray1000)
+            SpanStyle(fontWeight = FontWeight(500), color = colors.foreground.primary)
         }
         MoshiTextRole.Label13 -> {
             require(emphasis == MoshiTextEmphasis.Strong) { "label13 supports strong emphasis" }
-            SpanStyle(fontWeight = FontWeight(500), color = colors.gray1000)
+            SpanStyle(fontWeight = FontWeight(500), color = colors.foreground.primary)
         }
         MoshiTextRole.Label14 -> {
             require(emphasis == MoshiTextEmphasis.Strong) { "label14 supports strong emphasis" }
-            SpanStyle(fontWeight = FontWeight(500), color = colors.gray1000)
+            SpanStyle(fontWeight = FontWeight(500), color = colors.foreground.primary)
         }
         MoshiTextRole.Label16 -> {
             require(emphasis == MoshiTextEmphasis.Strong) { "label16 supports strong emphasis" }
-            SpanStyle(fontWeight = FontWeight(500), color = colors.gray1000)
+            SpanStyle(fontWeight = FontWeight(500), color = colors.foreground.primary)
         }
         else -> error("$this has no Geist emphasis modifier")
     }
@@ -212,8 +213,9 @@ fun MoshiText(
     textAlign: TextAlign = TextAlign.Start,
     maxLines: Int = Int.MAX_VALUE,
     overflow: TextOverflow = TextOverflow.Clip,
+    autoSize: TextAutoSize? = null,
 ) {
-    MoshiText(AnnotatedString(text), modifier, role, color, emphasis, textAlign, maxLines, overflow)
+    MoshiText(AnnotatedString(text), modifier, role, color, emphasis, textAlign, maxLines, overflow, autoSize)
 }
 
 @Composable
@@ -226,17 +228,19 @@ fun MoshiText(
     textAlign: TextAlign = TextAlign.Start,
     maxLines: Int = Int.MAX_VALUE,
     overflow: TextOverflow = TextOverflow.Clip,
+    autoSize: TextAutoSize? = null,
 ) {
     val inheritedColor = LocalMoshiTextColor.current
     val colorOverride = color.takeOrElse { inheritedColor }
     Text(
         text = emphasizedText(text, role, emphasis, Moshi.colors, colorOverride),
         modifier = modifier,
-        color = colorOverride.takeOrElse { Moshi.colors.gray1000 },
+        color = colorOverride.takeOrElse { Moshi.colors.foreground.primary },
         textAlign = textAlign,
         maxLines = maxLines,
         overflow = overflow,
         style = role.style(Moshi.typography),
+        autoSize = autoSize,
     )
 }
 
@@ -246,7 +250,7 @@ private fun MoshiTextRolesPreview() {
     MoshiTheme {
         androidx.compose.foundation.layout.Column(
             modifier = Modifier
-                .background(Moshi.colors.background100)
+                .background(Moshi.colors.background.surface)
                 .padding(Moshi.spacing.space4),
         ) {
             for (role in MoshiTextRole.entries) {
