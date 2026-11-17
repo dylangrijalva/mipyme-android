@@ -164,55 +164,9 @@ internal fun InventoryContent(
             pagePosition = { pagerState.currentPage + pagerState.currentPageOffsetFraction },
         )
         HorizontalPager(state = pagerState, modifier = Modifier.weight(1f).fillMaxWidth(), key = { it }) { page ->
-            Column(Modifier.fillMaxSize()) {
-                Spacer(Modifier.height(spacing.space4))
-                val productsTab = page == InventoryTab.PRODUCTS.ordinal
-                val trulyEmpty = if (productsTab) state.totalProducts == 0 else state.categories?.isEmpty() == true
-                val metadataReady = if (productsTab) state.totalProducts != null else state.categories != null
-                if (!trulyEmpty && metadataReady) {
-                    Row(Modifier.fillMaxWidth().padding(horizontal = spacing.pageGutterNarrow), verticalAlignment = Alignment.CenterVertically) {
-                        MoshiSearchField(
-                            value = if (productsTab) state.query.text else state.categoryQuery,
-                            onValueChange = if (productsTab) actions.productQuery else actions.categoryQuery,
-                            label = stringResource(if (productsTab) R.string.inventory_search_products else R.string.inventory_search_categories),
-                            modifier = Modifier.weight(1f),
-                            clearLabel = stringResource(R.string.inventory_clear_search),
-                        )
-                        if (productsTab) {
-                            Spacer(Modifier.width(spacing.space1))
-                            MoshiIconButton(R.drawable.ic_fluent_filter_24_regular, stringResource(R.string.inventory_filters), actions.openFilters)
-                            MoshiIconButton(R.drawable.ic_fluent_barcode_scanner_24_regular, stringResource(R.string.inventory_scan), actions.scan, enabled = !scanning)
-                        }
-                    }
-                    Spacer(Modifier.height(spacing.space2))
-                    if (productsTab && state.query.filterCount > 0) {
-                        FlowRow(Modifier.fillMaxWidth().padding(horizontal = spacing.pageGutterNarrow),
-                            horizontalArrangement = Arrangement.spacedBy(spacing.space2), verticalArrangement = Arrangement.spacedBy(spacing.space2)) {
-                            MoshiPill(pluralStringResource(R.plurals.inventory_filter_count, state.query.filterCount, state.query.filterCount), true, actions.openFilters)
-                            MoshiPill(stringResource(R.string.inventory_clear_filters), false, actions.clearFilters)
-                        }
-                        Spacer(Modifier.height(spacing.space2))
-                    }
-                }
-                val tabContent: @Composable BoxScope.() -> Unit = {
-                    when {
-                        state.localDataError -> InventoryLocalError(actions.retryLocal)
-                        !metadataReady -> Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) { MoshiLoadingIndicator() }
-                        trulyEmpty -> InventoryEmptySection(productsTab, state.canAdd, actions.showAdd)
-                        productsTab -> key(state.products) {
-                            val products = state.products.collectAsLazyPagingItems()
-                            InventoryProducts(state, products, productScroll, actions)
-                        }
-                        else -> InventoryCategories(state, categoryScroll, actions)
-                    }
-                }
-                if (metadataReady && !trulyEmpty) {
-                    MoshiPullToRefreshBox(
-                        state.refreshing, actions.refresh, Modifier.weight(1f).fillMaxWidth(), content = tabContent,
-                    )
-                } else {
-                    Box(Modifier.weight(1f).fillMaxWidth(), content = tabContent)
-                }
+            when (InventoryTab.entries[page]) {
+                InventoryTab.PRODUCTS -> InventoryProductsPage(state, productScroll, actions, scanning)
+                InventoryTab.CATEGORIES -> InventoryCategoriesPage(state, categoryScroll, actions)
             }
         }
     }
@@ -220,6 +174,129 @@ internal fun InventoryContent(
         InventoryFilterSheet(draft, state.categories.orEmpty(), actions.changeDraft, actions.applyFilters, actions.dismissFilters)
     }
     if (state.showAddSheet && state.canAdd) InventoryAddSheet(actions.dismissAdd)
+}
+
+@Composable
+private fun InventoryProductsPage(
+    state: InventoryScreenUiState,
+    scroll: LazyListState,
+    actions: InventoryActions,
+    scanning: Boolean,
+) {
+    val spacing = Moshi.spacing
+    val filterCount = state.query.filterCount
+    InventoryPage(
+        metadataReady = state.totalProducts != null,
+        trulyEmpty = state.totalProducts == 0,
+        state = state,
+        actions = actions,
+        search = {
+            Row(
+                modifier = Modifier.fillMaxWidth().padding(horizontal = spacing.pageGutterNarrow),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                MoshiSearchField(
+                    value = state.query.text,
+                    onValueChange = actions.productQuery,
+                    label = stringResource(R.string.inventory_search_products),
+                    modifier = Modifier.weight(1f),
+                    clearLabel = stringResource(R.string.inventory_clear_search),
+                )
+                Spacer(Modifier.width(spacing.space1))
+                Box {
+                    MoshiIconButton(
+                        icon = R.drawable.ic_fluent_filter_24_regular,
+                        label = if (filterCount > 0) {
+                            pluralStringResource(R.plurals.inventory_filter_count, filterCount, filterCount)
+                        } else {
+                            stringResource(R.string.inventory_filters)
+                        },
+                        onClick = actions.openFilters,
+                        modifier = Modifier.background(Moshi.colors.background.subtle, RoundedCornerShape(spacing.space3)),
+                    )
+                    MoshiBadge(
+                        count = filterCount,
+                        modifier = Modifier.align(Alignment.TopEnd),
+                    )
+                }
+                Spacer(Modifier.width(spacing.space1))
+                MoshiIconButton(
+                    icon = R.drawable.ic_fluent_barcode_scanner_24_regular,
+                    label = stringResource(R.string.inventory_scan),
+                    onClick = actions.scan,
+                    modifier = Modifier.background(Moshi.colors.background.subtle, RoundedCornerShape(spacing.space3)),
+                    enabled = !scanning,
+                )
+            }
+        },
+        empty = { InventoryEmptySection(products = true, canAdd = state.canAdd, onAdd = actions.showAdd) },
+    ) {
+        key(state.products) {
+            val products = state.products.collectAsLazyPagingItems()
+            InventoryProducts(state, products, scroll, actions)
+        }
+    }
+}
+
+@Composable
+private fun InventoryCategoriesPage(
+    state: InventoryScreenUiState,
+    scroll: LazyListState,
+    actions: InventoryActions,
+) {
+    InventoryPage(
+        metadataReady = state.categories != null,
+        trulyEmpty = state.categories?.isEmpty() == true,
+        state = state,
+        actions = actions,
+        search = {
+            MoshiSearchField(
+                value = state.categoryQuery,
+                onValueChange = actions.categoryQuery,
+                label = stringResource(R.string.inventory_search_categories),
+                modifier = Modifier.fillMaxWidth().padding(horizontal = Moshi.spacing.pageGutterNarrow),
+                clearLabel = stringResource(R.string.inventory_clear_search),
+            )
+        },
+        empty = { InventoryEmptySection(products = false, canAdd = state.canAdd, onAdd = actions.showAdd) },
+    ) {
+        InventoryCategories(state, scroll, actions)
+    }
+}
+
+@Composable
+private fun InventoryPage(
+    metadataReady: Boolean,
+    trulyEmpty: Boolean,
+    state: InventoryScreenUiState,
+    actions: InventoryActions,
+    search: @Composable () -> Unit,
+    empty: @Composable () -> Unit,
+    content: @Composable () -> Unit,
+) {
+    val spacing = Moshi.spacing
+    val showSearchAndRefresh = metadataReady && !trulyEmpty
+    Column(Modifier.fillMaxSize()) {
+        Spacer(Modifier.height(spacing.space4))
+        if (showSearchAndRefresh) {
+            search()
+            Spacer(Modifier.height(spacing.space2))
+        }
+        val body: @Composable BoxScope.() -> Unit = {
+            when {
+                state.localDataError -> InventoryLocalError(actions.retryLocal)
+                !metadataReady -> Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) { MoshiLoadingIndicator() }
+                trulyEmpty -> empty()
+                else -> content()
+            }
+        }
+        val bodyModifier = Modifier.weight(1f).fillMaxWidth()
+        if (showSearchAndRefresh) {
+            MoshiPullToRefreshBox(state.refreshing, actions.refresh, bodyModifier, content = body)
+        } else {
+            Box(bodyModifier, content = body)
+        }
+    }
 }
 
 @Composable

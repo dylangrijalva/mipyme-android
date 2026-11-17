@@ -139,6 +139,15 @@ Use for an icon-only action. Pass a vendored Fluent drawable and a localized `la
 accessible name. The circular button has a 24 dp icon, a minimum 48 × 48 dp touch target, ripple
 feedback, and disabled foreground styling. Disabled buttons ignore clicks.
 
+### MoshiBadge
+
+Use for a numeric count attached to a control. Pass `count`; zero and negative counts render
+nothing. The noninteractive badge uses Label12 text, an inverse gray1000 background and
+background100 foreground, and a minimum 20 dp pill that grows with its content and font scale.
+Place it in a `Box` over the control with `Alignment.TopEnd`. It is decorative for accessibility;
+the owning control must include the localized count in its accessible label. Keep the control's
+48 × 48 dp touch target. Counts are formatted with the active resource locale.
+
 ### MoshiLoadingIndicator and MoshiPullToRefreshBox
 
 Use `MoshiLoadingIndicator` for indeterminate local loading. It uses a 32 dp spinner, semantic Moshi

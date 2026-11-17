@@ -32,4 +32,5 @@
     <string name="moshi_product_preview_service">Service</string>
     <string name="moshi_product_preview_service_name">Water 7 ship repair</string>
     <string name="moshi_product_preview_long_name">Straw Hat Pirates Thousand Sunny commemorative model ship</string>
+    <string name="moshi_badge_count">%1$d</string>
 </resources>
