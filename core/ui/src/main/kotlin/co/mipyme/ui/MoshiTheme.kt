@@ -49,7 +49,8 @@ fun MoshiTheme(
     }
     val context = LocalContext.current
     val themedContext = remember(context, themedConfiguration) {
-        ContextThemeWrapper(context.createConfigurationContext(themedConfiguration), 0).apply {
+        ContextThemeWrapper(context, 0).apply {
+            applyOverrideConfiguration(themedConfiguration)
             theme.setTo(context.theme)
         }
     }
