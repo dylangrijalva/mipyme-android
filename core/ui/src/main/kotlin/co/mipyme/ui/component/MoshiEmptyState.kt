@@ -69,6 +69,7 @@ fun MoshiEmptyState(
         if (primaryAction != null) {
             MoshiButton(
                 onClick = primaryAction.onClick,
+                modifier = Modifier.fillMaxWidth(),
                 enabled = primaryAction.enabled,
                 variant = MoshiButtonVariant.Outline,
             ) {
