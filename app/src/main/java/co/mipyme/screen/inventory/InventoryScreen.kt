@@ -478,11 +478,10 @@ fun InventoryScreenPreview() {
 // StateFlow exposes PagingData's cached snapshot immediately to static previews.
 private fun inventoryPreviewState(
     rows: List<InventoryListItem> = inventoryPreviewProducts(),
-    append: LoadState = LoadState.NotLoading(true),
 ): InventoryScreenUiState {
     val categories = listOf(InventoryCategoryRow("water7", "Water 7"), InventoryCategoryRow("alabasta", "Alabasta"))
     return InventoryScreenUiState(
-        products = MutableStateFlow(PagingData.from(rows, LoadStates(LoadState.NotLoading(false), LoadState.NotLoading(true), append))),
+        products = MutableStateFlow(PagingData.from(rows, LoadStates(LoadState.NotLoading(false), LoadState.NotLoading(true), LoadState.NotLoading(true)))),
         totalProducts = 6,
         categories = categories,
         visibleCategories = categories,
@@ -504,10 +503,6 @@ private fun inventoryPreviewProducts(): List<InventoryListItem> {
     ).map { InventoryListItem.ProductItem(it) }
 }
 
-private fun inventoryPreviewNoMatches(query: CatalogQuery): InventoryScreenUiState {
-    return inventoryPreviewState(rows = emptyList()).copy(query = query)
-}
-
 @ScreenPreview
 @Preview(name = "Spanish large text light", locale = "es", fontScale = 2f, widthDp = 320, showSystemUi = true, uiMode = android.content.res.Configuration.UI_MODE_NIGHT_NO)
 @Preview(name = "Spanish large text dark", locale = "es", fontScale = 2f, widthDp = 320, showSystemUi = true, uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES)
@@ -518,20 +513,8 @@ private fun InventoryProductsPreview() {
 
 @ScreenPreview
 @Composable
-private fun InventoryEmptyProductsReadOnlyPreview() {
-    MoshiTheme { InventoryContent(InventoryScreenUiState(totalProducts = 0, canAdd = false)) }
-}
-
-@ScreenPreview
-@Composable
 private fun InventoryCategoriesPreview() {
     MoshiTheme { InventoryContent(inventoryPreviewState().copy(tab = InventoryTab.CATEGORIES)) }
-}
-
-@ScreenPreview
-@Composable
-private fun InventoryEmptyCategoriesPreview() {
-    MoshiTheme { InventoryContent(InventoryScreenUiState(tab = InventoryTab.CATEGORIES, categories = emptyList(), canAdd = true)) }
 }
 
 @ScreenPreview
@@ -544,42 +527,6 @@ private fun InventoryLoadingProductsPreview() {
 @Composable
 private fun InventoryLocalErrorPreview() {
     MoshiTheme { InventoryContent(InventoryScreenUiState(localDataError = true, canAdd = true)) }
-}
-
-@ScreenPreview
-@Composable
-private fun InventoryAppendLoadingPreview() {
-    MoshiTheme { InventoryContent(inventoryPreviewState(rows = inventoryPreviewProducts().take(2), append = LoadState.Loading)) }
-}
-
-@ScreenPreview
-@Composable
-private fun InventoryAppendErrorPreview() {
-    MoshiTheme { InventoryContent(inventoryPreviewState(rows = inventoryPreviewProducts().take(2), append = LoadState.Error(IllegalStateException("Preview")))) }
-}
-
-@ScreenPreview
-@Composable
-private fun InventoryRefreshingPreview() {
-    MoshiTheme { InventoryContent(inventoryPreviewState().copy(refreshing = true)) }
-}
-
-@ScreenPreview
-@Composable
-private fun InventoryFilteredProductsPreview() {
-    MoshiTheme { InventoryContent(inventoryPreviewState(rows = inventoryPreviewProducts().take(1)).copy(query = CatalogQuery(categoryIds = setOf("water7"), type = ProductType.ITEM))) }
-}
-
-@ScreenPreview
-@Composable
-private fun InventoryNoSearchAndFilterMatchesPreview() {
-    MoshiTheme { InventoryContent(inventoryPreviewNoMatches(CatalogQuery(text = "Zoro", type = ProductType.SERVICE))) }
-}
-
-@ScreenPreview
-@Composable
-private fun InventoryNoCategoryMatchesPreview() {
-    MoshiTheme { InventoryContent(inventoryPreviewState().copy(tab = InventoryTab.CATEGORIES, categoryQuery = "Wano", visibleCategories = emptyList())) }
 }
 
 @ScreenPreview
@@ -608,6 +555,7 @@ private fun InventoryCategoryGroupingPreview() {
 @Preview(name = "Spanish large text light", locale = "es", fontScale = 2f, widthDp = 320, showSystemUi = true, uiMode = android.content.res.Configuration.UI_MODE_NIGHT_NO)
 @Preview(name = "Spanish large text dark", locale = "es", fontScale = 2f, widthDp = 320, showSystemUi = true, uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES)
 @Composable
-private fun InventoryNoMatchesLargeTextPreview() {
-    MoshiTheme { InventoryContent(inventoryPreviewNoMatches(CatalogQuery(text = "Zoro", type = ProductType.SERVICE))) }
+private fun InventoryNoSearchAndFilterMatchesPreview() {
+    val query = CatalogQuery(text = "Zoro", type = ProductType.SERVICE)
+    MoshiTheme { InventoryContent(inventoryPreviewState(rows = emptyList()).copy(query = query)) }
 }
