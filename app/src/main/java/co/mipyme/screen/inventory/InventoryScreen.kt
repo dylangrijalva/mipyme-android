@@ -7,8 +7,9 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.*
@@ -18,10 +19,16 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.paging.LoadStates
+import androidx.paging.PagingData
+import co.mipyme.contract.ProductStatus
+import co.mipyme.contract.ProductType
+import co.mipyme.database.CatalogGrouping
+import kotlinx.coroutines.flow.MutableStateFlow
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
@@ -34,9 +41,11 @@ import co.mipyme.screen.home.LocalHomeDrawer
 import co.mipyme.ui.Moshi
 import co.mipyme.ui.MoshiTheme
 import co.mipyme.ui.component.*
+import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.viewModelOf
+import kotlin.math.abs
 
 fun Module.inventoryScreenModule(): Module {
     factory<InventoryRepository> { DefaultInventoryRepository(get(), get(), get(), get()) }
@@ -116,6 +125,18 @@ internal fun InventoryContent(
     val productScroll = rememberLazyListState()
     val categoryScroll = rememberLazyListState()
     val spacing = Moshi.spacing
+    val coroutineScope = rememberCoroutineScope()
+    val pagerState = rememberPagerState(initialPage = state.tab.ordinal, pageCount = { InventoryTab.entries.size })
+    LaunchedEffect(state.tab) {
+        if (pagerState.currentPage != state.tab.ordinal || abs(pagerState.currentPageOffsetFraction) > 0.001f) {
+            pagerState.animateScrollToPage(state.tab.ordinal)
+        }
+    }
+    LaunchedEffect(pagerState) {
+        snapshotFlow { pagerState.currentPage to pagerState.isScrollInProgress }.collect { (page, scrolling) ->
+            if (!scrolling) actions.selectTab(InventoryTab.entries[page])
+        }
+    }
     Column(Modifier.fillMaxSize().background(Moshi.colors.background100)) {
         MoshiToolbar(
             title = stringResource(R.string.home_destination_inventory),
@@ -126,51 +147,65 @@ internal fun InventoryContent(
                 onClick = actions.showAdd,
             )) else emptyList(),
         )
-        Row(Modifier.fillMaxWidth().padding(horizontal = spacing.pageGutterNarrow).selectableGroup()) {
-            MoshiPill(stringResource(R.string.inventory_products), state.tab == InventoryTab.PRODUCTS,
-                { actions.selectTab(InventoryTab.PRODUCTS) }, Modifier.weight(1f), role = Role.Tab)
-            Spacer(Modifier.width(spacing.space2))
-            MoshiPill(stringResource(R.string.inventory_categories), state.tab == InventoryTab.CATEGORIES,
-                { actions.selectTab(InventoryTab.CATEGORIES) }, Modifier.weight(1f), role = Role.Tab)
-        }
-        Spacer(Modifier.height(spacing.space4))
-        val productsTab = state.tab == InventoryTab.PRODUCTS
-        val trulyEmpty = if (productsTab) state.totalProducts == 0 else state.categories?.isEmpty() == true
-        val metadataReady = if (productsTab) state.totalProducts != null else state.categories != null
-        if (!trulyEmpty && metadataReady) {
-            Row(Modifier.fillMaxWidth().padding(horizontal = spacing.pageGutterNarrow), verticalAlignment = Alignment.CenterVertically) {
-                MoshiSearchField(
-                    value = if (productsTab) state.query.text else state.categoryQuery,
-                    onValueChange = if (productsTab) actions.productQuery else actions.categoryQuery,
-                    label = stringResource(if (productsTab) R.string.inventory_search_products else R.string.inventory_search_categories),
-                    modifier = Modifier.weight(1f),
-                    clearLabel = stringResource(R.string.inventory_clear_search),
-                )
-                if (productsTab) {
-                    Spacer(Modifier.width(spacing.space1))
-                    MoshiIconButton(R.drawable.ic_fluent_filter_24_regular, stringResource(R.string.inventory_filters), actions.openFilters)
-                    MoshiIconButton(R.drawable.ic_fluent_barcode_scanner_24_regular, stringResource(R.string.inventory_scan), actions.scan, enabled = !scanning)
+        MoshiTabs(
+            labels = listOf(stringResource(R.string.inventory_products), stringResource(R.string.inventory_categories)),
+            selectedIndex = state.tab.ordinal,
+            onTabSelected = { index ->
+                actions.selectTab(InventoryTab.entries[index])
+                coroutineScope.launch { pagerState.animateScrollToPage(index) }
+            },
+            modifier = Modifier.padding(horizontal = spacing.pageGutterNarrow),
+            pagePosition = pagerState.currentPage + pagerState.currentPageOffsetFraction,
+        )
+        HorizontalPager(state = pagerState, modifier = Modifier.weight(1f).fillMaxWidth(), key = { it }) { page ->
+            Column(Modifier.fillMaxSize()) {
+                Spacer(Modifier.height(spacing.space4))
+                val productsTab = page == InventoryTab.PRODUCTS.ordinal
+                val trulyEmpty = if (productsTab) state.totalProducts == 0 else state.categories?.isEmpty() == true
+                val metadataReady = if (productsTab) state.totalProducts != null else state.categories != null
+                if (!trulyEmpty && metadataReady) {
+                    Row(Modifier.fillMaxWidth().padding(horizontal = spacing.pageGutterNarrow), verticalAlignment = Alignment.CenterVertically) {
+                        MoshiSearchField(
+                            value = if (productsTab) state.query.text else state.categoryQuery,
+                            onValueChange = if (productsTab) actions.productQuery else actions.categoryQuery,
+                            label = stringResource(if (productsTab) R.string.inventory_search_products else R.string.inventory_search_categories),
+                            modifier = Modifier.weight(1f),
+                            clearLabel = stringResource(R.string.inventory_clear_search),
+                        )
+                        if (productsTab) {
+                            Spacer(Modifier.width(spacing.space1))
+                            MoshiIconButton(R.drawable.ic_fluent_filter_24_regular, stringResource(R.string.inventory_filters), actions.openFilters)
+                            MoshiIconButton(R.drawable.ic_fluent_barcode_scanner_24_regular, stringResource(R.string.inventory_scan), actions.scan, enabled = !scanning)
+                        }
+                    }
+                    Spacer(Modifier.height(spacing.space2))
+                    if (productsTab && state.query.filterCount > 0) {
+                        FlowRow(Modifier.fillMaxWidth().padding(horizontal = spacing.pageGutterNarrow),
+                            horizontalArrangement = Arrangement.spacedBy(spacing.space2), verticalArrangement = Arrangement.spacedBy(spacing.space2)) {
+                            MoshiPill(pluralStringResource(R.plurals.inventory_filter_count, state.query.filterCount, state.query.filterCount), true, actions.openFilters)
+                            MoshiPill(stringResource(R.string.inventory_clear_filters), false, actions.clearFilters)
+                        }
+                        Spacer(Modifier.height(spacing.space2))
+                    }
                 }
-            }
-            Spacer(Modifier.height(spacing.space2))
-            if (productsTab && state.query.filterCount > 0) {
-                FlowRow(Modifier.fillMaxWidth().padding(horizontal = spacing.pageGutterNarrow),
-                    horizontalArrangement = Arrangement.spacedBy(spacing.space2), verticalArrangement = Arrangement.spacedBy(spacing.space2)) {
-                    MoshiPill(pluralStringResource(R.plurals.inventory_filter_count, state.query.filterCount, state.query.filterCount), true, actions.openFilters)
-                    MoshiPill(stringResource(R.string.inventory_clear_filters), false, actions.clearFilters)
+                val tabContent: @Composable BoxScope.() -> Unit = {
+                    when {
+                        state.localDataError -> InventoryLocalError(actions.retryLocal)
+                        !metadataReady -> Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) { MoshiLoadingIndicator() }
+                        trulyEmpty -> InventoryEmptySection(productsTab, state.canAdd, actions.showAdd)
+                        productsTab -> key(state.products) {
+                            val products = state.products.collectAsLazyPagingItems()
+                            InventoryProducts(state, products, productScroll, actions)
+                        }
+                        else -> InventoryCategories(state, categoryScroll, actions)
+                    }
                 }
-                Spacer(Modifier.height(spacing.space2))
-            }
-        }
-        MoshiPullToRefreshBox(state.refreshing, actions.refresh, Modifier.weight(1f).fillMaxWidth()) {
-            key(state.products) {
-                val products = state.products.collectAsLazyPagingItems()
-                when {
-                    state.localDataError -> InventoryLocalError(actions.retryLocal)
-                    !metadataReady -> Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) { MoshiLoadingIndicator() }
-                    trulyEmpty -> InventoryEmptySection(productsTab, state.canAdd, actions.showAdd)
-                    productsTab -> InventoryProducts(state, products, productScroll, actions)
-                    else -> InventoryCategories(state, categoryScroll, actions)
+                if (metadataReady && !trulyEmpty) {
+                    MoshiPullToRefreshBox(
+                        state.refreshing, actions.refresh, Modifier.weight(1f).fillMaxWidth(), content = tabContent,
+                    )
+                } else {
+                    Box(Modifier.weight(1f).fillMaxWidth(), content = tabContent)
                 }
             }
         }
@@ -303,4 +338,156 @@ private fun InventoryEmptyIcon(products: Boolean) {
 @Composable
 fun InventoryScreenPreview() {
     MoshiTheme { InventoryContent(InventoryScreenUiState(totalProducts = 0, categories = emptyList(), canAdd = true)) }
+}
+
+// StateFlow exposes PagingData's cached snapshot immediately to static previews.
+private fun inventoryPreviewState(
+    rows: List<InventoryListItem> = inventoryPreviewProducts(),
+    append: LoadState = LoadState.NotLoading(true),
+): InventoryScreenUiState {
+    val categories = listOf(InventoryCategoryRow("water7", "Water 7"), InventoryCategoryRow("alabasta", "Alabasta"))
+    return InventoryScreenUiState(
+        products = MutableStateFlow(PagingData.from(rows, LoadStates(LoadState.NotLoading(false), LoadState.NotLoading(true), append))),
+        totalProducts = 6,
+        categories = categories,
+        visibleCategories = categories,
+        canAdd = true,
+    )
+}
+
+private fun inventoryPreviewProducts(): List<InventoryListItem> {
+    return listOf(
+        InventoryProductRow("sunny", "Thousand Sunny", null, "C$ 2,500.00", "12", false, null, null),
+        InventoryProductRow("logpose", "Log Pose", null, "C$ 350.00", "0", false, InventoryBadge.OUT_OF_STOCK, null),
+        InventoryProductRow("merry", "Going Merry", null, "C$ 1,200.00", null, false, InventoryBadge.DRAFT, null),
+        InventoryProductRow("den-den", "Den Den Mushi", null, "C$ 750.00", "3", false, InventoryBadge.ARCHIVED, null),
+        InventoryProductRow("navigation", "Nami navigation", null, "C$ 150.00", null, true, null, null),
+        InventoryProductRow("vivre", "Vivre Card", null, "C$ 25.00", null, false, null, null),
+    ).map { InventoryListItem.ProductItem(it) }
+}
+
+private fun inventoryPreviewNoMatches(query: CatalogQuery): InventoryScreenUiState {
+    return inventoryPreviewState(rows = emptyList()).copy(query = query)
+}
+
+@ScreenPreview
+@Composable
+private fun InventoryProductsPreview() {
+    MoshiTheme { InventoryContent(inventoryPreviewState()) }
+}
+
+@ScreenPreview
+@Composable
+private fun InventoryEmptyProductsReadOnlyPreview() {
+    MoshiTheme { InventoryContent(InventoryScreenUiState(totalProducts = 0, canAdd = false)) }
+}
+
+@ScreenPreview
+@Composable
+private fun InventoryCategoriesPreview() {
+    MoshiTheme { InventoryContent(inventoryPreviewState().copy(tab = InventoryTab.CATEGORIES)) }
+}
+
+@ScreenPreview
+@Composable
+private fun InventoryEmptyCategoriesPreview() {
+    MoshiTheme { InventoryContent(InventoryScreenUiState(tab = InventoryTab.CATEGORIES, categories = emptyList(), canAdd = true)) }
+}
+
+@ScreenPreview
+@Composable
+private fun InventoryLoadingProductsPreview() {
+    MoshiTheme { InventoryContent(InventoryScreenUiState(canAdd = true)) }
+}
+
+@ScreenPreview
+@Composable
+private fun InventoryLocalErrorPreview() {
+    MoshiTheme { InventoryContent(InventoryScreenUiState(localDataError = true, canAdd = true)) }
+}
+
+@ScreenPreview
+@Composable
+private fun InventoryAppendLoadingPreview() {
+    MoshiTheme { InventoryContent(inventoryPreviewState(rows = inventoryPreviewProducts().take(2), append = LoadState.Loading)) }
+}
+
+@ScreenPreview
+@Composable
+private fun InventoryAppendErrorPreview() {
+    MoshiTheme { InventoryContent(inventoryPreviewState(rows = inventoryPreviewProducts().take(2), append = LoadState.Error(IllegalStateException("Preview")))) }
+}
+
+@ScreenPreview
+@Composable
+private fun InventoryRefreshingPreview() {
+    MoshiTheme { InventoryContent(inventoryPreviewState().copy(refreshing = true)) }
+}
+
+@ScreenPreview
+@Composable
+private fun InventoryFilteredProductsPreview() {
+    MoshiTheme { InventoryContent(inventoryPreviewState(rows = inventoryPreviewProducts().take(1)).copy(query = CatalogQuery(categoryIds = setOf("water7"), type = ProductType.ITEM))) }
+}
+
+@ScreenPreview
+@Composable
+private fun InventoryNoSearchAndFilterMatchesPreview() {
+    MoshiTheme { InventoryContent(inventoryPreviewNoMatches(CatalogQuery(text = "Zoro", type = ProductType.SERVICE))) }
+}
+
+@ScreenPreview
+@Composable
+private fun InventoryNoCategoryMatchesPreview() {
+    MoshiTheme { InventoryContent(inventoryPreviewState().copy(tab = InventoryTab.CATEGORIES, categoryQuery = "Wano", visibleCategories = emptyList())) }
+}
+
+@ScreenPreview
+@Composable
+private fun InventorySelectedFilterSheetPreview() {
+    MoshiTheme { InventoryContent(inventoryPreviewState().copy(draft = CatalogQuery(categoryIds = setOf("water7"), includeUncategorized = true, type = ProductType.SERVICE, statuses = setOf(ProductStatus.DRAFT), grouping = CatalogGrouping.STATUS))) }
+}
+
+@ScreenPreview
+@Composable
+private fun InventoryAddSheetPreview() {
+    MoshiTheme { InventoryContent(inventoryPreviewState().copy(showAddSheet = true)) }
+}
+
+@ScreenPreview
+@Composable
+private fun InventoryCategoryGroupingPreview() {
+    val named = InventoryGroup("water7", categoryName = "Water 7")
+    val uncategorized = InventoryGroup("uncategorized")
+    val products = inventoryPreviewProducts()
+    val rows = listOf(InventoryListItem.Header(named), products[0], InventoryListItem.Header(uncategorized), products[1])
+    MoshiTheme { InventoryContent(inventoryPreviewState(rows).copy(query = CatalogQuery(grouping = CatalogGrouping.CATEGORY))) }
+}
+
+@ScreenPreview
+@Preview(name = "Spanish large text light", locale = "es", fontScale = 2f, widthDp = 320, showSystemUi = true, uiMode = android.content.res.Configuration.UI_MODE_NIGHT_NO)
+@Preview(name = "Spanish large text dark", locale = "es", fontScale = 2f, widthDp = 320, showSystemUi = true, uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES)
+@Composable
+private fun InventoryLongProductsPreview() {
+    val row = (inventoryPreviewProducts().first() as InventoryListItem.ProductItem).row.copy(
+        name = "Thousand Sunny Straw Hat Pirates supplies and navigation services",
+        price = "C$ 999,999,999.99",
+        quantity = "123,456.789",
+        badge = InventoryBadge.DRAFT,
+    )
+    MoshiTheme { InventoryContent(inventoryPreviewState(listOf(InventoryListItem.ProductItem(row)))) }
+}
+
+@ScreenPreview
+@Preview(name = "Spanish large text light", locale = "es", fontScale = 2f, widthDp = 320, showSystemUi = true, uiMode = android.content.res.Configuration.UI_MODE_NIGHT_NO)
+@Preview(name = "Spanish large text dark", locale = "es", fontScale = 2f, widthDp = 320, showSystemUi = true, uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES)
+@Composable
+private fun InventoryNoMatchesLargeTextPreview() {
+    MoshiTheme { InventoryContent(inventoryPreviewNoMatches(CatalogQuery(text = "Zoro", type = ProductType.SERVICE))) }
+}
+
+@ScreenPreview
+@Composable
+private fun InventoryServicesAndUnavailableStockPreview() {
+    MoshiTheme { InventoryContent(inventoryPreviewState(inventoryPreviewProducts().takeLast(2))) }
 }

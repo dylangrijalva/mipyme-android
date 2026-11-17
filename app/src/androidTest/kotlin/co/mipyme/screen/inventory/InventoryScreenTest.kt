@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.semantics.SemanticsProperties
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.dp
 import android.graphics.Bitmap
@@ -56,6 +57,37 @@ class InventoryScreenTest {
     fun tearDown() { compose.runOnIdle { store.clear() } }
 
     @Test
+    fun emptyTabsDoNotRefreshOnPull() {
+        var refreshes = 0
+        val state = androidx.compose.runtime.mutableStateOf(
+            InventoryScreenUiState(totalProducts = 0, categories = emptyList()),
+        )
+        compose.setContent {
+            MoshiTheme {
+                InventoryContent(state.value, InventoryActions(refresh = { refreshes++ }))
+            }
+        }
+        compose.onRoot().performTouchInput { swipeDown(startY = height * 0.3f, endY = height * 0.9f) }
+        compose.runOnIdle {
+            assertEquals(0, refreshes)
+            state.value = state.value.copy(tab = InventoryTab.CATEGORIES)
+        }
+        compose.onNodeWithText("Organize your catalog").assertIsDisplayed()
+        compose.onRoot().performTouchInput { swipeDown(startY = height * 0.3f, endY = height * 0.9f) }
+        compose.runOnIdle {
+            assertEquals(0, refreshes)
+            state.value = state.value.copy(
+                categories = listOf(InventoryCategoryRow("water7", "Water 7")),
+                categoryQuery = "Wano",
+                visibleCategories = emptyList(),
+            )
+        }
+        compose.onNodeWithText("No matches").assertIsDisplayed()
+        compose.onRoot().performTouchInput { swipeDown(startY = height * 0.3f, endY = height * 0.9f) }
+        compose.runOnIdle { assertEquals(1, refreshes) }
+    }
+
+    @Test
     fun tabsRetainIndependentSearch() {
         start()
         compose.onNodeWithContentDescription("Search products").performTextInput("Sunny")
@@ -69,16 +101,42 @@ class InventoryScreenTest {
     }
 
     @Test
+    fun switchingTabsDoesNotTransferSearchFocus() {
+        start()
+        compose.onNodeWithContentDescription("Search products").performClick().assertIsFocused()
+        compose.onNodeWithText("Categories").performClick()
+        compose.onNodeWithContentDescription("Search categories").assertIsNotFocused()
+    }
+
+    @Test
+    fun horizontalSwipeSelectsCategoriesAndKeepsSearchControlsInSync() {
+        start()
+        compose.onNodeWithContentDescription("Search products").performTextInput("Sunny")
+        compose.onNodeWithText("Sunny 000").performTouchInput { swipeLeft() }
+        compose.waitUntil(5000) { viewModel.state.tab == InventoryTab.CATEGORIES }
+        compose.onNodeWithContentDescription("Search categories").assertIsDisplayed()
+        compose.onNodeWithContentDescription("Search products").assertDoesNotExist()
+        compose.onNodeWithText("Categories").assertIsSelected()
+        compose.onNodeWithContentDescription("Search categories").performTextInput("Water")
+        compose.onNodeWithText("Water 7").performTouchInput { swipeRight() }
+        compose.waitUntil(5000) { viewModel.state.tab == InventoryTab.PRODUCTS }
+        compose.onNodeWithContentDescription("Search products").assertTextContains("Sunny")
+        compose.onNodeWithText("Products").performClick()
+        compose.onNodeWithText("Categories").performClick()
+        compose.onNodeWithContentDescription("Search categories").assertTextContains("Water")
+    }
+
+    @Test
     fun tabsRetainIndependentScrollPositions() {
         repository.categories.value = (0..39).map { index ->
             Collection("water7_$index", "Water 7 ${index.toString().padStart(3, '0')}", "water7-$index", time, time)
         }
         start()
         compose.waitUntil(5000) { repository.loads > 0 }
-        compose.onNode(hasScrollToIndexAction()).performScrollToIndex(7)
+        compose.onNode(verticalListWithScrollToIndex()).performScrollToIndex(7)
         compose.onNodeWithText("Sunny 007").assertIsDisplayed()
         compose.onNodeWithText("Categories").performClick()
-        compose.onNode(hasScrollToIndexAction()).performScrollToIndex(15)
+        compose.onNode(verticalListWithScrollToIndex()).performScrollToIndex(15)
         compose.onNodeWithText("Water 7 015").assertIsDisplayed()
         compose.onNodeWithText("Products").performClick()
         compose.onNodeWithText("Sunny 007").assertIsDisplayed()
@@ -165,7 +223,7 @@ class InventoryScreenTest {
         }
         compose.onNodeWithText("Alabasta").assertIsDisplayed()
         repeat(5) {
-            compose.onNode(hasScrollToIndexAction()).performTouchInput { swipeUp() }
+            compose.onNode(verticalListWithScrollToIndex()).performTouchInput { swipeUp() }
             compose.waitForIdle()
         }
         compose.waitUntil { repository.loads > 2 }
@@ -233,6 +291,10 @@ class InventoryScreenTest {
         }
         compose.waitUntil { viewModel.state.totalProducts != null && viewModel.state.categories != null }
         compose.waitForIdle()
+    }
+
+    private fun verticalListWithScrollToIndex(): SemanticsMatcher {
+        return hasScrollToIndexAction() and SemanticsMatcher.keyIsDefined(SemanticsProperties.VerticalScrollAxisRange)
     }
 
     private class ScreenInventoryRepository : InventoryRepository {

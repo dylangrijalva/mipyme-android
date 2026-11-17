@@ -86,12 +86,20 @@ Omit `colorSeed` to retain the neutral treatment.
 
 ### MoshiPill
 
-Use for compact tab choices or filter actions. Selected pills use the inverse background and
+Use for compact choices or filter actions. Selected pills use the inverse background and
 foreground; unselected pills use the surface background and default border. Pass `count` as an
 optional formatted string displayed after the label. Text wraps and the pill grows vertically.
 All pills have a minimum 48 × 48 dp touch target and expose their selected and disabled state.
 Pass `Role.Tab` and put sibling tabs in a selectable group for navigation between sections;
-the default role is Button. Callers own selection and click behavior.
+the default role is Button. Callers own selection and click behavior. Use `MoshiTabs` for navigation
+between screen sections.
+
+### MoshiTabs
+
+Use for a small set of section tabs. Labels share equal-width slots, have no filled background, and
+wrap as needed. Each tab has a minimum 48 × 48 dp touch target and exposes `Role.Tab` with its
+selected state. The underline matches the measured label width; provide a fractional `pagePosition`
+to move it with a horizontal pager. Callers own the selected index and tab click behavior.
 
 ### MoshiStatusBadge
 

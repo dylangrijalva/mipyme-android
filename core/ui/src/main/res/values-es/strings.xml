@@ -18,6 +18,8 @@
     <string name="moshi_empty_preview_description">Prueba otra búsqueda para encontrar un artículo.</string>
     <string name="moshi_monogram_preview_name">Piratas del Sombrero de Paja</string>
     <string name="moshi_pill_preview_label">Todos los artículos</string>
+    <string name="moshi_tabs_preview_products">Productos</string>
+    <string name="moshi_tabs_preview_categories">Categorías</string>
     <string name="moshi_badge_preview_label">Borrador</string>
     <string name="moshi_pull_refresh_preview_label">Desliza hacia abajo para actualizar</string>
 </resources>
