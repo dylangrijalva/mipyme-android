@@ -18,7 +18,7 @@ import co.mipyme.ui.MoshiPreview
 import co.mipyme.ui.MoshiTheme
 import co.mipyme.ui.R
 
-/** Equal width, text-only tabs. [pagePosition] may be fractional while a pager scrolls. */
+/** Equal width, text-only tabs. [pagePosition] is read during layout and may be fractional while a pager scrolls. */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MoshiTabs(
@@ -26,13 +26,12 @@ fun MoshiTabs(
     selectedIndex: Int,
     onTabSelected: (Int) -> Unit,
     modifier: Modifier = Modifier,
-    pagePosition: Float = selectedIndex.toFloat(),
+    pagePosition: () -> Float = { selectedIndex.toFloat() },
 ) {
     require(labels.isNotEmpty())
     require(selectedIndex in labels.indices)
     val colors = Moshi.colors
     val spacing = Moshi.spacing
-    val boundedPosition = pagePosition.coerceIn(0f, labels.lastIndex.toFloat())
 
     PrimaryTabRow(
         selectedTabIndex = selectedIndex,
@@ -43,7 +42,7 @@ fun MoshiTabs(
         indicator = {
             TabRowDefaults.PrimaryIndicator(
                 modifier = Modifier.tabIndicatorLayout { measurable, constraints, positions ->
-                    val (left, width) = indicatorBounds(positions, boundedPosition)
+                    val (left, width) = indicatorBounds(positions, pagePosition())
                     val placeable = measurable.measure(
                         constraints.copy(minWidth = width.roundToPx(), maxWidth = width.roundToPx()),
                     )

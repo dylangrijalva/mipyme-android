@@ -155,7 +155,7 @@ internal fun InventoryContent(
                 coroutineScope.launch { pagerState.animateScrollToPage(index) }
             },
             modifier = Modifier.padding(horizontal = spacing.pageGutterNarrow),
-            pagePosition = pagerState.currentPage + pagerState.currentPageOffsetFraction,
+            pagePosition = { pagerState.currentPage + pagerState.currentPageOffsetFraction },
         )
         HorizontalPager(state = pagerState, modifier = Modifier.weight(1f).fillMaxWidth(), key = { it }) { page ->
             Column(Modifier.fillMaxSize()) {

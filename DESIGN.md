@@ -98,8 +98,9 @@ between screen sections.
 
 Use for a small set of section tabs. Labels share equal-width slots, have no filled background, and
 wrap as needed. Each tab has a minimum 48 × 48 dp touch target and exposes `Role.Tab` with its
-selected state. The underline matches the measured label width; provide a fractional `pagePosition`
-to move it with a horizontal pager. Callers own the selected index and tab click behavior.
+selected state. The underline matches the measured label width; provide a `pagePosition` lambda
+returning the fractional pager position to move it with a horizontal pager. The lambda is read during
+layout. Callers own the selected index and tab click behavior.
 
 ### MoshiStatusBadge
 
