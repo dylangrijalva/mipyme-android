@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.runtime.Composable
@@ -45,8 +46,19 @@ fun MoshiEmptyState(
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         CompositionLocalProvider(LocalContentColor provides Moshi.colors.foreground.primary) {
-            Box(Modifier.size(spacing.space6), contentAlignment = Alignment.Center) {
-                icon()
+            Box(
+                modifier = Modifier
+                    .size(spacing.space16)
+                    .background(Moshi.colors.background.subtle, RoundedCornerShape(spacing.space4)),
+                contentAlignment = Alignment.Center,
+            ) {
+                Box(
+                    modifier = Modifier.size(spacing.space10),
+                    contentAlignment = Alignment.Center,
+                    propagateMinConstraints = true,
+                ) {
+                    icon()
+                }
             }
         }
         Spacer(Modifier.height(spacing.space4))
@@ -56,7 +68,7 @@ fun MoshiEmptyState(
             role = MoshiTextRole.Heading20,
             textAlign = TextAlign.Center,
         )
-        Spacer(Modifier.height(spacing.space1))
+        Spacer(Modifier.height(spacing.space3))
         MoshiText(
             text = description,
             modifier = Modifier.fillMaxWidth(),
@@ -103,7 +115,7 @@ private fun MoshiEmptyStatePreview() {
                 Icon(
                     painter = painterResource(R.drawable.ic_fluent_search_24_regular),
                     contentDescription = null,
-                    modifier = Modifier.size(Moshi.spacing.space6),
+                    modifier = Modifier.size(Moshi.spacing.space10),
                 )
             },
             primaryAction = MoshiEmptyStateAction(stringResource(R.string.moshi_search_clear), {}),

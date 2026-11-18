@@ -73,7 +73,14 @@ fun MoshiButton(
     val hovered by interactionSource.collectIsHoveredAsState()
     val focused by interactionSource.collectIsFocusedAsState()
     val background = when {
-        !canActivate -> colors.background.disabled
+        !canActivate -> when (variant) {
+            MoshiButtonVariant.Primary,
+            MoshiButtonVariant.Secondary,
+            MoshiButtonVariant.Destructive -> colors.background.disabled
+            MoshiButtonVariant.Outline,
+            MoshiButtonVariant.DestructiveOutline,
+            MoshiButtonVariant.Text -> Color.Transparent
+        }
         variant == MoshiButtonVariant.Primary && hovered -> colors.action.primary.hovered
         variant == MoshiButtonVariant.Primary -> colors.action.primary.background
         variant == MoshiButtonVariant.Secondary && hovered -> colors.action.secondary.hovered
@@ -98,7 +105,14 @@ fun MoshiButton(
     val radius = 12.dp
     val shape = RoundedCornerShape(radius)
     val borderColor = when {
-        !canActivate -> colors.control.disabledBorder
+        !canActivate -> when (variant) {
+            MoshiButtonVariant.Secondary,
+            MoshiButtonVariant.Outline,
+            MoshiButtonVariant.DestructiveOutline -> colors.control.disabledBorder
+            MoshiButtonVariant.Primary,
+            MoshiButtonVariant.Destructive,
+            MoshiButtonVariant.Text -> Color.Transparent
+        }
         focused -> colors.border.focus
         variant == MoshiButtonVariant.DestructiveOutline -> colors.border.danger
         variant == MoshiButtonVariant.Secondary || variant == MoshiButtonVariant.Outline -> colors.border.default

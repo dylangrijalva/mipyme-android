@@ -12,6 +12,7 @@ import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -28,9 +29,10 @@ fun MoshiIconButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
+    tint: Color = Moshi.colors.foreground.primary,
 ) {
     val spacing = Moshi.spacing
-    val color = if (enabled) Moshi.colors.foreground.primary else Moshi.colors.foreground.disabled
+    val color = if (enabled) tint else Moshi.colors.foreground.disabled
     Box(
         modifier = modifier
             .sizeIn(minWidth = spacing.space12, minHeight = spacing.space12)

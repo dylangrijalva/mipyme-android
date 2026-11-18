@@ -33,4 +33,8 @@
     <string name="moshi_product_preview_service_name">Reparación de barcos en Water 7</string>
     <string name="moshi_product_preview_long_name">Barco modelo conmemorativo Thousand Sunny de los Piratas de Sombrero de Paja</string>
     <string name="moshi_badge_count">%1$d</string>
+    <string name="moshi_section_preview_title">Detalles</string>
+    <string name="moshi_section_preview_description">Agrega la información de este artículo.</string>
+    <string name="moshi_section_preview_name">Nombre</string>
+    <string name="moshi_quantity_button_preview_label">Ajustar existencias, 0 disponibles</string>
 </resources>

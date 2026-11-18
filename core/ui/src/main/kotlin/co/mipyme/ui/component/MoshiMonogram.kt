@@ -29,7 +29,7 @@ fun MoshiMonogram(
     val colors = Moshi.colors
     val palette = colors.identity.swatches
     val (background, foreground) = if (colorSeed == null) {
-        colors.background.subtle to colors.foreground.secondary
+        colors.background.subtle to colors.foreground.primary
     } else {
         palette[Math.floorMod(colorSeed.hashCode(), palette.size)]
     }
@@ -49,7 +49,7 @@ fun MoshiMonogram(
     ) {
         MoshiText(
             text = shortenedName,
-            role = if (colorSeed == null) MoshiTextRole.Label12 else MoshiTextRole.Label16,
+            role = MoshiTextRole.Label16,
             color = foreground,
             textAlign = TextAlign.Center,
             maxLines = 1,

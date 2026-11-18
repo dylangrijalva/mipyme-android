@@ -33,4 +33,8 @@
     <string name="moshi_product_preview_service_name">Water 7 ship repair</string>
     <string name="moshi_product_preview_long_name">Straw Hat Pirates Thousand Sunny commemorative model ship</string>
     <string name="moshi_badge_count">%1$d</string>
+    <string name="moshi_section_preview_title">Details</string>
+    <string name="moshi_section_preview_description">Add the information for this item.</string>
+    <string name="moshi_section_preview_name">Name</string>
+    <string name="moshi_quantity_button_preview_label">Adjust stock, 0 on hand</string>
 </resources>

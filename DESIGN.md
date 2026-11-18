@@ -46,6 +46,32 @@ The Android token implementations and component code define the behavior shipped
 
 ## Components
 
+### MoshiQuantityButton
+
+Use for a quantity display that opens a separate editor. The minus and plus icons are decorative;
+there is one button and no inline editing. Supply a formatted `quantity`, a localized `label`
+including the quantity and action context, and `onClick`. Omit `onClick` when a parent row owns
+interaction; the quantity display then has no tap handler. The parent should expose a single
+accessible action and quantity label. Blank quantities should be formatted by
+the caller before rendering. The control has a minimum 48 dp touch target, a subtle rounded quantity
+background, and disabled foreground styling. Disabled controls ignore clicks. Text can wrap as the
+font size grows. Keep stock changes and navigation in the caller.
+
+### MoshiSection
+
+Use to group related form fields under an accessible Heading20 title and optional Copy14
+description. The component uses the available width, with space1 between the title and
+description and space3 before content. Direct content children are arranged with space3
+between them; do not add spacers between those children. Text wraps with the user's font scale.
+Supply localized strings. The caller owns spacing between sections; use space4.
+
+Omit content when using the section as a header in a lazy list, keeping repeated rows as
+separate keyed items. In that case, the list owns the gap after the header. The section has
+no background or border. It applies space4 horizontal inner padding and no vertical padding so the title,
+description, and content share the same inset. Override contentPadding when the parent
+already provides the required insets; align separately rendered lazy rows to the same inset.
+
+
 ### MoshiSearchField
 
 Use for a single-line search query. The rounded field has a decorative leading Fluent search icon,
@@ -62,11 +88,13 @@ the keyboard. Compose adjacent filter or scan actions outside this field.
 ### MoshiEmptyState
 
 Use when a section has no content or a search has no matches. Content appears in this order: a
-24 dp icon slot, title, description, optional primary outline button, optional secondary text button.
+32 dp icon slot inside a 48 dp rounded square, title, description, optional primary outline button,
+optional secondary text button. The icon container uses `background.subtle` and 16 dp corners.
 Pass `MoshiEmptyStateAction` values with a label, callback, and enabled state. Either action may be
 omitted independently. Buttons stack vertically and labels wrap at larger font sizes.
 
-The title uses Heading20 typography and heading semantics. The description uses Copy16 typography
+The title uses Heading20 typography and heading semantics, with 12 dp before the description.
+The description uses Copy16 typography
 and `gray900`. Icon content inherits `gray1000`, matching the title; keep its accessible
 description null when the title already explains the state. The caller supplies localized copy,
 controls visibility, and provides scrolling when the available height is limited.
@@ -207,9 +235,7 @@ it uses the destructive action fill with the on-destructive label color and the
 same disabled and loading behavior as `Primary`. Use `DestructiveOutline` for a
 lower-emphasis action that signs the user out or removes data. It keeps the transparent resting
 background and secondary hover of `Outline` but uses the destructive action
-foreground and the error status border. Disabled and loading states fall back to
-the shared disabled colors and default border. `Secondary` follows the same disabled and loading
-behavior as `Primary`.
+foreground and the error status border.
 
 `Default` has a minimum visible size
 and touch target of 48 × 48 dp. The button grows with the label as needed. Use
@@ -221,7 +247,10 @@ Optional leading and trailing content follows the layout direction. Treat icons
 as decorative when the label already names the action.
 
 Activation requires `enabled && !isLoading`. Both disabled and loading buttons
-use the disabled colors in either theme. During loading, the button keeps the
+use the disabled foreground in either theme. `Primary`, `Secondary`, and `Destructive`
+use the disabled background; `Outline`, `DestructiveOutline`, and `Text` stay transparent.
+Only `Secondary`, `Outline`, and `DestructiveOutline` keep a border, using the disabled
+border color. During loading, the button keeps the
 width and height of its normal content and shows only a centered indeterminate
 spinner. Hide the label and side content from accessibility services while
 exposing progress through the button's accessibility semantics.

@@ -42,7 +42,7 @@ fun MoshiBottomSheet(
         shape = RoundedCornerShape(topStart = spacing.space3, topEnd = spacing.space3),
         containerColor = colors.background.surface,
         contentColor = colors.foreground.primary,
-        scrimColor = colors.overlay.scrim,
+        scrimColor = colors.overlay.lightScrim,
         dragHandle = { BottomSheetDefaults.DragHandle(color = colors.overlay.handle) },
     ) {
         MoshiBottomSheetContent(title = title, content = content)
