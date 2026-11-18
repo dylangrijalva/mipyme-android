@@ -77,6 +77,12 @@ class MipymeApiTest {
         },
         Operation("get", "/v1/products/{id}") { it.products.find("resource-id") },
         Operation("patch", "/v1/products/{id}") { it.products.update("resource-id", UpdateProductRequest()) },
+        Operation("post", "/v1/products/{id}/image-uploads") {
+            it.products.authorizeImageUpload("resource-id", 12)
+        },
+        Operation("post", "/v1/products/{id}/image-uploads/{image_id}/verify") {
+            it.products.verifyImageUpload("resource-id", "image-id")
+        },
         Operation("get", "/v1/collections") { it.collections.list() },
         Operation("post", "/v1/collections") { it.collections.create(CreateCollectionRequest("Fruit"), "key") },
         Operation("get", "/v1/collections/{id}") { it.collections.find("resource-id") },
@@ -142,7 +148,8 @@ class MipymeApiTest {
                     val sent = recording.request
                     val label = "${operation.method} ${operation.template}"
                     assertEquals(HttpMethod.parse(operation.method.uppercase()), sent.method, label)
-                    assertEquals(operation.template.replace("{id}", "resource-id"), sent.url.encodedPath, label)
+                    val path = operation.template.replace("{id}", "resource-id").replace("{image_id}", "image-id")
+                    assertEquals(path, sent.url.encodedPath, label)
                     val documented = (operation.method to operation.template) in OpenApiSpec.idempotentOperations
                     assertEquals(documented, sent.headers["Idempotency-Key"] != null, label)
                 }

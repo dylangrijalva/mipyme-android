@@ -69,12 +69,23 @@ class MipymeApi(
             sanitizeHeader { header -> header == HttpHeaders.Authorization }
         }
     }
+    private val uploadClient = lazy {
+        HttpClient(engine) {
+            expectSuccess = false
+            followRedirects = false
+            install(HttpTimeout) {
+                socketTimeoutMillis = 30_000L
+                requestTimeoutMillis = 30_000L
+                connectTimeoutMillis = 10_000L
+            }
+        }
+    }
 
     val accounts = AccountsApi(client)
     val collections = CollectionsApi(client)
     val customers = CustomersApi(client)
     val locations = LocationsApi(client)
-    val products = ProductsApi(client)
+    val products = ProductsApi(client) { uploadClient.value }
     val purchases = PurchasesApi(client)
     val realtime = RealtimeApi(client)
     val sales = SalesApi(client)
@@ -90,6 +101,7 @@ class MipymeApi(
     }
 
     override fun close() {
+        if (uploadClient.isInitialized()) uploadClient.value.close()
         client.close()
     }
 }

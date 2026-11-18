@@ -22,13 +22,15 @@ fun NavigationRoot(startRoute: Route) {
     }
 
     CompositionLocalProvider(LocalNavBackStack provides backStack) {
-        NavDisplay(
-            backStack = backStack,
-            entryDecorators = listOf(
-                rememberSaveableStateHolderNavEntryDecorator(),
-                rememberViewModelStoreNavEntryDecorator(),
-            ),
-            entryProvider = koinEntryProvider<NavKey>(),
-        )
+        ProductEditorResultHost {
+            NavDisplay(
+                backStack = backStack,
+                entryDecorators = listOf(
+                    rememberSaveableStateHolderNavEntryDecorator(),
+                    rememberViewModelStoreNavEntryDecorator(),
+                ),
+                entryProvider = koinEntryProvider<NavKey>(),
+            )
+        }
     }
 }

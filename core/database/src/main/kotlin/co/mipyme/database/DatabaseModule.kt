@@ -21,6 +21,7 @@ fun databaseModule(): Module {
         } onClose { it?.close() }
         single { RoomMipymeCache(get()) }
         single<MipymeCache> { get<RoomMipymeCache>() }
+        single<CatalogEditorCache> { get<RoomMipymeCache>() }
         single<SyncCacheWriter> { get<RoomMipymeCache>() }
     }
 }

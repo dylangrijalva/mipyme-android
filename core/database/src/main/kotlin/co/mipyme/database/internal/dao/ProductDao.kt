@@ -79,6 +79,10 @@ internal interface ProductDao {
     fun observeAll(): Flow<List<ProductWithDetails>>
 
     @Transaction
+    @Query("SELECT * FROM products WHERE id = :id")
+    suspend fun findById(id: String): ProductWithDetails?
+
+    @Transaction
     @Query(
         "SELECT * FROM products " +
             "WHERE id IN (SELECT product_id FROM product_variants WHERE barcode = :barcode) " +

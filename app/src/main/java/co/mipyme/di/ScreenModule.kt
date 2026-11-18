@@ -14,6 +14,7 @@ import co.mipyme.screen.no_location_access.noLocationAccessScreenModule
 import co.mipyme.screen.onboarding.onboardingScreenModule
 import co.mipyme.screen.printers_and_devices_settings.printersAndDevicesSettingsScreenModule
 import co.mipyme.screen.profile_settings.profileSettingsScreenModule
+import co.mipyme.screen.product_editor.productEditorScreenModule
 import co.mipyme.screen.reports.reportsScreenModule
 import co.mipyme.screen.select_location.selectLocationScreenModule
 import co.mipyme.screen.settings.settingsScreenModule
@@ -41,6 +42,7 @@ fun screenModule(): Module {
         homeScreenModule()
         checkoutScreenModule()
         inventoryScreenModule()
+        productEditorScreenModule()
         suppliersScreenModule()
         customersScreenModule()
         expensesScreenModule()

@@ -6,12 +6,34 @@ import android.net.Network
 import android.net.NetworkCapabilities
 import android.net.NetworkRequest
 import androidx.core.content.getSystemService
+import co.mipyme.sync.NetworkConnectivity
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.flow.distinctUntilChanged
 
-internal class AndroidConnectivityMonitor(context: Context) : ConnectivityMonitor {
+internal class AndroidConnectivityMonitor(context: Context) : ConnectivityMonitor, NetworkConnectivity {
     private val connectivityManager = checkNotNull(context.getSystemService<ConnectivityManager>())
+
+    override val isOnline: Boolean
+        get() = hasValidatedNetwork()
+
+    override fun observeOnline(): Flow<Boolean> {
+        return callbackFlow {
+            val callback = object : ConnectivityManager.NetworkCallback() {
+                override fun onCapabilitiesChanged(network: Network, capabilities: NetworkCapabilities) {
+                    trySend(capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED))
+                }
+
+                override fun onLost(network: Network) {
+                    trySend(isOnline)
+                }
+            }
+            connectivityManager.registerDefaultNetworkCallback(callback)
+            trySend(isOnline)
+            awaitClose { connectivityManager.unregisterNetworkCallback(callback) }
+        }.distinctUntilChanged()
+    }
 
     override fun restoredFlow(): Flow<Unit> {
         return callbackFlow {

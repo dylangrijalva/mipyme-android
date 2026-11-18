@@ -1,6 +1,7 @@
 package co.mipyme.navigation
 
 import androidx.navigation3.runtime.NavKey
+import co.mipyme.contract.ProductType
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -31,6 +32,18 @@ sealed interface Route : NavKey {
 
     @Serializable
     data object Home : Route
+
+    @Serializable
+    data class ProductEditor(val type: ProductType, val productId: String?, val callerKey: String) : Route
+
+    @Serializable
+    data object ProductDetails : Route
+
+    @Serializable
+    data object ProductPricing : Route
+
+    @Serializable
+    data class ProductAdjustStock(val locationId: String) : Route
 
     @Serializable
     data object GeneralSettings : Route

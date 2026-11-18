@@ -1,6 +1,8 @@
 package co.mipyme.network.api
 
 import arrow.core.Either
+import arrow.core.flatMap
+import arrow.core.left
 import co.mipyme.contract.PaginationResponse
 import co.mipyme.contract.Product
 import co.mipyme.contract.request.CreateProductRequest
@@ -17,7 +19,10 @@ import io.ktor.client.request.patch
 import io.ktor.client.request.post
 import io.ktor.http.encodeURLPathPart
 
-class ProductsApi internal constructor(private val client: HttpClient) {
+class ProductsApi internal constructor(
+    private val client: HttpClient,
+    private val uploadClient: () -> HttpClient,
+) {
     suspend fun create(
         request: CreateProductRequest,
         idempotencyKey: String? = null,
@@ -51,6 +56,39 @@ class ProductsApi internal constructor(private val client: HttpClient) {
             patch("/v1/products/${id.encodeURLPathPart()}") {
                 jsonBody(request)
             }
+        }
+    }
+
+    suspend fun storeImage(id: String, webp: ByteArray): Either<NetworkError, String> {
+        if (webp.size !in 12..MAX_PRODUCT_PHOTO_BYTES) {
+            return NetworkError.Unexpected(IllegalArgumentException("Invalid product photo size")).left()
+        }
+        return authorizeImageUpload(id, webp.size).flatMap { authorization ->
+            uploadClient().putProductImage(authorization, webp).map { authorization.id }
+        }
+    }
+
+    internal suspend fun authorizeImageUpload(
+        id: String,
+        size: Int,
+    ): Either<NetworkError, ProductImageUploadAuthorization> {
+        return client.runSafe<ProductImageUploadAuthorization> {
+            post("/v1/products/${id.encodeURLPathPart()}/image-uploads") {
+                jsonBody(AuthorizeProductImageUploadRequest(size))
+            }
+        }.mapLeft { error ->
+            // An authorization response that fails to decode may contain the signed URL.
+            if (error is NetworkError.Serialization) {
+                NetworkError.Serialization(IllegalStateException("Invalid photo upload authorization response"))
+            } else {
+                error
+            }
+        }
+    }
+
+    suspend fun verifyImageUpload(id: String, imageId: String): Either<NetworkError, Product> {
+        return client.runSafe {
+            post("/v1/products/${id.encodeURLPathPart()}/image-uploads/${imageId.encodeURLPathPart()}/verify")
         }
     }
 }

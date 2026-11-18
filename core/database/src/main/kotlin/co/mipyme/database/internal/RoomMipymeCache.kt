@@ -16,6 +16,7 @@ import co.mipyme.contract.Product
 import co.mipyme.contract.Supplier
 import co.mipyme.contract.SyncEmployee
 import co.mipyme.contract.SyncResponse
+import co.mipyme.database.CatalogEditorCache
 import co.mipyme.database.EmployeeLocationAccess
 import co.mipyme.database.MipymeCache
 import co.mipyme.database.ProductVariantMatch
@@ -37,7 +38,7 @@ import kotlinx.coroutines.flow.map
 
 internal class RoomMipymeCache(
     private val database: MipymeCacheDatabase,
-) : MipymeCache, SyncCacheWriter {
+) : MipymeCache, CatalogEditorCache, SyncCacheWriter {
     private val merchantDao = database.merchantDao()
     private val collectionDao = database.collectionDao()
     private val customerDao = database.customerDao()
@@ -72,6 +73,38 @@ internal class RoomMipymeCache(
         val product = productDao.findByVariantBarcode(barcode)?.toContract() ?: return null
         val variant = product.variants.firstOrNull { it.barcode == barcode } ?: return null
         return ProductVariantMatch(product = product, variant = variant)
+    }
+
+    override suspend fun findProduct(id: String, merchantId: String): Product? {
+        return database.withTransaction {
+            if (syncStateDao.find()?.merchantId != merchantId) return@withTransaction null
+            productDao.findById(id)?.toContract()
+        }
+    }
+
+    override suspend fun storeProduct(product: Product, merchantId: String) {
+        database.withTransaction {
+            if (syncStateDao.find()?.merchantId != merchantId) return@withTransaction
+            val cached = productDao.findById(product.id)?.toContract()
+            if (cached != null && cached.updatedAt > product.updatedAt) return@withTransaction
+
+            // Catalog responses must not overwrite stock already applied by sync.
+            val cachedInventory = cached?.variants?.associate { it.id to it.inventoryLevels }.orEmpty()
+            val variants = product.variants.map { variant ->
+                cachedInventory[variant.id]?.let { variant.copy(inventoryLevels = it) } ?: variant
+            }
+            replaceProducts(listOf(product.copy(variants = variants)))
+        }
+    }
+
+    override suspend fun storeCollection(collection: Collection, merchantId: String) {
+        database.withTransaction {
+            if (syncStateDao.find()?.merchantId != merchantId) return@withTransaction
+            val cachedUpdatedAt = collectionDao.findUpdatedAt(collection.id)
+            if (cachedUpdatedAt == null || cachedUpdatedAt <= collection.updatedAt) {
+                collectionDao.upsertAll(listOf(collection.toEntity()))
+            }
+        }
     }
 
     override fun observeLocations(): Flow<List<Location>> {

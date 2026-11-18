@@ -1,5 +1,6 @@
 package co.mipyme.screen.inventory
 
+import co.mipyme.contract.CountryIsoCode
 import co.mipyme.contract.Product
 import co.mipyme.contract.ProductStatus
 import co.mipyme.contract.ProductType
@@ -43,21 +44,7 @@ internal fun Product.toInventoryRow(
         }
         if (values.any { it == null || !it.isFinite() }) null else values.filterNotNull().fold(BigDecimal.ZERO) { total, quantity -> total + BigDecimal.valueOf(quantity) }
     }
-    val priceFormatter = if (context.country == null || context.country.name == "ZZ") {
-        NumberFormat.getNumberInstance(locale)
-    } else {
-        val countryLocale = Locale.Builder().setLanguage("en").setRegion(context.country.name).build()
-        val merchantCurrency = Currency.getInstance(countryLocale)
-        NumberFormat.getCurrencyInstance(countryLocale).apply {
-            currency = merchantCurrency
-            minimumFractionDigits = 2
-            maximumFractionDigits = 2
-            isGroupingUsed = true
-            if (context.country.name == "NI" && this is DecimalFormat) {
-                decimalFormatSymbols = decimalFormatSymbols.apply { currencySymbol = "C$" }
-            }
-        }
-    }
+    val priceFormatter = catalogPriceFormatter(context.country, locale)
     val quantityFormatter = NumberFormat.getNumberInstance(locale).apply { maximumFractionDigits = 340 }
     val group = when (grouping) {
         CatalogGrouping.NONE -> null
@@ -79,4 +66,18 @@ internal fun Product.toInventoryRow(
         },
         group = group,
     )
+}
+
+internal fun catalogPriceFormatter(country: CountryIsoCode?, locale: Locale): NumberFormat {
+    if (country == null || country == CountryIsoCode.ZZ) return NumberFormat.getNumberInstance(locale)
+    val countryLocale = Locale.Builder().setLanguage("en").setRegion(country.name).build()
+    return NumberFormat.getCurrencyInstance(countryLocale).apply {
+        currency = Currency.getInstance(countryLocale)
+        minimumFractionDigits = 2
+        maximumFractionDigits = 2
+        isGroupingUsed = true
+        if (country == CountryIsoCode.NI && this is DecimalFormat) {
+            decimalFormatSymbols = decimalFormatSymbols.apply { currencySymbol = "C$" }
+        }
+    }
 }

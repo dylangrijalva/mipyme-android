@@ -110,10 +110,10 @@ private fun FilterCheckbox(label: String, checked: Boolean, onToggle: () -> Unit
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-internal fun InventoryAddSheet(onDismiss: () -> Unit) {
+internal fun InventoryAddSheet(onDismiss: () -> Unit, onAdd: (ProductType) -> Unit) {
     MoshiBottomSheet(onDismissRequest = onDismiss, title = stringResource(R.string.inventory_add)) {
-        MoshiListItem(stringResource(R.string.inventory_add_product), onDismiss, leadingIcon = R.drawable.ic_fluent_box_24_regular)
-        MoshiListItem(stringResource(R.string.inventory_add_service), onDismiss, leadingIcon = R.drawable.ic_fluent_wrench_24_regular)
+        MoshiListItem(stringResource(R.string.inventory_add_product), { onAdd(ProductType.ITEM) }, leadingIcon = R.drawable.ic_fluent_box_24_regular)
+        MoshiListItem(stringResource(R.string.inventory_add_service), { onAdd(ProductType.SERVICE) }, leadingIcon = R.drawable.ic_fluent_wrench_24_regular)
         MoshiListItem(stringResource(R.string.inventory_add_category), onDismiss, leadingIcon = R.drawable.ic_fluent_tag_24_regular)
     }
 }

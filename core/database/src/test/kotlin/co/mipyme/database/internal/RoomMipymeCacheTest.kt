@@ -105,6 +105,46 @@ class RoomMipymeCacheTest {
     }
 
     @Test
+    fun `catalog writes update the active merchant cache without advancing sync or overwriting stock`() = runTest {
+        val merchantId = "merch_1"
+        val variant = productVariant("var_tangerines")
+        val original = product("prod_tangerines", variants = listOf(variant))
+        store(syncResponse(products = listOf(original)), merchantId, FIXTURE_TIME)
+        val syncState = cache.readSyncState()
+        val collection = collection("col_provisions")
+        val editedVariant = variant.copy(sku = "SUNNY-01", inventoryLevels = emptyList())
+        val edited = original.copy(
+            name = "East Blue Tangerines",
+            updatedAt = FIXTURE_TIME.plusSeconds(10),
+            variants = listOf(editedVariant),
+        )
+
+        cache.storeCollection(collection, merchantId)
+        cache.storeProduct(edited, merchantId)
+        cache.storeProduct(original, merchantId)
+
+        val expected = edited.copy(variants = listOf(editedVariant.copy(inventoryLevels = variant.inventoryLevels)))
+        assertEquals(expected, cache.findProduct(original.id, merchantId))
+        assertEquals(listOf(expected), cache.observeProducts().first())
+        assertEquals(listOf(collection), cache.observeCollections().first())
+        assertEquals(syncState, cache.readSyncState())
+    }
+
+    @Test
+    fun `catalog writes and reads are scoped to the cached merchant`() = runTest {
+        val merchantId = "merch_1"
+        val storedProduct = product("prod_tangerines")
+        store(syncResponse(products = listOf(storedProduct)), merchantId, FIXTURE_TIME)
+
+        cache.storeProduct(product("prod_sunny_provisions"), "merch_2")
+        cache.storeCollection(collection("col_sunny_provisions"), "merch_2")
+
+        assertNull(cache.findProduct(storedProduct.id, "merch_2"))
+        assertEquals(listOf(storedProduct), cache.observeProducts().first())
+        assertEquals(emptyList<Any>(), cache.observeCollections().first())
+    }
+
+    @Test
     fun `replacing a product removes stale variants variant options and inventory levels`() = runTest {
         val small = productOption("opt_s", position = 1.0)
         val large = productOption("opt_l", position = 2.0)

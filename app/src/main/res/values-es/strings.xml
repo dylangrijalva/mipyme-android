@@ -202,4 +202,9 @@
     <string name="home_change_business_continue">Continuar</string>
     <string name="home_change_business_cancel">Cancelar</string>
     <string name="home_change_business_action">Cambiar de negocio</string>
+    <string name="product_editor_product_created">Producto creado</string>
+    <string name="product_editor_product_updated">Producto actualizado</string>
+    <string name="product_editor_service_created">Servicio creado</string>
+    <string name="product_editor_service_updated">Servicio actualizado</string>
+    <string name="product_editor_details">Detalles</string>
 </resources>

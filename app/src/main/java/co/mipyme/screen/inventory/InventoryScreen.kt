@@ -41,6 +41,7 @@ import co.mipyme.R
 import co.mipyme.data.inventory.DefaultInventoryRepository
 import co.mipyme.data.inventory.InventoryRepository
 import co.mipyme.database.CatalogQuery
+import co.mipyme.navigation.rememberProductEditorLauncher
 import co.mipyme.preview.ScreenPreview
 import co.mipyme.screen.home.LocalHomeDrawer
 import co.mipyme.ui.Moshi
@@ -62,6 +63,7 @@ fun Module.inventoryScreenModule(): Module {
 @Composable
 internal fun InventoryScreen(viewModel: InventoryViewModel = koinViewModel()) {
     val state by viewModel.stateFlow.collectAsStateWithLifecycle()
+    val openEditor = rememberProductEditorLauncher()
     val context = LocalContext.current
     val session = remember(context) { InventoryScanSession(GoogleInventoryScanner(context)) }
     val currentResultHandler by rememberUpdatedState(viewModel::onScanResult)
@@ -92,6 +94,7 @@ internal fun InventoryScreen(viewModel: InventoryViewModel = koinViewModel()) {
             clearFilters = viewModel::onClearFilters,
             showAdd = viewModel::onShowAdd,
             dismissAdd = viewModel::onDismissAdd,
+            openEditor = openEditor,
             refresh = viewModel::onRefresh,
             retryLocal = viewModel::onRetryLocal,
             scan = {
@@ -117,6 +120,7 @@ internal data class InventoryActions(
     val clearFilters: () -> Unit = {},
     val showAdd: () -> Unit = {},
     val dismissAdd: () -> Unit = {},
+    val openEditor: (ProductType, String?) -> Unit = { _, _ -> },
     val refresh: () -> Unit = {},
     val retryLocal: () -> Unit = {},
     val scan: () -> Unit = {},
@@ -173,7 +177,15 @@ internal fun InventoryContent(
     state.draft?.let { draft ->
         InventoryFilterSheet(draft, state.categories.orEmpty(), actions.changeDraft, actions.applyFilters, actions.dismissFilters)
     }
-    if (state.showAddSheet && state.canAdd) InventoryAddSheet(actions.dismissAdd)
+    if (state.showAddSheet && state.canAdd) {
+        InventoryAddSheet(
+            onDismiss = actions.dismissAdd,
+            onAdd = { type ->
+                actions.dismissAdd()
+                actions.openEditor(type, null)
+            },
+        )
+    }
 }
 
 @Composable
@@ -325,7 +337,12 @@ private fun InventoryProducts(
                         InventoryGroupHeading(item.group)
                     }
                     is InventoryListItem.ProductItem -> item(key = "product:${item.row.id}", contentType = "product") {
-                        (products[index] as? InventoryListItem.ProductItem)?.let { InventoryProductListRow(it.row) }
+                        (products[index] as? InventoryListItem.ProductItem)?.let { product ->
+                            InventoryProductListRow(product.row, enabled = state.canAdd) {
+                                val type = if (product.row.isService) ProductType.SERVICE else ProductType.ITEM
+                                actions.openEditor(type, product.row.id)
+                            }
+                        }
                     }
                     null -> item(key = "placeholder:$index") { products[index]; MoshiLoadingIndicator() }
                 }
@@ -345,7 +362,12 @@ private fun InventoryProducts(
 }
 
 @Composable
-internal fun InventoryProductListRow(row: InventoryProductRow, modifier: Modifier = Modifier) {
+internal fun InventoryProductListRow(
+    row: InventoryProductRow,
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true,
+    onClick: () -> Unit = {},
+) {
     MoshiProductRow(
         name = row.name,
         price = row.price,
@@ -361,7 +383,8 @@ internal fun InventoryProductListRow(row: InventoryProductRow, modifier: Modifie
             })
         },
         tagTone = if (row.badge == InventoryBadge.OUT_OF_STOCK) MoshiTagTone.Error else MoshiTagTone.Neutral,
-        onClick = {},
+        onClick = onClick,
+        enabled = enabled,
         modifier = modifier,
         image = {
             SubcomposeAsyncImage(
