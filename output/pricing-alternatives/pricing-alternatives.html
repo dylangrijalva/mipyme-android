@@ -1,0 +1,86 @@
+<style>
+#pricing-options .stage{min-height:420px;display:flex;align-items:center;justify-content:center;padding:24px 12px;box-sizing:border-box}
+#pricing-options .product{--surface:light-dark(#fff,#0a0a0a);--ink:light-dark(#171717,#ededed);--secondary:light-dark(#666,#a1a1a1);--line:light-dark(#e5e5e5,#333);--subtle:light-dark(#fafafa,#171717);font-family:Geist,Arial,sans-serif;color:var(--ink);background:var(--surface);width:390px;max-width:100%;border:1px solid var(--line);border-radius:12px;overflow:hidden;text-align:left}
+#pricing-options .context{padding:16px;border-bottom:1px solid var(--line);font-size:14px;line-height:20px;color:var(--secondary)}
+#pricing-options .section{padding:24px 16px}
+#pricing-options h2{margin:0 0 12px;font-size:20px;line-height:28px;font-weight:600}
+#pricing-options button{font:inherit;color:inherit;cursor:pointer}
+#pricing-options .list{border:0;background:transparent;width:100%;display:flex;align-items:center;gap:12px;padding:16px;text-align:left;min-height:56px;font-size:16px;line-height:24px}
+#pricing-options .label{flex:1;font-weight:500}
+#pricing-options .amount{font-variant-numeric:tabular-nums;white-space:nowrap}
+#pricing-options .chevron{font-size:22px;color:var(--secondary)}
+#pricing-options .divider{height:1px;background:var(--line);margin:0 16px}
+#pricing-options .pair{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:20px 0}
+#pricing-options .caption{font-size:14px;line-height:20px;color:var(--secondary);display:block;margin-bottom:8px}
+#pricing-options .value{font-size:24px;line-height:32px;font-weight:600;overflow-wrap:anywhere}
+#pricing-options .outline{width:100%;min-height:48px;border:1px solid var(--line);background:transparent;border-radius:12px;padding:12px 16px;font-size:14px;font-weight:500}
+#pricing-options .hero{padding:16px;background:var(--subtle);border-radius:12px}
+#pricing-options .hero .value{font-size:32px;line-height:40px;margin-bottom:16px;display:block}
+#pricing-options .cost{display:flex;gap:12px;justify-content:space-between;font-size:14px;line-height:20px;border-top:1px solid var(--line);padding-top:16px}
+#pricing-options .text-action{display:block;min-height:48px;border:0;background:transparent;margin-top:12px;padding:12px 0;font-size:14px;font-weight:500}
+#pricing-options .editor{padding:24px 16px}
+#pricing-options .editor label{display:block;border:1px solid var(--line);border-radius:6px;padding:8px 16px;margin:12px 0;font-size:12px;line-height:16px;color:var(--secondary)}
+#pricing-options input{width:100%;box-sizing:border-box;min-height:32px;border:0;background:transparent;color:var(--ink);font:400 16px/24px Geist,Arial,sans-serif}
+#pricing-options [hidden]{display:none!important}
+@media(max-width:360px){#pricing-options .stage{padding:16px 0}#pricing-options .pair{grid-template-columns:1fr}#pricing-options .list{flex-wrap:wrap}}
+</style>
+<div id="pricing-options" class="viz-carousel viz-dotted-background" aria-label="Moshi pricing alternatives">
+  <section data-variant="Separate rows" aria-label="Separate rows">
+    <div class="stage"><div class="product">
+      <div class="context">Product editor</div>
+      <div class="summary section">
+        <h2>Pricing</h2>
+        <button class="list" type="button" data-edit><span class="label">Selling price</span><span class="amount" data-price>C$ 250.00</span><span class="chevron" aria-hidden="true">›</span></button>
+        <div class="divider"></div>
+        <button class="list" type="button" data-edit><span class="label">Unit cost</span><span class="amount" data-cost>C$ 150.00</span><span class="chevron" aria-hidden="true">›</span></button>
+      </div>
+    </div></div>
+  </section>
+  <section data-variant="Paired summary" aria-label="Paired summary" hidden>
+    <div class="stage"><div class="product">
+      <div class="context">Product editor</div>
+      <div class="summary section">
+        <h2>Pricing</h2>
+        <div class="pair"><div><span class="caption">Selling price</span><span class="value amount" data-price>C$ 250.00</span></div><div><span class="caption">Unit cost</span><span class="value amount" data-cost>C$ 150.00</span></div></div>
+        <button class="outline" type="button" data-edit>Edit pricing</button>
+      </div>
+    </div></div>
+  </section>
+  <section data-variant="Price first" aria-label="Price first" hidden>
+    <div class="stage"><div class="product">
+      <div class="context">Product editor</div>
+      <div class="summary section">
+        <h2>Pricing</h2>
+        <div class="hero"><span class="caption">Selling price</span><span class="value amount" data-price>C$ 250.00</span><div class="cost"><span>Unit cost</span><span class="amount" data-cost>C$ 150.00</span></div></div>
+        <button class="text-action" type="button" data-edit>Edit pricing</button>
+      </div>
+    </div></div>
+  </section>
+</div>
+<script>
+(() => {
+  const root = document.getElementById('pricing-options');
+  root.querySelectorAll('.product').forEach(product => {
+    const summary = product.querySelector('.summary');
+    const editor = document.createElement('form');
+    editor.className = 'editor';
+    editor.hidden = true;
+    editor.innerHTML = '<h2>Edit pricing</h2><label>Selling price · C$<input name="price" inputmode="decimal" type="number" min="0" step="0.01" value="250.00" required></label><label>Unit cost · C$<input name="cost" inputmode="decimal" type="number" min="0" step="0.01" value="150.00" required></label><button class="outline" type="submit">Done</button>';
+    product.append(editor);
+    product.querySelectorAll('[data-edit]').forEach(button => button.addEventListener('click', () => {
+      summary.hidden = true;
+      editor.hidden = false;
+      editor.elements.price.focus();
+    }));
+    editor.addEventListener('submit', event => {
+      event.preventDefault();
+      const money = value => 'C$ ' + Number(value).toLocaleString('en-US', {minimumFractionDigits:2,maximumFractionDigits:2});
+      product.querySelector('[data-price]').textContent = money(editor.elements.price.value);
+      product.querySelector('[data-cost]').textContent = money(editor.elements.cost.value);
+      editor.hidden = true;
+      summary.hidden = false;
+      summary.querySelector('button').focus();
+    });
+  });
+})();
+</script>

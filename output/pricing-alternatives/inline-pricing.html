@@ -1,0 +1,49 @@
+<style>
+#inline-pricing .stage{display:flex;justify-content:center;padding:32px 12px}
+#inline-pricing .product{--surface:light-dark(#fff,#0a0a0a);--ink:light-dark(#171717,#ededed);--secondary:light-dark(#666,#a1a1a1);--line:light-dark(#e5e5e5,#333);width:390px;max-width:100%;box-sizing:border-box;background:var(--surface);color:var(--ink);font-family:Geist,Arial,sans-serif;border:1px solid var(--line);border-radius:12px;padding:24px 16px}
+#inline-pricing h2{font-size:20px;line-height:28px;font-weight:600;margin:0 0 20px}
+#inline-pricing .pair{display:grid;grid-template-columns:minmax(0,1fr) 1px minmax(0,1fr);gap:16px;align-items:stretch}
+#inline-pricing .divider{background:var(--line)}
+#inline-pricing .label{display:block;font-size:14px;line-height:20px;color:var(--secondary);margin-bottom:8px}
+#inline-pricing .value{display:block;font-size:24px;line-height:32px;font-weight:600;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+#inline-pricing button{font:500 14px/20px Geist,Arial,sans-serif;min-height:48px;width:100%;margin-top:20px;border:1px solid var(--line);border-radius:12px;background:transparent;color:var(--ink);padding:12px 16px;cursor:pointer}
+#inline-pricing .field{display:block;font-size:12px;line-height:16px;color:var(--secondary);border:1px solid var(--line);border-radius:6px;padding:8px 16px;margin-top:12px}
+#inline-pricing input{font:400 16px/24px Geist,Arial,sans-serif;width:100%;box-sizing:border-box;min-height:32px;color:var(--ink);background:transparent;border:0}
+#inline-pricing [hidden]{display:none!important}
+@media(max-width:360px){#inline-pricing .stage{padding:20px 0}#inline-pricing .pair{gap:12px}#inline-pricing .value{font-size:20px;line-height:28px}}
+</style>
+<div id="inline-pricing" class="viz-dotted-background">
+ <div class="stage"><div class="product" aria-label="Inline pricing with vertical divider">
+  <section data-summary>
+   <h2>Pricing</h2>
+   <div class="pair">
+    <div><span class="label">Selling price</span><span class="value" data-price>C$ 250.00</span></div>
+    <div class="divider" aria-hidden="true"></div>
+    <div><span class="label">Unit cost</span><span class="value" data-cost>C$ 150.00</span></div>
+   </div>
+   <button type="button" data-edit>Edit pricing</button>
+  </section>
+  <form hidden>
+   <h2>Edit pricing</h2>
+   <label class="field">Selling price · C$<input name="price" type="number" min="0" step="0.01" inputmode="decimal" value="250.00" required></label>
+   <label class="field">Unit cost · C$<input name="cost" type="number" min="0" step="0.01" inputmode="decimal" value="150.00" required></label>
+   <button type="submit">Done</button>
+  </form>
+ </div></div>
+</div>
+<script>
+(()=>{
+ const root=document.getElementById('inline-pricing');
+ const summary=root.querySelector('[data-summary]');
+ const form=root.querySelector('form');
+ const edit=root.querySelector('[data-edit]');
+ edit.addEventListener('click',()=>{summary.hidden=true;form.hidden=false;form.elements.price.focus();});
+ form.addEventListener('submit',event=>{
+  event.preventDefault();
+  const money=value=>'C$ '+Number(value).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
+  root.querySelector('[data-price]').textContent=money(form.elements.price.value);
+  root.querySelector('[data-cost]').textContent=money(form.elements.cost.value);
+  form.hidden=true;summary.hidden=false;edit.focus();
+ });
+})();
+</script>
